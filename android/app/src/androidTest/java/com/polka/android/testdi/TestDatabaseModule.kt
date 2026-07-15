@@ -14,9 +14,11 @@ import com.polka.android.data.di.FakeModelRepository
     replaces = [DataModule::class]
 )
 interface FakeDataModule {
-
+    /*
+    TODO: remove when implementing
     @Binds
     abstract fun bindRepository(
         fakeRepository: FakeModelRepository
     ): ModelRepository
+    */
 }

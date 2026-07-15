@@ -14,20 +14,13 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface DataModule {
-
+    /*
+    TODO: remove when implemented at least one function
+    If need to dependency inject an interface, write function similar to this
     @Singleton
     @Binds
     fun bindsModelRepository(
-        modelRepository: DefaultModelRepository
+        modelRepository: ConcreteModelRepository
     ): ModelRepository
+    */
 }
-
-class FakeModelRepository @Inject constructor() : ModelRepository {
-    override val models: Flow<List<String>> = flowOf(fakeModels)
-
-    override suspend fun add(name: String) {
-        throw NotImplementedError()
-    }
-}
-
-val fakeModels = listOf("One", "Two", "Three")

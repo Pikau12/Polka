@@ -11,15 +11,9 @@ import com.polka.android.data.local.database.AppDatabase
 import com.polka.android.data.local.database.ModelDao
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 class DatabaseModule {
-    @Provides
-    fun provideModelDao(appDatabase: AppDatabase): ModelDao {
-        return appDatabase.modelDao()
-    }
-
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
@@ -28,5 +22,15 @@ class DatabaseModule {
             AppDatabase::class.java,
             "Model"
         ).build()
+    }
+
+    @Provides
+    fun provideGameDao(appDatabase: AppDatabase): GameDao {
+        return appDatabase.gameDao()
+    }
+
+    @Provides
+    fun provideCollectionDao(appDatabase: AppDatabase): CollectionDao {
+        return appDatabase.collectionDao()
     }
 }
