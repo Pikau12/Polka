@@ -1,6 +1,6 @@
 package com.polka.android.data
 
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 class SettingsRepository @Inject constructor() {
 }
