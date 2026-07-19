@@ -8,7 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import com.polka.android.data.database.AppDatabase
-import com.polka.android.data.database.GameDao
+import com.polka.android.data.database.dao.*
 import jakarta.inject.Singleton
 
 @Module
