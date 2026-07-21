@@ -1,15 +1,8 @@
-package com.polka.android.data.di
+package com.polka.android.data
 
-import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import com.polka.android.data.ModelRepository
-import com.polka.android.data.DefaultModelRepository
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
