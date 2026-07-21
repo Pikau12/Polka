@@ -2,9 +2,19 @@ package com.polka.android.data.local.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.polka.android.data.local.database.user.User
 
-@Database(entities = [Model::class], version = 1)
+@Database(
+    entities = [
+        User::class,
+        LastLoggedInUser::class,
+        ],
+        version = 2,
+        exportSchema = false
+)
+
+@TypeConverters(Converters::class)
+
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun gameDao(): GameDao
-    abstract fun collectionDao(): CollectionDao
+    abstract fun userDao(): UserDao
 }
