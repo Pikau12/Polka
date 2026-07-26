@@ -2,10 +2,27 @@ package com.polka.android.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.polka.android.data.database.model.*
-import com.polka.android.data.database.dao.*
+import com.polka.android.data.database.dao.GameDao
+import com.polka.android.data.database.model.CollectionItemEntity
+import com.polka.android.data.database.model.FriendshipEntity
+import com.polka.android.data.database.model.GameEntity
+import com.polka.android.data.database.model.SessionEntity
+import com.polka.android.data.database.model.SessionParticipantEntity
+import com.polka.android.data.database.model.UserEntity
 
-@Database(entities = [Game::class], version = 1)
+@Database(
+    entities = [
+        UserEntity::class,
+        GameEntity::class,
+        SessionEntity::class,
+        SessionParticipantEntity::class,
+        CollectionItemEntity::class,
+        FriendshipEntity::class
+    ],
+    version = 1,
+    exportSchema = true
+)
 abstract class AppDatabase : RoomDatabase() {
+
     abstract fun gameDao(): GameDao
 }
