@@ -1,4 +1,4 @@
 package com.polka.android.presentation.authSys
 
-class OverviewScreen {
+class OverviewScreen(onSkipClick: () -> Unit, onGoToPolkaClick: () -> Unit) {
 }

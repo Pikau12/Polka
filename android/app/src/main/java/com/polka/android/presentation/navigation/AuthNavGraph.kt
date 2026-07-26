@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.polka.android.presentation.authSys.LoginScreen
+import com.polka.android.presentation.authSys.OverviewScreen
 import com.polka.android.presentation.authSys.SigninScreen
 
 fun NavGraphBuilder.authNavGraph (
@@ -48,6 +49,21 @@ fun NavGraphBuilder.authNavGraph (
                 onSigninSuccess = {
                     navController.navigate(Destination.Login.pass(showSigninSuccess = true)){
                         popUpTo(Destination.Signin.route){ inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Destination.Overview.route){
+            OverviewScreen(
+                onSkipClick = {
+                    navController.navigate(Destination.Collection.route){
+                        popUpTo(Destination.Overview.route) { inclusive = true }
+                    }
+                },
+                onGoToPolkaClick = {
+                    navController.navigate(Destination.Collection.route){
+                        popUpTo(Destination.Overview.route) { inclusive = true }
                     }
                 }
             )
