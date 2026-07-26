@@ -10,15 +10,14 @@ import androidx.room.PrimaryKey
         Index(value = ["login"], unique = true),
     ]
 )
-
 data class UserEntity (
     @PrimaryKey
     val id: Long,
 
-    val username: String? = null,
-    val login: String = null,
+    val login: String,
+    val username: String,
 
-    val avatarUrl: String? = null,
+    val avatarUrl: String?,
 
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()

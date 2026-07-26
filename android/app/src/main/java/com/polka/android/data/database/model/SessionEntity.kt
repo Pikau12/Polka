@@ -33,14 +33,17 @@ data class SessionEntity(
     val id: Long = 0,
 
     val gameId: Long,
+    val creatorId: Long,
 
-    val creatorId: Long? = null,
+    val note: String = "",
+    /*
+        A list of URL to images.
+        TODO: when implementing utility for list conversion, replace this with an empty list from that utility.
+     */
+    val images: String = "[]",
 
     val startedAt: Long = System.currentTimeMillis(),
-
     val finishedAt: Long? = null,
-
-    val note: String? = null,
 
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()

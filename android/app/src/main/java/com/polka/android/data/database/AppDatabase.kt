@@ -20,9 +20,8 @@ import com.polka.android.data.database.model.UserEntity
         FriendshipEntity::class
     ],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
-
     abstract fun gameDao(): GameDao
 }

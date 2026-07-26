@@ -1,8 +1,8 @@
 package com.polka.android.data.database.model
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Index
-import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "collection_items",
@@ -35,7 +35,7 @@ data class CollectionItemEntity(
     val status: String? = null,
     val note: String? = null,
 
-    val userRating: Double? = null
+    val userRating: Double? = null,
 
     val displayOrder: Int = 0,
 

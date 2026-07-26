@@ -36,15 +36,12 @@ data class SessionParticipantEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val sessionId: Long,
-
-    val userId: Long? = null,
-
     /*
-        Name not null when userId is null
+        Name must be not null when userId is null.
      */
-    val name: String? = null,
-
-    val score: Double? = null,
+    val name: String?,
+    val userId: Long?,
 
     val isWinner: Boolean = false,
+    val score: Double? = null,
 )

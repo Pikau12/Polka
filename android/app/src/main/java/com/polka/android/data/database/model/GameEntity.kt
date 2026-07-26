@@ -25,8 +25,11 @@ data class GameEntity(
     val ratingsCountAll: Int? = null,
     val ratingsCountPolka: Int? = null,
 
-    val availableCountPlayers: String, // switch type. Case [2, 4, 6] or [1, 3, 5]
-    val bestPlayersCount: String, // switch type. Arrays can't be in entity
+    /*
+        A list of integers.
+     */
+    val availablePlayerCount: String? = null,
+    val bestPlayerCount: String? = null,
 
     val minPlayTimeMinutes: Int? = null,
     val maxPlayTimeMinutes: Int? = null,

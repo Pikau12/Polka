@@ -4,6 +4,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 
+enum class FriendshipStatus {
+    FRIEND, REQUEST, REJECTED,
+}
+
 @Entity(
     tableName = "friendships",
     primaryKeys = ["userId", "friendId"],
@@ -32,7 +36,7 @@ data class FriendshipEntity(
     val userId: Long,
     val friendId: Long,
 
-    val status: String, // instead string use enum
+    val status: FriendshipStatus,
 
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
