@@ -108,4 +108,8 @@ dependencies {
     // OkHttp
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
+
+    // Image loading
+    implementation(libs.coil.kt.coil.compose)
+    implementation(libs.coil.kt.coil.network.okhttp)
 }

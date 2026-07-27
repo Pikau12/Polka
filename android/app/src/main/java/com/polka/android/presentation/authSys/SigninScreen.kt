@@ -1,4 +1,6 @@
 package com.polka.android.presentation.authSys
 
-class SigninScreen {
+class SigninScreen(
+    onLoginClick: () -> Unit,
+    onSigninSuccess: () -> Unit) {
 }

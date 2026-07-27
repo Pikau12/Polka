@@ -3,8 +3,12 @@ package com.polka.android.presentation.navigation
 sealed class Destination(val route: String) {
     // ===== АВТОРИЗАЦИЯ =====
     object Overview : Destination("overview")
-    object Login : Destination("login")
-    object Signin : Destination("signin")
+    object Login : Destination("login/{showSigninSuccess}"){
+        fun pass(showSigninSuccess: Boolean = false) = "login/$showSigninSuccess"
+    }
+    object Signin : Destination("login/{showSigninFailure}"){
+        fun pass(showSigninFailure: Boolean = false) = "login/$showSigninFailure"
+    }
 
     // ===== ОСНОВНЫЕ ЭКРАНЫ =====
     object Collection : Destination("collection")
@@ -42,4 +46,14 @@ sealed class Destination(val route: String) {
     object Settings : Destination("settings")
     object Account : Destination("account")
     object SupportProject : Destination("support_project")
+
+    companion object{
+        fun getNextDestinationAfterLogin(userId: Int): String{
+            return if (/*AuthRepository.isFirstLogin(userId)*/ true){ // I need to use AuthRepository there, but it is not there right now :(
+                Overview.route
+            } else{
+                Collection.route
+            }
+        }
+    }
 }
