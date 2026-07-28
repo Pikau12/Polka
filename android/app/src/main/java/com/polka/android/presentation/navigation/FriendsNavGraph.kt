@@ -1,4 +1,10 @@
 package com.polka.android.presentation.navigation
 
-class FriendsNavGraph {
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+
+fun NavGraphBuilder.friendsNavGraph(
+    navController: NavController
+){
+
 }

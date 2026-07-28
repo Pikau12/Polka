@@ -1,4 +1,10 @@
 package com.polka.android.presentation.navigation
 
-class SessionsNavGraph {
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+
+fun NavGraphBuilder.sessionsNavGraph(
+    navController: NavController
+){
+
 }
