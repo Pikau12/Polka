@@ -90,20 +90,17 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    // Local tests: jUnit, coroutines, Android runner
+    // Local tests: JUnit, coroutines, Android runner
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
 
-    // Instrumented tests: jUnit rules and runners
+    // Instrumented tests: JUnit rules and runners
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
-
-    // Image loading
-    implementation(libs.coil.kt.coil.compose)
 
     // OkHttp
     implementation(libs.okhttp)
