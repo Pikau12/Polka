@@ -1,5 +1,6 @@
 package com.polka.android.presentation.theme
 
+import androidx.compose.material3.ButtonColors
 import androidx.compose.ui.graphics.Color
 
 // ===== Main colors =====
@@ -63,3 +64,20 @@ val PolkaButtonTip = PolkaEight
 val PolkaButtonCancel = PolkaSix
 val PolkaButtonCurrentItem = PolkaThree
 val PolkaButtonSupportProject = PolkaSeven
+val PolkaButtonBack = PolkaSeven
+val PolkaButtonAccept = PolkaThree
+val PolkaOnButton = Color(0xFFF5EFF7)
+
+val PolkaButtonBackColors = ButtonColors(
+    containerColor = PolkaButtonBack,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaButtonBack,
+    disabledContentColor = PolkaOnButton
+)
+
+val PolkaButtonAcceptColors = ButtonColors(
+    containerColor = PolkaButtonAccept,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaButtonAccept,
+    disabledContentColor = PolkaOnButton
+)
