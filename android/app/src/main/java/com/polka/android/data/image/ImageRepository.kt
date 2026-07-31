@@ -30,6 +30,7 @@ class ImageRepository @Inject constructor(@ApplicationContext val appContext: Co
     }
 
     private fun saveStream(input: InputStream, ext: String): String {
+        // Using temporary file in order to not have orphaned files in case app exits mid-saving
         val temp = File(imagesDir, "saving.tmp")
         FileOutputStream(temp, false).use { input.copyTo(it) }
 

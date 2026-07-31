@@ -1,7 +1,6 @@
 package com.polka.android.data.model
 
-import android.os.Environment
-import coil3.Image
+import com.polka.android.data.image.ImageSource
 
 /*
     Represents a certain board game, either from the BGG database, or created by the user.
@@ -10,7 +9,7 @@ data class Game(
     val id: Long,
     val name: String,
     val shortDescription: String?,
-    val image: Image?,
+    val image: ImageSource?,
     val bggAverageRating: Double?,
     val bggNumberOfRatings: Int?,
     val playerCount: ClosedRange<Int>?,
