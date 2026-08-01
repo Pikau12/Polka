@@ -1,9 +1,11 @@
 package com.polka.android.presentation.common.tiles
 
+import android.R.attr.maxWidth
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -31,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.polka.android.R
 import com.polka.android.presentation.theme.PolkaTheme
+import com.polka.android.utils.AdaptiveTextForTileGame
 
 sealed class ContextMenuAction {
     object onStatusClick : ContextMenuAction()
@@ -89,22 +92,22 @@ fun TileGame(
                 contentScale = ContentScale.Crop
             )
 
-            Box(
+            BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = game.gameName,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                val containerWidthDp = maxWidth
+
+                AdaptiveTextForTileGame(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 6.dp, vertical = 4.dp),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface
+                        .padding(horizontal = 8.dp),
+                    text = game.gameName,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    containerWidthDp = containerWidthDp,
+                    containerPaddingDp = 8.dp
                 )
             }
         }
