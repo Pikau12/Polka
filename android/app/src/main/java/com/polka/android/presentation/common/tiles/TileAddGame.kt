@@ -1,6 +1,7 @@
 package com.polka.android.presentation.common.tiles
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,66 +11,35 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import com.polka.android.R
 import com.polka.android.presentation.theme.PolkaTheme
 
-sealed class ContextMenuAction {
-    object onStatusClick : ContextMenuAction()
-    object onRatingClick : ContextMenuAction()
-    object onAddSessionClick : ContextMenuAction()
-}
-
-data class Game(
-    var gameId: Int,
-    var collectionItemId: Int,
-    var gameImageUrl: String,
-    var gameName: String
-)
-
 @Composable
-fun GameTile(
-    game: Game,
+fun TileAddGame(
     modifier: Modifier = Modifier,
-    onDoubleClick: (Int) -> Unit,
-    onContextMenu: (Int, ContextMenuAction) -> Unit,
-    onDragStart: (Int) -> Unit
+    onClick: () -> Unit
 ){
-    var showContextMenu by remember { mutableStateOf(false) }
-
     Card(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(59/73f)
             .combinedClickable(
-                onClick = {
-                    showContextMenu = true
-                },
-                onDoubleClick = {
-                    onDoubleClick(game.gameId)
-                },
-                onLongClick = {
-                    onDragStart(game.collectionItemId)
-                }
+                onClick = onClick
             ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
@@ -80,15 +50,28 @@ fun GameTile(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_game_placeholder),
-                contentDescription = game.gameName,
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop
-            )
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .border(
+                        width = 3.dp,
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(16.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ){
+                Icon(
+                    Icons.Filled.Add,
+                    contentDescription = "Back button",
+                    modifier = Modifier.size(55.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
 
             Box(
                 modifier = Modifier
@@ -97,14 +80,15 @@ fun GameTile(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = game.gameName,
+                    text = "Add game", // TODO: change string to string from values.xml
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 6.dp, vertical = 4.dp),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -116,9 +100,8 @@ fun GameTile(
     showBackground = true,
     backgroundColor = 0xFFF5F5F5,
     device = Devices.PIXEL_4
-)
-@Composable
-fun PreviewGameTileRow() {
+)@Composable
+fun PreviewTileAddGame(){
     PolkaTheme {
         val testGames = listOf(
             Game(
@@ -133,12 +116,6 @@ fun PreviewGameTileRow() {
                 gameImageUrl = "https://cf.geekdo-images.com/6j5RxBvNS9c1HpVJk4WpZQ__itemrep/img/Kw7oP_0HSOlgH93Z8pN3wFjx3n0=/fit-in/246x300/filters:strip_icc()/pic5424479.jpg",
                 gameName = "Dune"
             ),
-            Game(
-                gameId = 3,
-                collectionItemId = 3,
-                gameImageUrl = "https://cf.geekdo-images.com/4iJk9KJ0n7sQ8vM5wX3yFg__itemrep/img/8N7tR4fX5k7Z2K1yQ0wP3oI8nJ6=/fit-in/246x300/filters:strip_icc()/pic2437871.jpg",
-                gameName = "Ticket to Ride"
-            )
         )
 
         Row(
@@ -148,7 +125,7 @@ fun PreviewGameTileRow() {
             horizontalArrangement = Arrangement.spacedBy(13.dp)
         ) {
             testGames.forEach { game ->
-                GameTile(
+                TileGame(
                     game = game,
                     modifier = Modifier.weight(1f),
                     onDoubleClick = { /* заглушка */ },
@@ -156,6 +133,8 @@ fun PreviewGameTileRow() {
                     onDragStart = { /* заглушка */ }
                 )
             }
+
+            TileAddGame(Modifier.weight(1f)) { }
         }
     }
 }
