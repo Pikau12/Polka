@@ -1,5 +1,6 @@
 package com.polka.android.presentation.common.tiles
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,7 +59,7 @@ fun GameTile(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(0.75f)
+            .aspectRatio(59/73f)
             .combinedClickable(
                 onClick = {
                     showContextMenu = true
@@ -72,23 +73,21 @@ fun GameTile(
             ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary // TODO: change color
+            containerColor = MaterialTheme.colorScheme.surface // TODO: change color
         )
     ){
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            AsyncImage(
-                model = game.gameImageUrl,
+            Image(
+                painter = painterResource(R.drawable.ic_game_placeholder),
                 contentDescription = game.gameName,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop,
-                error = painterResource(R.drawable.ic_game_placeholder),
-                placeholder = painterResource(R.drawable.ic_loading)
+                contentScale = ContentScale.Crop
             )
 
             Box(
@@ -119,20 +118,20 @@ fun GameTile(
     device = Devices.PIXEL_4
 )
 @Composable
-private fun PreviewGameTileRow() {
+fun PreviewGameTileRow() {
     PolkaTheme {
         val testGames = listOf(
-            Game(
-                gameId = 1,
-                collectionItemId = 1,
-                gameImageUrl = "https://cf.geekdo-images.com/6j5RxBvNS9c1HpVJk4WpZQ__itemrep/img/Kw7oP_0HSOlgH93Z8pN3wFjx3n0=/fit-in/246x300/filters:strip_icc()/pic5424479.jpg",
-                gameName = "Dune"
-            ),
             Game(
                 gameId = 2,
                 collectionItemId = 2,
                 gameImageUrl = "https://cf.geekdo-images.com/7XkzUhj3LsqUFfATeIVjIA__itemrep/img/9N8tR4fX5k7Z2K1yQ0wP3oI8nJ6=/fit-in/246x300/filters:strip_icc()/pic2419375.jpg",
                 gameName = "Catan"
+            ),
+            Game(
+                gameId = 1,
+                collectionItemId = 1,
+                gameImageUrl = "https://cf.geekdo-images.com/6j5RxBvNS9c1HpVJk4WpZQ__itemrep/img/Kw7oP_0HSOlgH93Z8pN3wFjx3n0=/fit-in/246x300/filters:strip_icc()/pic5424479.jpg",
+                gameName = "Dune"
             ),
             Game(
                 gameId = 3,
@@ -146,7 +145,7 @@ private fun PreviewGameTileRow() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(13.dp)
         ) {
             testGames.forEach { game ->
                 GameTile(
