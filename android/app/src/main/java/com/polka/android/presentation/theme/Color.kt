@@ -1,6 +1,7 @@
 package com.polka.android.presentation.theme
 
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.ui.graphics.Color
 
 // ===== Main colors =====
@@ -80,4 +81,13 @@ val PolkaButtonAcceptColors = ButtonColors(
     contentColor = PolkaOnButton,
     disabledContainerColor = PolkaButtonAccept,
     disabledContentColor = PolkaOnButton
+)
+
+val PolkaGameTileMenuColors = MenuItemColors(
+    textColor = OnSurface,
+    leadingIconColor = OnSurface,
+    trailingIconColor = OnSurface,
+    disabledTextColor = OnSurface,
+    disabledLeadingIconColor = OnSurface,
+    disabledTrailingIconColor = OnSurface
 )
