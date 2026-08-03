@@ -7,7 +7,7 @@ import android.net.Uri
  */
 sealed class ImageSource {
     /**
-     * Represents an image saved to the app specific storage and used in a room database.
+     * Represents an image saved to the app specific storage and used in the room database.
      * Those are all stored directly in the `images` directory.
      *
      * @param fileName since all the images are stored in the `images` directory, this is just the name of the file, including extension
@@ -15,7 +15,8 @@ sealed class ImageSource {
     class Saved(val fileName: String) : ImageSource()
 
     /**
-     * Represents an image not saved to the room database.
+     * Represents an image not saved to the app specific storage, therefore not referenced in the room database.
+     * Must have either http, https or content scheme.
      *
      * @param uri URI to the image
      */
