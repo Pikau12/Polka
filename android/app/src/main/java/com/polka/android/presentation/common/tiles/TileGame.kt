@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuOpen
+import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MenuOpen
 import androidx.compose.material.icons.filled.Star
@@ -224,7 +226,7 @@ fun TileGame(
                     },
                     leadingIcon = {
                         Icon(
-                            Icons.AutoMirrored.Filled.MenuOpen,
+                            Icons.Filled.AddCircleOutline,
                             contentDescription = "Add session",
                             modifier = Modifier.size(18.dp),
                             tint = PolkaButtonAcceptColors.contentColor
@@ -272,20 +274,56 @@ fun PreviewGameTileRow() {
             )
         )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(13.dp)
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(13.dp)
         ) {
-            testGames.forEach { game ->
-                TileGame(
-                    game = game,
-                    modifier = Modifier.weight(1f),
-                    onDoubleClick = { /* заглушка */ },
-                    onContextMenu = { _, _ -> /* заглушка */ },
-                    onDragStart = { /* заглушка */ }
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(13.dp)
+            ) {
+                testGames.forEach { game ->
+                    TileGame(
+                        game = game,
+                        modifier = Modifier.weight(1f),
+                        onDoubleClick = { /* заглушка */ },
+                        onContextMenu = { _, _ -> /* заглушка */ },
+                        onDragStart = { /* заглушка */ }
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(13.dp)
+            ) {
+                testGames.forEach { game ->
+                    TileGame(
+                        game = game,
+                        modifier = Modifier.weight(1f),
+                        onDoubleClick = { /* заглушка */ },
+                        onContextMenu = { _, _ -> /* заглушка */ },
+                        onDragStart = { /* заглушка */ }
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(13.dp)
+            ) {
+                testGames.forEach { game ->
+                    TileGame(
+                        game = game,
+                        modifier = Modifier.weight(1f),
+                        onDoubleClick = { /* заглушка */ },
+                        onContextMenu = { _, _ -> /* заглушка */ },
+                        onDragStart = { /* заглушка */ }
+                    )
+                }
             }
         }
     }

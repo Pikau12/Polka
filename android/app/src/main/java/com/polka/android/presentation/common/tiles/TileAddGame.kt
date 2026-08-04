@@ -108,13 +108,17 @@ fun PreviewTileAddGame(){
                 gameId = 2,
                 collectionItemId = 2,
                 gameImageUrl = "https://cf.geekdo-images.com/7XkzUhj3LsqUFfATeIVjIA__itemrep/img/9N8tR4fX5k7Z2K1yQ0wP3oI8nJ6=/fit-in/246x300/filters:strip_icc()/pic2419375.jpg",
-                gameName = "Catan"
+                gameName = "Catan",
+                gameStatus = "Own",
+                userRating = 6
             ),
             Game(
                 gameId = 1,
                 collectionItemId = 1,
                 gameImageUrl = "https://cf.geekdo-images.com/6j5RxBvNS9c1HpVJk4WpZQ__itemrep/img/Kw7oP_0HSOlgH93Z8pN3wFjx3n0=/fit-in/246x300/filters:strip_icc()/pic5424479.jpg",
-                gameName = "Dune"
+                gameName = "Dune",
+                gameStatus = "Wishlist",
+                userRating = null
             ),
         )
 
