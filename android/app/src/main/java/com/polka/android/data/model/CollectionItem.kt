@@ -5,6 +5,7 @@ import com.polka.android.data.GameRepository
 
 data class CollectionItem(
     val gameId: Long,
+    val status: String,
     val rating: Int?,
     val images: List<Image>,
     val notes: String,
