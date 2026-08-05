@@ -1,13 +1,12 @@
 package com.polka.android.data.model
 
-import coil3.Image
-import com.polka.android.data.GameRepository
+import com.polka.android.data.image.ImageSource
 
 data class CollectionItem(
     val gameId: Long,
     val status: String,
     val rating: Int?,
-    val images: List<Image>,
+    val images: List<ImageSource>,
     val notes: String,
     val displayOrder: Int,
 )
