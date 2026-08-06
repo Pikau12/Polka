@@ -10,8 +10,8 @@ data class CollectionItem (
     var name: String,
     var gameId: Long,
     var collectionItemId: Long,
-    var image: ImageRequest,
+    var image: ImageRequest? = null,
     var displayOrder: Int,
     var status: String,
-    var rating: Int?,
+    var rating: Int? = null,
 )

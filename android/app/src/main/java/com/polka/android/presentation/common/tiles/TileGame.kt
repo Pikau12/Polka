@@ -48,6 +48,7 @@ import com.polka.android.R
 import com.polka.android.presentation.theme.PolkaButtonAcceptColors
 import com.polka.android.presentation.theme.PolkaTheme
 import com.polka.android.utils.AdaptiveTextForTileGame
+import com.polka.android.presentation.model.CollectionItem
 
 sealed class ContextMenuAction {
     object onStatusClick : ContextMenuAction()
@@ -55,18 +56,10 @@ sealed class ContextMenuAction {
     object onAddSessionClick : ContextMenuAction()
 }
 
-data class CollectionItem(
-    var gameId: Long,
-    var gameImageUrl: String,
-    var gameName: String,
-    var gameStatus: String,
-    var userRating: Int?
-)
-
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun TileGame(
-    game: CollectionItem,
+    collectionItem: CollectionItem,
     modifier: Modifier = Modifier,
     onDoubleClick: (Long) -> Unit,
     onContextMenu: (Long, ContextMenuAction) -> Unit,
@@ -86,10 +79,10 @@ fun TileGame(
                         showContextMenu = true
                     },
                     onDoubleClick = {
-                        onDoubleClick(game.gameId)
+                        onDoubleClick(collectionItem.gameId)
                     },
                     onLongClick = {
-                        onDragStart(game.gameId)
+                        onDragStart(collectionItem.gameId)
                     }
                 ),
             shape = RoundedCornerShape(16.dp),
@@ -103,7 +96,7 @@ fun TileGame(
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_game_placeholder),
-                    contentDescription = game.gameName,
+                    contentDescription = collectionItem.name,
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
@@ -123,7 +116,7 @@ fun TileGame(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp),
-                        text = game.gameName,
+                        text = collectionItem.name,
                         color = MaterialTheme.colorScheme.onSurface,
                         containerWidthDp = containerWidthDp,
                         containerPaddingDp = 8.dp
@@ -162,18 +155,18 @@ fun TileGame(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = "Status: ${game.gameStatus}",
+                            text = "Status: ${collectionItem.status}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                            }, // TODO: change to const string from values.xml
                     onClick = {
-                        onContextMenu(game.gameId, ContextMenuAction.onStatusClick)
+                        onContextMenu(collectionItem.gameId, ContextMenuAction.onStatusClick)
                         showContextMenu = false
                     },
                     leadingIcon = {
                         Icon(
                             Icons.AutoMirrored.Filled.MenuOpen,
-                            contentDescription = "Menu item: status ${game.gameStatus}",
+                            contentDescription = "Menu item: status ${collectionItem.status}",
                             modifier = Modifier.size(18.dp),
                             tint = PolkaButtonAcceptColors.contentColor
                         )
@@ -185,19 +178,19 @@ fun TileGame(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = "Your rating: ${game.userRating ?: "N/A"}",
+                            text = "Your rating: ${collectionItem.status ?: "N/A"}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                            }, // TODO: change to const string from values.xml
                     onClick = {
-                        onContextMenu(game.gameId, ContextMenuAction.onRatingClick)
+                        onContextMenu(collectionItem.gameId, ContextMenuAction.onRatingClick)
                         showContextMenu = false
                     },
                     leadingIcon = {
                         Icon(
-                            if (game.userRating == null) Icons.Filled.StarBorder else
+                            if (collectionItem.status == null) Icons.Filled.StarBorder else
                                 Icons.Filled.Star,
-                            contentDescription = "Your rating: ${game.userRating ?: "not stated"}",
+                            contentDescription = "Your rating: ${collectionItem.status ?: "not stated"}",
                             modifier = Modifier.size(18.dp),
                             tint = PolkaButtonAcceptColors.contentColor
                         )
@@ -214,7 +207,7 @@ fun TileGame(
                         )
                            }, // TODO: change to const string from values.xml
                     onClick = {
-                        onContextMenu(game.gameId, ContextMenuAction.onAddSessionClick)
+                        onContextMenu(collectionItem.gameId, ContextMenuAction.onAddSessionClick)
                         showContextMenu = false
                     },
                     leadingIcon = {
@@ -242,25 +235,28 @@ fun PreviewGameTileRow() {
     PolkaTheme {
         val testGames = listOf(
             CollectionItem(
-                gameId = 2,
-                gameImageUrl = "https://cf.geekdo-images.com/7XkzUhj3LsqUFfATeIVjIA__itemrep/img/9N8tR4fX5k7Z2K1yQ0wP3oI8nJ6=/fit-in/246x300/filters:strip_icc()/pic2419375.jpg",
-                gameName = "Catan",
-                gameStatus = "Own",
-                userRating = 6
-            ),
-            CollectionItem(
+                name = "Catan",
                 gameId = 1,
-                gameImageUrl = "https://cf.geekdo-images.com/6j5RxBvNS9c1HpVJk4WpZQ__itemrep/img/Kw7oP_0HSOlgH93Z8pN3wFjx3n0=/fit-in/246x300/filters:strip_icc()/pic5424479.jpg",
-                gameName = "Dune",
-                gameStatus = "Wishlist",
-                userRating = null
+                collectionItemId = 1,
+                displayOrder = 1,
+                status = "Own",
+                rating = 8
             ),
             CollectionItem(
-                gameId = 3,
-                gameImageUrl = "https://cf.geekdo-images.com/4iJk9KJ0n7sQ8vM5wX3yFg__itemrep/img/8N7tR4fX5k7Z2K1yQ0wP3oI8nJ6=/fit-in/246x300/filters:strip_icc()/pic2437871.jpg",
-                gameName = "Ticket to Ride",
-                gameStatus = "Previous owned",
-                userRating = 7
+                name = "Code Names",
+                gameId = 1,
+                collectionItemId = 1,
+                displayOrder = 2,
+                status = "Wishlist",
+                rating = null
+            ),
+            CollectionItem(
+                name = "Ticket to Ride",
+                gameId = 1,
+                collectionItemId = 1,
+                displayOrder = 3,
+                status = "Previous owned",
+                rating = 7
             )
         )
 
@@ -273,9 +269,9 @@ fun PreviewGameTileRow() {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(13.dp)
             ) {
-                testGames.forEach { game ->
+                testGames.forEach { collectionItem ->
                     TileGame(
-                        game = game,
+                        collectionItem = collectionItem,
                         modifier = Modifier.weight(1f),
                         onDoubleClick = { /* заглушка */ },
                         onContextMenu = { _, _ -> /* заглушка */ },
@@ -289,9 +285,9 @@ fun PreviewGameTileRow() {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(13.dp)
             ) {
-                testGames.forEach { game ->
+                testGames.forEach { collectionItem ->
                     TileGame(
-                        game = game,
+                        collectionItem = collectionItem,
                         modifier = Modifier.weight(1f),
                         onDoubleClick = { /* заглушка */ },
                         onContextMenu = { _, _ -> /* заглушка */ },
@@ -305,9 +301,9 @@ fun PreviewGameTileRow() {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(13.dp)
             ) {
-                testGames.forEach { game ->
+                testGames.forEach { collectionItem ->
                     TileGame(
-                        game = game,
+                        collectionItem = collectionItem,
                         modifier = Modifier.weight(1f),
                         onDoubleClick = { /* заглушка */ },
                         onContextMenu = { _, _ -> /* заглушка */ },
