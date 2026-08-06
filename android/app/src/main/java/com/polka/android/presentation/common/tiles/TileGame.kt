@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,8 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuOpen
 import androidx.compose.material.icons.filled.AddCircleOutline
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.MenuOpen
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Card
@@ -40,20 +37,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.polka.android.R
 import com.polka.android.presentation.theme.PolkaButtonAcceptColors
 import com.polka.android.presentation.theme.PolkaTheme
 import com.polka.android.utils.AdaptiveTextForTileGame
-import kotlin.math.roundToInt
 
 sealed class ContextMenuAction {
     object onStatusClick : ContextMenuAction()
@@ -61,7 +55,7 @@ sealed class ContextMenuAction {
     object onAddSessionClick : ContextMenuAction()
 }
 
-data class Game(
+data class CollectionItem(
     var gameId: Long,
     var gameImageUrl: String,
     var gameName: String,
@@ -72,7 +66,7 @@ data class Game(
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun TileGame(
-    game: Game,
+    game: CollectionItem,
     modifier: Modifier = Modifier,
     onDoubleClick: (Long) -> Unit,
     onContextMenu: (Long, ContextMenuAction) -> Unit,
@@ -247,21 +241,21 @@ fun TileGame(
 fun PreviewGameTileRow() {
     PolkaTheme {
         val testGames = listOf(
-            Game(
+            CollectionItem(
                 gameId = 2,
                 gameImageUrl = "https://cf.geekdo-images.com/7XkzUhj3LsqUFfATeIVjIA__itemrep/img/9N8tR4fX5k7Z2K1yQ0wP3oI8nJ6=/fit-in/246x300/filters:strip_icc()/pic2419375.jpg",
                 gameName = "Catan",
                 gameStatus = "Own",
                 userRating = 6
             ),
-            Game(
+            CollectionItem(
                 gameId = 1,
                 gameImageUrl = "https://cf.geekdo-images.com/6j5RxBvNS9c1HpVJk4WpZQ__itemrep/img/Kw7oP_0HSOlgH93Z8pN3wFjx3n0=/fit-in/246x300/filters:strip_icc()/pic5424479.jpg",
                 gameName = "Dune",
                 gameStatus = "Wishlist",
                 userRating = null
             ),
-            Game(
+            CollectionItem(
                 gameId = 3,
                 gameImageUrl = "https://cf.geekdo-images.com/4iJk9KJ0n7sQ8vM5wX3yFg__itemrep/img/8N7tR4fX5k7Z2K1yQ0wP3oI8nJ6=/fit-in/246x300/filters:strip_icc()/pic2437871.jpg",
                 gameName = "Ticket to Ride",

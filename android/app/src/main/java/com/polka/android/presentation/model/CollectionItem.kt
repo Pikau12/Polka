@@ -1,0 +1,17 @@
+package com.polka.android.presentation.model
+
+import coil3.request.ImageRequest
+
+/**
+ * Class that represents [CollectionItem] from data/model to UI layer
+ * with more appropriate structure
+ */
+data class CollectionItem (
+    var name: String,
+    var gameId: Long,
+    var collectionItemId: Long,
+    var image: ImageRequest,
+    var displayOrder: Int,
+    var status: String,
+    var rating: Int?,
+)
