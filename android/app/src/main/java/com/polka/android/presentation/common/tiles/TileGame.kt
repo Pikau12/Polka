@@ -62,8 +62,7 @@ sealed class ContextMenuAction {
 }
 
 data class Game(
-    var gameId: Int,
-    var collectionItemId: Int,
+    var gameId: Long,
     var gameImageUrl: String,
     var gameName: String,
     var gameStatus: String,
@@ -75,9 +74,9 @@ data class Game(
 fun TileGame(
     game: Game,
     modifier: Modifier = Modifier,
-    onDoubleClick: (Int) -> Unit,
-    onContextMenu: (Int, ContextMenuAction) -> Unit,
-    onDragStart: (Int) -> Unit
+    onDoubleClick: (Long) -> Unit,
+    onContextMenu: (Long, ContextMenuAction) -> Unit,
+    onDragStart: (Long) -> Unit
 ){
     var showContextMenu by remember { mutableStateOf(false) }
     var cardPosition by remember { mutableStateOf(Offset.Zero) }
@@ -96,7 +95,7 @@ fun TileGame(
                         onDoubleClick(game.gameId)
                     },
                     onLongClick = {
-                        onDragStart(game.collectionItemId)
+                        onDragStart(game.gameId)
                     }
                 ),
             shape = RoundedCornerShape(16.dp),
@@ -174,7 +173,7 @@ fun TileGame(
                         )
                            }, // TODO: change to const string from values.xml
                     onClick = {
-                        onContextMenu(game.collectionItemId, ContextMenuAction.onStatusClick)
+                        onContextMenu(game.gameId, ContextMenuAction.onStatusClick)
                         showContextMenu = false
                     },
                     leadingIcon = {
@@ -197,7 +196,7 @@ fun TileGame(
                         )
                            }, // TODO: change to const string from values.xml
                     onClick = {
-                        onContextMenu(game.collectionItemId, ContextMenuAction.onRatingClick)
+                        onContextMenu(game.gameId, ContextMenuAction.onRatingClick)
                         showContextMenu = false
                     },
                     leadingIcon = {
@@ -221,7 +220,7 @@ fun TileGame(
                         )
                            }, // TODO: change to const string from values.xml
                     onClick = {
-                        onContextMenu(game.collectionItemId, ContextMenuAction.onAddSessionClick)
+                        onContextMenu(game.gameId, ContextMenuAction.onAddSessionClick)
                         showContextMenu = false
                     },
                     leadingIcon = {
@@ -250,7 +249,6 @@ fun PreviewGameTileRow() {
         val testGames = listOf(
             Game(
                 gameId = 2,
-                collectionItemId = 2,
                 gameImageUrl = "https://cf.geekdo-images.com/7XkzUhj3LsqUFfATeIVjIA__itemrep/img/9N8tR4fX5k7Z2K1yQ0wP3oI8nJ6=/fit-in/246x300/filters:strip_icc()/pic2419375.jpg",
                 gameName = "Catan",
                 gameStatus = "Own",
@@ -258,7 +256,6 @@ fun PreviewGameTileRow() {
             ),
             Game(
                 gameId = 1,
-                collectionItemId = 1,
                 gameImageUrl = "https://cf.geekdo-images.com/6j5RxBvNS9c1HpVJk4WpZQ__itemrep/img/Kw7oP_0HSOlgH93Z8pN3wFjx3n0=/fit-in/246x300/filters:strip_icc()/pic5424479.jpg",
                 gameName = "Dune",
                 gameStatus = "Wishlist",
@@ -266,7 +263,6 @@ fun PreviewGameTileRow() {
             ),
             Game(
                 gameId = 3,
-                collectionItemId = 3,
                 gameImageUrl = "https://cf.geekdo-images.com/4iJk9KJ0n7sQ8vM5wX3yFg__itemrep/img/8N7tR4fX5k7Z2K1yQ0wP3oI8nJ6=/fit-in/246x300/filters:strip_icc()/pic2437871.jpg",
                 gameName = "Ticket to Ride",
                 gameStatus = "Previous owned",
