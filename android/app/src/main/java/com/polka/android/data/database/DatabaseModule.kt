@@ -25,7 +25,12 @@ class DatabaseModule {
     }
 
     @Provides
-    fun provideGameDao(appDatabase: AppDatabase): GameDao {
-        return appDatabase.gameDao()
+    fun provideSessionDao(appDatabase: AppDatabase): SessionDao {
+        return appDatabase.sessionDao()
+    }
+
+    @Provides
+    fun provideSearchDao(appDatabase: AppDatabase): SearchDao {
+        return appDatabase.searchDao()
     }
 }

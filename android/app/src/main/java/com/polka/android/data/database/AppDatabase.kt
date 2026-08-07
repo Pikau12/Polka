@@ -3,6 +3,8 @@ package com.polka.android.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.polka.android.data.database.dao.GameDao
+import com.polka.android.data.database.dao.SearchDao
+import com.polka.android.data.database.dao.SessionDao
 import com.polka.android.data.database.model.CollectionItemEntity
 import com.polka.android.data.database.model.FriendshipEntity
 import com.polka.android.data.database.model.GameEntity
@@ -24,4 +26,6 @@ import com.polka.android.data.database.model.UserEntity
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun gameDao(): GameDao
+    abstract fun sessionDao(): SessionDao
+    abstract fun searchDao(): SearchDao
 }
