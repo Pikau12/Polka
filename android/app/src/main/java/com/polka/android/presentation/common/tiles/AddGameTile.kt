@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.theme.PolkaTheme
 
 @Composable
@@ -100,45 +101,95 @@ fun TileAddGame(
     showBackground = true,
     backgroundColor = 0xFFF5F5F5,
     device = Devices.PIXEL_4
-)@Composable
-fun PreviewTileAddGame(){
+)
+@Composable
+fun PreviewGameTileRowWithAddGameTile() {
     PolkaTheme {
         val testGames = listOf(
-            Game(
-                gameId = 2,
-                collectionItemId = 2,
-                gameImageUrl = "https://cf.geekdo-images.com/7XkzUhj3LsqUFfATeIVjIA__itemrep/img/9N8tR4fX5k7Z2K1yQ0wP3oI8nJ6=/fit-in/246x300/filters:strip_icc()/pic2419375.jpg",
-                gameName = "Catan",
-                gameStatus = "Own",
-                userRating = 6
-            ),
-            Game(
+            CollectionItem(
+                name = "Catan",
                 gameId = 1,
                 collectionItemId = 1,
-                gameImageUrl = "https://cf.geekdo-images.com/6j5RxBvNS9c1HpVJk4WpZQ__itemrep/img/Kw7oP_0HSOlgH93Z8pN3wFjx3n0=/fit-in/246x300/filters:strip_icc()/pic5424479.jpg",
-                gameName = "Dune",
-                gameStatus = "Wishlist",
-                userRating = null
+                displayOrder = 1,
+                status = "Own",
+                rating = 8
             ),
+            CollectionItem(
+                name = "Code Names",
+                gameId = 1,
+                collectionItemId = 1,
+                displayOrder = 2,
+                status = "Wishlist",
+                rating = null
+            ),
+            CollectionItem(
+                name = "Ticket to Ride",
+                gameId = 1,
+                collectionItemId = 1,
+                displayOrder = 3,
+                status = "Previous owned",
+                rating = 7
+            )
         )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(13.dp)
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(13.dp)
         ) {
-            testGames.forEach { game ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(13.dp)
+            ) {
+                testGames.forEach { collectionItem ->
+                    TileGame(
+                        collectionItem = collectionItem,
+                        modifier = Modifier.weight(1f),
+                        onDoubleClick = { /* заглушка */ },
+                        onContextMenu = { _, _ -> /* заглушка */ },
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(13.dp)
+            ) {
+                testGames.forEach { collectionItem ->
+                    TileGame(
+                        collectionItem = collectionItem,
+                        modifier = Modifier.weight(1f),
+                        onDoubleClick = { /* заглушка */ },
+                        onContextMenu = { _, _ -> /* заглушка */ },
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(13.dp)
+            ) {
                 TileGame(
-                    game = game,
+                    collectionItem = testGames[0],
                     modifier = Modifier.weight(1f),
                     onDoubleClick = { /* заглушка */ },
                     onContextMenu = { _, _ -> /* заглушка */ },
-                    onDragStart = { /* заглушка */ }
+                )
+
+                TileGame(
+                    collectionItem = testGames[1],
+                    modifier = Modifier.weight(1f),
+                    onDoubleClick = { /* заглушка */ },
+                    onContextMenu = { _, _ -> /* заглушка */ },
+                )
+
+                TileAddGame(
+                    onClick = { },
+                    modifier = Modifier.weight(1f)
                 )
             }
-
-            TileAddGame(Modifier.weight(1f)) { }
         }
     }
 }

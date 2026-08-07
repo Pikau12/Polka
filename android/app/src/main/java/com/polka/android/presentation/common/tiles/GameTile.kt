@@ -47,7 +47,7 @@ import androidx.compose.ui.window.PopupProperties
 import com.polka.android.R
 import com.polka.android.presentation.theme.PolkaButtonAcceptColors
 import com.polka.android.presentation.theme.PolkaTheme
-import com.polka.android.utils.AdaptiveTextForTileGame
+import com.polka.android.utils.AdaptiveTextForGameTile
 import com.polka.android.presentation.model.CollectionItem
 
 sealed class ContextMenuAction {
@@ -63,7 +63,6 @@ fun TileGame(
     modifier: Modifier = Modifier,
     onDoubleClick: (Long) -> Unit,
     onContextMenu: (Long, ContextMenuAction) -> Unit,
-    onDragStart: (Long) -> Unit
 ){
     var showContextMenu by remember { mutableStateOf(false) }
     var cardPosition by remember { mutableStateOf(Offset.Zero) }
@@ -80,9 +79,6 @@ fun TileGame(
                     },
                     onDoubleClick = {
                         onDoubleClick(collectionItem.gameId)
-                    },
-                    onLongClick = {
-                        onDragStart(collectionItem.gameId)
                     }
                 ),
             shape = RoundedCornerShape(16.dp),
@@ -112,7 +108,7 @@ fun TileGame(
                 ) {
                     val containerWidthDp = maxWidth
 
-                    AdaptiveTextForTileGame(
+                    AdaptiveTextForGameTile(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp),
@@ -275,7 +271,6 @@ fun PreviewGameTileRow() {
                         modifier = Modifier.weight(1f),
                         onDoubleClick = { /* заглушка */ },
                         onContextMenu = { _, _ -> /* заглушка */ },
-                        onDragStart = { /* заглушка */ }
                     )
                 }
             }
@@ -291,7 +286,6 @@ fun PreviewGameTileRow() {
                         modifier = Modifier.weight(1f),
                         onDoubleClick = { /* заглушка */ },
                         onContextMenu = { _, _ -> /* заглушка */ },
-                        onDragStart = { /* заглушка */ }
                     )
                 }
             }
@@ -307,7 +301,6 @@ fun PreviewGameTileRow() {
                         modifier = Modifier.weight(1f),
                         onDoubleClick = { /* заглушка */ },
                         onContextMenu = { _, _ -> /* заглушка */ },
-                        onDragStart = { /* заглушка */ }
                     )
                 }
             }
