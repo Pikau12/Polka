@@ -18,6 +18,7 @@ okhttp = "4.12.0"
 navigationCompose = "2.9.8"
 coil = "3.5.0"
 material3 = "1.4.0"
+reorderable = "<latest_version>"
 volley = "1.2.1"
 
 [libraries]
@@ -53,6 +54,7 @@ okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-intercepto
 coil-kt-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-kt-coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+reorderable = { module = "org.burnoutcrew.composereorderable:reorderable", version.ref = "reorderable" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 
 [plugins]
