@@ -174,7 +174,7 @@ fun TileGame(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = "Your rating: ${collectionItem.status ?: "N/A"}",
+                            text = "Your rating: ${collectionItem.rating ?: "N/A"}",
                             style = MaterialTheme.typography.bodyLarge
                         )
                            }, // TODO: change to const string from values.xml
@@ -184,9 +184,9 @@ fun TileGame(
                     },
                     leadingIcon = {
                         Icon(
-                            if (collectionItem.status == null) Icons.Filled.StarBorder else
+                            if (collectionItem.rating == null) Icons.Filled.StarBorder else
                                 Icons.Filled.Star,
-                            contentDescription = "Your rating: ${collectionItem.status ?: "not stated"}",
+                            contentDescription = "Your rating: ${collectionItem.rating ?: "not stated"}",
                             modifier = Modifier.size(18.dp),
                             tint = PolkaButtonAcceptColors.contentColor
                         )
