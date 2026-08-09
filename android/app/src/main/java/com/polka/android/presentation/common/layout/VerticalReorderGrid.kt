@@ -80,7 +80,7 @@ fun VerticalReorderGrid(
                     onContextMenu = onContextMenu,
                 )
             }
-        } // TODO: add TileAddGame
+        }
 
         item{
             AddGameTile(
