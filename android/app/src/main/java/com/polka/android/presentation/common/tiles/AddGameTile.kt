@@ -31,7 +31,7 @@ import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.theme.PolkaTheme
 
 @Composable
-fun TileAddGame(
+fun AddGameTile(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ){
@@ -142,7 +142,7 @@ fun PreviewGameTileRowWithAddGameTile() {
                 horizontalArrangement = Arrangement.spacedBy(13.dp)
             ) {
                 testGames.forEach { collectionItem ->
-                    TileGame(
+                    GameTile(
                         collectionItem = collectionItem,
                         modifier = Modifier.weight(1f),
                         onDoubleClick = { /* заглушка */ },
@@ -157,7 +157,7 @@ fun PreviewGameTileRowWithAddGameTile() {
                 horizontalArrangement = Arrangement.spacedBy(13.dp)
             ) {
                 testGames.forEach { collectionItem ->
-                    TileGame(
+                    GameTile(
                         collectionItem = collectionItem,
                         modifier = Modifier.weight(1f),
                         onDoubleClick = { /* заглушка */ },
@@ -171,21 +171,21 @@ fun PreviewGameTileRowWithAddGameTile() {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(13.dp)
             ) {
-                TileGame(
+                GameTile(
                     collectionItem = testGames[0],
                     modifier = Modifier.weight(1f),
                     onDoubleClick = { /* заглушка */ },
                     onContextMenu = { _, _ -> /* заглушка */ },
                 )
 
-                TileGame(
+                GameTile(
                     collectionItem = testGames[1],
                     modifier = Modifier.weight(1f),
                     onDoubleClick = { /* заглушка */ },
                     onContextMenu = { _, _ -> /* заглушка */ },
                 )
 
-                TileAddGame(
+                AddGameTile(
                     onClick = { },
                     modifier = Modifier.weight(1f)
                 )

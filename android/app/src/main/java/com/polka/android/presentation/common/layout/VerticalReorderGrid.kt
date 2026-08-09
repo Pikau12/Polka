@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.polka.android.presentation.common.tiles.ContextMenuAction
-import com.polka.android.presentation.common.tiles.TileGame
+import com.polka.android.presentation.common.tiles.GameTile
 import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.theme.PolkaTheme
 import sh.calvin.reorderable.ReorderableItem
@@ -64,7 +64,7 @@ fun VerticalReorderGrid(
                     isDragging = dragging
                 }
 
-                TileGame(
+                GameTile(
                     collectionItem = it,
                     modifier = Modifier
                         .animateItem()

@@ -58,7 +58,7 @@ sealed class ContextMenuAction {
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
-fun TileGame(
+fun GameTile(
     collectionItem: CollectionItem,
     modifier: Modifier = Modifier,
     onDoubleClick: (Long) -> Unit,
@@ -227,7 +227,7 @@ fun TileGame(
     device = Devices.PIXEL_4
 )
 @Composable
-fun PreviewGameTileRow() {
+fun PreviewGameRowTile() {
     PolkaTheme {
         val testGames = listOf(
             CollectionItem(
@@ -266,7 +266,7 @@ fun PreviewGameTileRow() {
                 horizontalArrangement = Arrangement.spacedBy(13.dp)
             ) {
                 testGames.forEach { collectionItem ->
-                    TileGame(
+                    GameTile(
                         collectionItem = collectionItem,
                         modifier = Modifier.weight(1f),
                         onDoubleClick = { /* заглушка */ },
@@ -281,7 +281,7 @@ fun PreviewGameTileRow() {
                 horizontalArrangement = Arrangement.spacedBy(13.dp)
             ) {
                 testGames.forEach { collectionItem ->
-                    TileGame(
+                    GameTile(
                         collectionItem = collectionItem,
                         modifier = Modifier.weight(1f),
                         onDoubleClick = { /* заглушка */ },
@@ -296,7 +296,7 @@ fun PreviewGameTileRow() {
                 horizontalArrangement = Arrangement.spacedBy(13.dp)
             ) {
                 testGames.forEach { collectionItem ->
-                    TileGame(
+                    GameTile(
                         collectionItem = collectionItem,
                         modifier = Modifier.weight(1f),
                         onDoubleClick = { /* заглушка */ },
