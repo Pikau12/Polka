@@ -2,6 +2,7 @@ package com.polka.android.presentation.common.buttons
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -56,7 +57,8 @@ fun SortCollectionButton(
 
         if (showContextMenu){
             Box(
-               contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
                 DropdownMenu(
                     expanded = showContextMenu,
