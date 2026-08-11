@@ -15,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.polka.android.presentation.theme.PolkaButtonAcceptColors
 
 @Composable
-fun ButtonAccept (
+fun AcceptButton (
     onClick: () -> Unit
 ){
     Button(
@@ -37,7 +37,7 @@ fun ButtonAccept (
 
 @Preview
 @Composable
-fun ButtonCancelView() {
+fun AcceptViewButton() {
     val navController = rememberNavController()
-    ButtonAccept({  })
+    AcceptButton({  })
 }
