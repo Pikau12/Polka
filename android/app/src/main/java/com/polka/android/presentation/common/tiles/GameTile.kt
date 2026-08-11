@@ -37,6 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -68,7 +70,17 @@ fun GameTile(
     var cardPosition by remember { mutableStateOf(Offset.Zero) }
     var cardSize by remember { mutableStateOf(Offset.Zero) }
 
-    Box(modifier = modifier) {
+    Box(
+        modifier = modifier
+            .onGloballyPositioned { coordinates ->
+            val positionInWindow = coordinates.positionInWindow()
+            cardPosition = Offset(positionInWindow.x, positionInWindow.y)
+            cardSize = Offset(
+                coordinates.size.width.toFloat(),
+                coordinates.size.height.toFloat()
+            )
+    }
+    ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
