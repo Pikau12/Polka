@@ -96,7 +96,7 @@ fun AddGameTile(
     }
 }
 
-@Preview(
+@Preview( // TIP: only for preview
     name = "GameTile Row (3 items)",
     showBackground = true,
     backgroundColor = 0xFFF5F5F5,

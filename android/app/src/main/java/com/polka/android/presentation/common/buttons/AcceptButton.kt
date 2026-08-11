@@ -35,7 +35,7 @@ fun AcceptButton (
     }
 }
 
-@Preview
+@Preview // TIP: only for preview
 @Composable
 fun AcceptViewButton() {
     val navController = rememberNavController()

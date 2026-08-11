@@ -90,7 +90,7 @@ fun VerticalReorderGrid(
     }
 }
 
-@Preview(
+@Preview( // TIP: only for preview
     name = "Grid for tiles of games",
     showBackground = true,
     backgroundColor = 0xFFF5F5F5,

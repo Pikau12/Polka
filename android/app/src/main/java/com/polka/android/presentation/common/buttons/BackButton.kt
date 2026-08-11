@@ -40,7 +40,7 @@ fun ButtonBack(
     }
 }
 
-@Preview
+@Preview // TIP: only for preview
 @Composable
 fun ButtonView() {
     val navController = rememberNavController()

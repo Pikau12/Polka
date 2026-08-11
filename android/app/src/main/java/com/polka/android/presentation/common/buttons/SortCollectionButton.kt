@@ -75,7 +75,7 @@ fun SortCollectionButton(
     }
 }
 
-@Preview
+@Preview // TIP: only for preview
 @Composable
 fun PreviewSortCollectionButton(){
     PolkaTheme {
