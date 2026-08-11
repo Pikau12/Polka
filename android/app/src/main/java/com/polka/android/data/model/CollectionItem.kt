@@ -4,8 +4,8 @@ import com.polka.android.data.image.ImageSource
 
 data class CollectionItem(
     val gameId: Long,
-    val rating: Int?,
-    val images: List<ImageSource>,
-    val notes: String,
+    val rating: Int? = null,
+    val images: List<ImageSource> = listOf(),
+    val notes: String = "",
     val displayOrder: Int,
 )

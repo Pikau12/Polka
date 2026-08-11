@@ -4,9 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import com.polka.android.data.database.model.CollectionItemEntity
 import com.polka.android.data.database.model.GameEntity
-import com.polka.android.data.database.model.SessionEntity
 import com.polka.android.data.database.model.UserEntity
-import com.polka.android.data.model.Game
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -14,7 +12,7 @@ interface SearchDao {
     @Query(
         """
         SELECT * FROM users
-        WHERE username = :name AND username LIKE '%' || :name || '%'
+        WHERE username LIKE '%' || :name || '%'
         ORDER BY username ASC
     """
     )
@@ -39,21 +37,20 @@ interface SearchDao {
         """
     SELECT games.* FROM games
     INNER JOIN collection_items ON games.id = collection_items.gameId
-    WHERE collection_items.ownerId = :userId AND games.name LIKE '%' || :gameName || '%'
+    WHERE games.name LIKE '%' || :gameName || '%'
     ORDER BY collection_items.displayOrder ASC
     """
     )
-    fun searchGameInCollection(gameName: String, userId: Long): Flow<List<GameEntity>>
+    fun searchGameInCollection(gameName: String): Flow<List<GameEntity>>
 
     /*
     TODO: mb move this func to collectionItemDao?
      */
     @Query("""
         SELECT * FROM collection_items
-        WHERE collection_items.ownerId = :userId
         ORDER BY displayOrder ASC
     """)
-    fun getSortedUserCollection(userId: Long): Flow<List<CollectionItemEntity>>
+    fun getSortedUserCollection(): Flow<List<CollectionItemEntity>>
 
     /*
     TODO: mb move this func to friendshipDao?

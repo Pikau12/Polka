@@ -3,10 +3,10 @@ package com.polka.android.data.database.model
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "collection_items",
-    primaryKeys = ["ownerId", "gameId"],
     foreignKeys = [
         ForeignKey(
             entity = UserEntity::class,
@@ -29,8 +29,8 @@ import androidx.room.Index
     ]
 )
 data class CollectionItemEntity(
+    @PrimaryKey
     val gameId: Long,
-    val ownerId: Long,
 
     val status: String? = null,
     val note: String? = null,
