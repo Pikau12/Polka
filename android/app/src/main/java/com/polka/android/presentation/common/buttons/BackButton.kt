@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.polka.android.presentation.theme.PolkaButtonBackColors
+import com.polka.android.presentation.theme.PolkaBackButtonColors
 
 @Composable
 fun ButtonBack(
@@ -28,14 +28,14 @@ fun ButtonBack(
         modifier = Modifier
             .size(40.dp),
         shape = RoundedCornerShape(20.dp),
-        colors = PolkaButtonBackColors,
+        colors = PolkaBackButtonColors,
         contentPadding = PaddingValues(0.dp)
     ){
         Icon(
             Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "Back button",
             modifier = Modifier.size(24.dp),
-            tint = PolkaButtonBackColors.contentColor
+            tint = PolkaBackButtonColors.contentColor
         )
     }
 }

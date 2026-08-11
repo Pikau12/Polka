@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import com.polka.android.presentation.theme.PolkaButtonAcceptColors
+import com.polka.android.presentation.theme.PolkaAcceptButtonColors
 
 @Composable
 fun AcceptButton (
@@ -23,14 +23,14 @@ fun AcceptButton (
         modifier = Modifier
             .size(40.dp),
         shape = RoundedCornerShape(20.dp),
-        colors = PolkaButtonAcceptColors,
+        colors = PolkaAcceptButtonColors,
         contentPadding = PaddingValues(0.dp)
     ){
         Icon(
             Icons.Filled.Check,
             contentDescription = "Accept button",
             modifier = Modifier.size(24.dp),
-            tint = PolkaButtonAcceptColors.contentColor
+            tint = PolkaAcceptButtonColors.contentColor
         )
     }
 }

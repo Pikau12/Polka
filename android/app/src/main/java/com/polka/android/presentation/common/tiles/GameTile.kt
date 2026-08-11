@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.polka.android.R
-import com.polka.android.presentation.theme.PolkaButtonAcceptColors
+import com.polka.android.presentation.theme.PolkaAcceptButtonColors
 import com.polka.android.presentation.theme.PolkaTheme
 import com.polka.android.utils.AdaptiveTextForGameTile
 import com.polka.android.presentation.model.CollectionItem
@@ -164,7 +164,7 @@ fun GameTile(
                             Icons.AutoMirrored.Filled.MenuOpen,
                             contentDescription = "Menu item: status ${collectionItem.status}",
                             modifier = Modifier.size(18.dp),
-                            tint = PolkaButtonAcceptColors.contentColor
+                            tint = PolkaAcceptButtonColors.contentColor
                         )
                     }
                 )
@@ -188,7 +188,7 @@ fun GameTile(
                                 Icons.Filled.Star,
                             contentDescription = "Your rating: ${collectionItem.rating ?: "not stated"}",
                             modifier = Modifier.size(18.dp),
-                            tint = PolkaButtonAcceptColors.contentColor
+                            tint = PolkaAcceptButtonColors.contentColor
                         )
                     }
                 )
@@ -211,7 +211,7 @@ fun GameTile(
                             Icons.Filled.AddCircleOutline,
                             contentDescription = "Add session",
                             modifier = Modifier.size(18.dp),
-                            tint = PolkaButtonAcceptColors.contentColor
+                            tint = PolkaAcceptButtonColors.contentColor
                         )
                     }
                 )

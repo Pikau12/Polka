@@ -52,34 +52,34 @@ val PolkaEight = Color(0xFF507A70)
 val PolkaNine = Color(0xFF9B5860)
 val PolkaTen = Color(0xFF484D6D)
 val PolkaEleven = Color(0xFF1CB0C7)
-val PolkaTwelwe = Color(0xFF44AA8F)
+val PolkaTwelve = Color(0xFF44AA8F)
 
-val PolkaButtonFriends = PolkaEleven
-val PolkaButtonAccount = PolkaTwo
-val PolkaButtonRecommendations = PolkaTwelwe
-val PolkaButtonOverview = PolkaThree
-val PolkaButtonSettings = PolkaOne
-val PolkaButtonSupport = PolkaSeven
-val PolkaButtonLogOut = PolkaSix
-val PolkaButtonTip = PolkaEight
-val PolkaButtonCancel = PolkaSix
-val PolkaButtonCurrentItem = PolkaThree
-val PolkaButtonSupportProject = PolkaSeven
-val PolkaButtonBack = PolkaSeven
-val PolkaButtonAccept = PolkaThree
+val PolkaFriendsButton = PolkaEleven
+val PolkaAccountButton = PolkaTwo
+val PolkaRecommendationsButton = PolkaTwelve
+val PolkaOverviewButton = PolkaThree
+val PolkaSettingsButton = PolkaOne
+val PolkaSupportButton = PolkaSeven
+val PolkaLogOutButton = PolkaSix
+val PolkaTipButton = PolkaEight
+val PolkaCancelButton = PolkaSix
+val PolkaCurrentItemButton = PolkaThree
+val PolkaSupportProjectButton = PolkaSeven
+val PolkaBackButton = PolkaSeven
+val PolkaAcceptButton = PolkaThree
 val PolkaOnButton = Color(0xFFF5EFF7)
 
-val PolkaButtonBackColors = ButtonColors(
-    containerColor = PolkaButtonBack,
+val PolkaBackButtonColors = ButtonColors(
+    containerColor = PolkaBackButton,
     contentColor = PolkaOnButton,
-    disabledContainerColor = PolkaButtonBack,
+    disabledContainerColor = PolkaBackButton,
     disabledContentColor = PolkaOnButton
 )
 
-val PolkaButtonAcceptColors = ButtonColors(
-    containerColor = PolkaButtonAccept,
+val PolkaAcceptButtonColors = ButtonColors(
+    containerColor = PolkaAcceptButton,
     contentColor = PolkaOnButton,
-    disabledContainerColor = PolkaButtonAccept,
+    disabledContainerColor = PolkaAcceptButton,
     disabledContentColor = PolkaOnButton
 )
 
