@@ -49,7 +49,7 @@ fun SortCollectionButton(
         ) {
             Icon(
                 Icons.Filled.FilterAlt,
-                contentDescription = "Back button",
+                contentDescription = "Sort collection button",
                 modifier = Modifier.size(24.dp),
                 tint = PolkaButtonAcceptColors.contentColor
             )

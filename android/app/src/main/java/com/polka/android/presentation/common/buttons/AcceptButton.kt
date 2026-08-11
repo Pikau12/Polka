@@ -28,7 +28,7 @@ fun AcceptButton (
     ){
         Icon(
             Icons.Filled.Check,
-            contentDescription = "Back button",
+            contentDescription = "Accept button",
             modifier = Modifier.size(24.dp),
             tint = PolkaButtonAcceptColors.contentColor
         )

@@ -68,7 +68,7 @@ fun AddGameTile(
             ){
                 Icon(
                     Icons.Filled.Add,
-                    contentDescription = "Back button",
+                    contentDescription = "Add game tile",
                     modifier = Modifier.size(55.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
