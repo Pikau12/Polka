@@ -31,14 +31,16 @@ import androidx.room.PrimaryKey
 data class SessionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val serverId: Long? = null,
 
     val gameId: Long,
     val creatorId: Long,
 
     val note: String = "",
+
     /*
-        A list of URL to images.
-        TODO: when implementing utility for list conversion, replace this with an empty list from that utility.
+     *  A list of URL to images.
+     *  TODO: when implementing utility for list conversion, replace this with an empty list from that utility.
      */
     val images: String = "[]",
 
