@@ -11,7 +11,6 @@ data class CollectionItem (
     var gameId: Long,
     var collectionItemId: Long,
     var image: ImageRequest? = null,
-    var displayOrder: Int,
     var status: String,
     var rating: Int? = null,
 )
