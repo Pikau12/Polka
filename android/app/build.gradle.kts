@@ -53,6 +53,8 @@ ksp {
 
 dependencies {
 
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -109,4 +111,7 @@ dependencies {
     // Image loading
     implementation(libs.coil.kt.coil.compose)
     implementation(libs.coil.kt.coil.network.okhttp)
+
+    // Reorderable for LazyGrid in UI layer
+    implementation(libs.reorderable)
 }
