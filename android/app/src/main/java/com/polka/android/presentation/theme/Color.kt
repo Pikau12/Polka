@@ -67,7 +67,9 @@ val PolkaCurrentItemButton = PolkaThree
 val PolkaSupportProjectButton = PolkaSeven
 val PolkaBackButton = PolkaSeven
 val PolkaAcceptButton = PolkaThree
+val PolkaSortButton = PolkaOne
 val PolkaOnButton = Color(0xFFF5EFF7)
+val PolkaStar = PolkaFive
 
 val PolkaBackButtonColors = ButtonColors(
     containerColor = PolkaBackButton,
@@ -80,6 +82,13 @@ val PolkaAcceptButtonColors = ButtonColors(
     containerColor = PolkaAcceptButton,
     contentColor = PolkaOnButton,
     disabledContainerColor = PolkaAcceptButton,
+    disabledContentColor = PolkaOnButton
+)
+
+val PolkaSortButtonColors = ButtonColors(
+    containerColor = PolkaSortButton,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaSortButton,
     disabledContentColor = PolkaOnButton
 )
 

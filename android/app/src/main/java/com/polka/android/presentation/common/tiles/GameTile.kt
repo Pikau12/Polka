@@ -245,24 +245,18 @@ fun PreviewGameRowTile() {
             CollectionItem(
                 name = "Catan",
                 gameId = 1,
-                collectionItemId = 1,
-                displayOrder = 1,
                 status = "Own",
                 rating = 8
             ),
             CollectionItem(
                 name = "Code Names",
                 gameId = 1,
-                collectionItemId = 1,
-                displayOrder = 2,
                 status = "Wishlist",
                 rating = null
             ),
             CollectionItem(
                 name = "Ticket to Ride",
                 gameId = 1,
-                collectionItemId = 1,
-                displayOrder = 3,
                 status = "Previous owned",
                 rating = 7
             )

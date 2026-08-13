@@ -7,9 +7,9 @@ enum class SortStatus{
 }
 
 data class SortQuery (
-    var sortStatus: SortStatus?,
-    var rangeOfPlayerCountsFilter : List<Int>?,
-    var sessionTimeFilterLessTimeThan: Int?
+    var sortStatus: SortStatus? = null,
+    var rangeOfPlayerCountsFilter : List<Int>? = null,
+    var sessionTimeFilterLessTimeThan: Int? = null
 )
 
 fun isSortQueryEmpty(query: SortQuery): Boolean{

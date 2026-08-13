@@ -31,6 +31,7 @@ import sh.calvin.reorderable.rememberReorderableLazyGridState
 
 @Composable
 fun VerticalReorderGrid(
+    modifier: Modifier = Modifier,
     collection: List<CollectionItem>,
     onDoubleClick: (Long) -> Unit,
     onContextMenu: (Long, ContextMenuAction) -> Unit,
@@ -52,7 +53,7 @@ fun VerticalReorderGrid(
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         state = lazyGridState,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background), // TODO: change color
         contentPadding = PaddingValues(16.dp, 16.dp),
@@ -60,8 +61,8 @@ fun VerticalReorderGrid(
         verticalArrangement = Arrangement.spacedBy(13.dp),
         userScrollEnabled = !isDragging,
     ) {
-        items(data.value, key = { it.collectionItemId }) {
-            ReorderableItem(state, key = it.collectionItemId) { dragging ->
+        items(data.value, key = { it.gameId }) {
+            ReorderableItem(state, key = it.gameId) { dragging ->
                 LaunchedEffect(dragging) {
                     isDragging = dragging
                 }
@@ -102,48 +103,36 @@ fun ReorderableGridPreview(){
         CollectionItem(
             name = "Catan",
             gameId = 1,
-            collectionItemId = 1,
-            displayOrder = 1,
             status = "Own",
             rating = 8
         ),
         CollectionItem(
             name = "Code Names",
             gameId = 1,
-            collectionItemId = 2,
-            displayOrder = 2,
             status = "Wishlist",
             rating = null
         ),
         CollectionItem(
             name = "Ticket to Ride",
             gameId = 1,
-            collectionItemId = 3,
-            displayOrder = 3,
             status = "Previous owned",
             rating = 7
         ),
         CollectionItem(
             name = "Azul",
             gameId = 1,
-            collectionItemId = 4,
-            displayOrder = 1,
             status = "Own",
             rating = 8
         ),
         CollectionItem(
             name = "Coffee",
             gameId = 1,
-            collectionItemId = 5,
-            displayOrder = 2,
             status = "Wishlist",
             rating = null
         ),
         CollectionItem(
             name = "Terraforming Mars",
             gameId = 1,
-            collectionItemId = 6,
-            displayOrder = 3,
             status = "Previous owned",
             rating = 7
         ),

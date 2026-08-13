@@ -18,7 +18,7 @@ sealed class Destination(val route: String) {
     // ===== Games =====
     object CollectionGames : Destination("collection_games")
     object Game : Destination("game/{gameId}"){
-        fun pass(gameId: Int) = "game/$gameId"
+        fun pass(gameId: Long) = "game/$gameId"
     }
     object GamesSearch : Destination("games_search")
     object GameCard : Destination("game_card/{gameId}") {

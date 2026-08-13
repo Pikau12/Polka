@@ -9,7 +9,6 @@ import coil3.request.ImageRequest
 data class CollectionItem (
     var name: String,
     var gameId: Long,
-    var collectionItemId: Long,
     var image: ImageRequest? = null,
     var status: String,
     var rating: Int? = null,

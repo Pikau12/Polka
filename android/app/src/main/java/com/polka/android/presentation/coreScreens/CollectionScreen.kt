@@ -1,11 +1,18 @@
 package com.polka.android.presentation.coreScreens
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.polka.android.presentation.common.layout.VerticalReorderGrid
 import com.polka.android.presentation.navigation.Destination
 
 @Composable
@@ -15,7 +22,25 @@ fun CollectionScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    Scaffold(
 
+    ) { paddingValues ->
+        if (!state.isLoading) {
+            VerticalReorderGrid(
+                modifier = Modifier.padding(paddingValues),
+                collection = state.collection!!,
+                onDoubleClick = {
+
+                },
+                onContextMenu = { gameId, action ->
+
+                },
+                onAddGameClick = {
+
+                }
+            )
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.collectionScreenEvent.collect { event ->
@@ -24,13 +49,16 @@ fun CollectionScreen(
                     navController.navigate(Destination.GameCard.route)
                 }
                 is CollectionScreenEvent.onGameTileClick -> {
-                    navController.navigate(Destination.SessionsCore.route)
+                    navController.navigate(Destination.Game.pass(event.gameId))
                 }
                 is CollectionScreenEvent.onLeftSwipe -> {
                     navController.navigate(Destination.SessionsCore.route)
                 }
                 is CollectionScreenEvent.onRightSwipe -> {
                     navController.navigate(Destination.User.route)
+                }
+                is CollectionScreenEvent.onAddSessionClick -> {
+                    navController.navigate(Destination.SessionCard.route)
                 }
                 else -> {}
                 // TODO: add navigation to GameSearchScreen

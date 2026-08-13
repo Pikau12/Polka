@@ -24,6 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.polka.android.presentation.theme.PolkaAcceptButtonColors
+import com.polka.android.presentation.theme.PolkaSortButton
+import com.polka.android.presentation.theme.PolkaSortButtonColors
 import com.polka.android.presentation.theme.PolkaTheme
 
 @Composable
@@ -41,14 +43,14 @@ fun SortCollectionButton(
                 .width(60.dp)
                 .height(40.dp),
             shape = RoundedCornerShape(20.dp),
-            colors = PolkaAcceptButtonColors,
+            colors = PolkaSortButtonColors,
             contentPadding = PaddingValues(0.dp)
         ) {
             Icon(
                 Icons.Filled.FilterAlt,
                 contentDescription = "Sort collection button",
                 modifier = Modifier.size(24.dp),
-                tint = PolkaAcceptButtonColors.contentColor
+                tint = PolkaSortButtonColors.contentColor
             )
         }
 

@@ -1,20 +1,24 @@
 package com.polka.android.presentation.coreScreens
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polka.android.data.model.SortQuery
 import com.polka.android.data.model.isSortQueryEmpty
-import com.polka.android.presentation.common.tiles.ContextMenuAction
+import com.polka.android.data.usecase.collection.ObserveCollectionUseCase
 import com.polka.android.presentation.model.CollectionItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -22,11 +26,12 @@ data class CollectionState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val isSearchOpen: Boolean = false,
+    val isSortMenuOpen: Boolean = false,
     val collection: List<CollectionItem>? = null,
-    val sortedCollection : List<CollectionItem>? = null,
     val searchQuery: String? = null,
     val sortQuery: SortQuery? = null,
-    val showSortedCollection: Boolean = false,
+    val draftSortQuery: SortQuery? = null,
+    val draftRating: String? = null,
 )
 
 sealed class CollectionScreenEvent {
@@ -34,15 +39,25 @@ sealed class CollectionScreenEvent {
     data class onGameTileClick(val gameId: Long) : CollectionScreenEvent()
     object onLeftSwipe : CollectionScreenEvent()
     object onRightSwipe : CollectionScreenEvent()
-    data class changeSortQuery(val query: SortQuery): CollectionScreenEvent()
-    object closeSortMenu: CollectionScreenEvent()
-    object cancelSort: CollectionScreenEvent()
+
+    // Sort
+    object onSortMenuOpen : CollectionScreenEvent()
+    object onSortMenuClose : CollectionScreenEvent()
+    data class onDraftSortChanged(val query: SortQuery): CollectionScreenEvent()
+    object onSortMenuCancel: CollectionScreenEvent()
+
+    // GameTile context menu
+    object onGameStatusClick : CollectionScreenEvent() // TODO : change
+    object onRatingMenuClick
+    object onAddSessionClick : CollectionScreenEvent()
+
     // TODO: add more
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class CollectionViewModel @Inject constructor(
-
+    private val observeCollectionUseCase: ObserveCollectionUseCase // TODO : add hilt DI
 ) : ViewModel() {
     private val _state = MutableStateFlow(CollectionState())
     val state: StateFlow<CollectionState> = _state.asStateFlow()
@@ -51,8 +66,23 @@ class CollectionViewModel @Inject constructor(
     val collectionScreenEvent: SharedFlow<CollectionScreenEvent> =
         _collectionScreenEvent.asSharedFlow()
 
+    private val _sortQuery = MutableStateFlow<SortQuery?>(null)
+
     init {
-        // TODO: add loading collection
+        _sortQuery
+            .flatMapLatest { sort ->
+                observeCollectionUseCase(sort)
+            }
+            .onEach { collection ->
+                _state.update { it.copy(
+                    collection = collection,
+                    isLoading = false
+                )}
+            }
+            .catch { e ->
+                _state.update { it.copy(error = e.message, isLoading = false) }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun handleEvent(event: CollectionScreenEvent) {
@@ -61,9 +91,10 @@ class CollectionViewModel @Inject constructor(
             is CollectionScreenEvent.onGameTileClick -> handleOnGameTileClick(event.gameId)
             is CollectionScreenEvent.onLeftSwipe -> handleOnLeftSwipe()
             is CollectionScreenEvent.onRightSwipe -> handleOnRightSwipe()
-            is CollectionScreenEvent.changeSortQuery -> handleChangeSortQuery(event.query)
-            is CollectionScreenEvent.closeSortMenu -> handleCloseSortMenu()
-            is CollectionScreenEvent.cancelSort -> handleCancelSort()
+            is CollectionScreenEvent.onSortMenuOpen -> handleOnSortMenuOpen()
+            is CollectionScreenEvent.onDraftSortChanged -> handleOnDraftSortChanged(event.query)
+            is CollectionScreenEvent.onSortMenuClose -> handleOnSortMenuClose()
+            is CollectionScreenEvent.onSortMenuCancel -> handleOnSortMenuCancel()
         }
     }
 
@@ -91,39 +122,33 @@ class CollectionViewModel @Inject constructor(
         }
     }
 
-    private fun handleChangeSortQuery(query: SortQuery) {
-        _state.update { currentState ->
-            currentState.copy(
-                sortQuery = if (isSortQueryEmpty(query)) null else query,
-
-                collection = currentState.collection,
-                sortedCollection = currentState.sortedCollection,
-                showSortedCollection = currentState.showSortedCollection
-            )
-        }
+    private fun handleOnSortMenuOpen() {
+        _state.update { it.copy(
+            isSortMenuOpen = true,
+            draftSortQuery = it.sortQuery ?: SortQuery()
+        )}
     }
 
-    private fun handleCloseSortMenu() {
-        _state.update { currentState ->
-            currentState.copy(
-                showSortedCollection = currentState.sortQuery != null,
-
-                sortQuery = currentState.sortQuery,
-                collection = currentState.collection,
-                sortedCollection = currentState.sortedCollection,
-            )
-        }
+    private fun handleOnDraftSortChanged(query: SortQuery) {
+        _state.update { it.copy(draftSortQuery = query) }
     }
 
-    private fun handleCancelSort() {
-        _state.update { currentState ->
-            currentState.copy(
-                sortQuery = null,
+    private fun handleOnSortMenuClose() {
+        var draft = _state.value.draftSortQuery
+        draft = if (draft == null) null else
+            if (isSortQueryEmpty(draft)) null else draft
+        _state.update { it.copy(
+            sortQuery = draft,
+            isSortMenuOpen = false
+        )}
+        _sortQuery.value = draft
+    }
 
-                showSortedCollection = currentState.showSortedCollection,
-                collection = currentState.collection,
-                sortedCollection = currentState.sortedCollection,
-            )
-        }
+    private fun handleOnSortMenuCancel() {
+        _state.update { it.copy(
+            isSortMenuOpen = false,
+            sortQuery = null,
+            draftSortQuery = null,
+            ) }
     }
 }
