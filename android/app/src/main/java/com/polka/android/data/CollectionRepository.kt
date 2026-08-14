@@ -1,5 +1,6 @@
 package com.polka.android.data
 
+import android.util.Log
 import com.polka.android.data.database.dao.CollectionDao
 import com.polka.android.data.model.CollectionItem
 import jakarta.inject.Inject
@@ -13,12 +14,12 @@ class CollectionRepository @Inject constructor(private val collectionDao: Collec
         }
     }
 
-    suspend fun updateItemRating(item: Long, rating: Int?) {
-        collectionDao.updateRating(item, rating)
+    suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?) {
+        collectionDao.updateRating(item.ownerId, item.gameId, rating)
     }
 
-    suspend fun updateItemStatus(item: Long, status: CollectionItem.Status) {
-        collectionDao.updateStatus(item, status)
+    suspend fun updateItemStatus(item: CollectionItem.Id, status: CollectionItem.Status) {
+        collectionDao.updateStatus(item.ownerId, item.gameId, status)
     }
 
     /**
@@ -30,7 +31,13 @@ class CollectionRepository @Inject constructor(private val collectionDao: Collec
      * If only one of the `aboveItem` or `belowItem` is null, the item will be dropped at the beginning
      * or the end of the list respectively, regardless of the other value.
      */
-    suspend fun moveItemInBetween(itemToMove: Long, aboveItem: Long?, belowItem: Long?) {
-        collectionDao.moveItemInBetween(itemToMove, aboveItem, belowItem)
+    suspend fun moveItemInBetween(itemToMove: CollectionItem.Id, aboveItem: CollectionItem.Id?, belowItem: CollectionItem.Id?) {
+        if (aboveItem != null &&
+            belowItem != null &&
+            (itemToMove.ownerId != aboveItem.ownerId || aboveItem.ownerId != belowItem.ownerId)) {
+            Log.e("CollectionRepository::moveItemInBetween", "Supplied items with different ownerId: itemToMove: ${itemToMove.ownerId}, aboveItem: ${aboveItem.ownerId}, belowItem: ${belowItem.ownerId}")
+        }
+
+        collectionDao.moveItemInBetween(itemToMove.ownerId, itemToMove.gameId, aboveItem?.gameId, belowItem?.gameId)
     }
 }

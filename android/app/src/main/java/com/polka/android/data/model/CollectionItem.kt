@@ -5,13 +5,15 @@ import com.polka.android.data.image.ImageSource
 import java.util.EnumSet
 
 data class CollectionItem(
-    val gameId: Long,
+    val id: Id,
     val displayOrder: Double,
     val note: String,
     val rating: Int?,
     val status: EnumSet<Status>,
     val images: List<ImageSource>,
 ) {
+    data class Id(val ownerId: Long, val gameId: Long)
+
     enum class Status {
         OWN, PREVIOUSLY_OWNED, FOR_TRADE, WANT_IN_TRADE, WANT_TO_PLAY, WANT_TO_BUY, PREORDERED,
         WISHLIST_MUST_HAVE, WISHLIST_LOVE_TO_HAVE, WISHLIST_LIKE_TO_HAVE, WISHLIST_THINKING, WISHLIST_DO_NOT_BUY;
@@ -71,6 +73,6 @@ data class CollectionItem(
     }
 
     constructor(entity: CollectionItemEntity) : this(
-        entity.gameId, entity.displayOrder, entity.note, entity.rating, entity.status, entity.images
+        Id(entity.ownerId, entity.gameId), entity.displayOrder, entity.note, entity.rating, entity.status, entity.images
     )
 }
