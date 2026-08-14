@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.polka.android.data.image.ImageSource
 import com.polka.android.data.model.CollectionItem
+import java.util.EnumSet
 
 @Entity(
     tableName = "collection_items",
@@ -24,7 +25,7 @@ data class CollectionItemEntity(
 
     val note: String,
     val rating: Int?,
-    val status: CollectionItem.Status,
+    val status: EnumSet<CollectionItem.Status>,
     val images: List<ImageSource.Saved>,
 
     val createdAt: Long = System.currentTimeMillis(),
