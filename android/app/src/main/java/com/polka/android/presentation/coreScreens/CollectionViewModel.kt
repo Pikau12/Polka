@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.polka.android.data.model.SortQuery
 import com.polka.android.data.model.isSortQueryEmpty
 import com.polka.android.data.usecase.collection.ObserveCollectionUseCase
-import com.polka.android.data.usecase.collection.UpdateGameRating
+import com.polka.android.data.usecase.collection.UpdateGameRatingUseCase
 import com.polka.android.presentation.model.CollectionItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -65,7 +65,7 @@ sealed class CollectionScreenEvent {
 @HiltViewModel
 class CollectionViewModel @Inject constructor(
     private val observeCollectionUseCase: ObserveCollectionUseCase,
-    private val updateGameRating: UpdateGameRating,
+    private val updateGameRatingUseCase: UpdateGameRatingUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(CollectionState())
     val state: StateFlow<CollectionState> = _state.asStateFlow()
@@ -214,7 +214,7 @@ class CollectionViewModel @Inject constructor(
         ) }
 
         viewModelScope.launch {
-            updateGameRating(selectedGameId!!, rating)
+            updateGameRatingUseCase(selectedGameId!!, rating)
         }
     }
 }
