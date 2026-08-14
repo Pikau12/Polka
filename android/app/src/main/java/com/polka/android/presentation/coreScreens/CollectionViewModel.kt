@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.polka.android.data.model.SortQuery
 import com.polka.android.data.model.isSortQueryEmpty
 import com.polka.android.data.usecase.collection.ObserveCollectionUseCase
+import com.polka.android.data.usecase.collection.UpdateGameRating
 import com.polka.android.presentation.model.CollectionItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -31,7 +32,9 @@ data class CollectionState(
     val searchQuery: String? = null,
     val sortQuery: SortQuery? = null,
     val draftSortQuery: SortQuery? = null,
-    val draftRating: String? = null,
+    val draftRating: Int? = null,
+    val selectedGameId: Long? = null,
+    val isRatingMenuOpen: Boolean = false,
 )
 
 sealed class CollectionScreenEvent {
@@ -48,8 +51,12 @@ sealed class CollectionScreenEvent {
 
     // GameTile context menu
     object onGameStatusClick : CollectionScreenEvent() // TODO : change
-    object onRatingMenuClick
-    object onAddSessionClick : CollectionScreenEvent()
+    data class onRatingMenuOpen(val gameId: Long): CollectionScreenEvent()
+    data class onRatingChange(val rating: Int) : CollectionScreenEvent()
+    data class onRatingMenuCancel(val gameId: Long) : CollectionScreenEvent()
+    object onRatingMenuTipClick : CollectionScreenEvent()
+    object onRatingMenuClose : CollectionScreenEvent()
+    data class onAddSessionClick(val gameId: Long) : CollectionScreenEvent()
 
     // TODO: add more
 }
@@ -57,7 +64,8 @@ sealed class CollectionScreenEvent {
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class CollectionViewModel @Inject constructor(
-    private val observeCollectionUseCase: ObserveCollectionUseCase // TODO : add hilt DI
+    private val observeCollectionUseCase: ObserveCollectionUseCase,
+    private val updateGameRating: UpdateGameRating,
 ) : ViewModel() {
     private val _state = MutableStateFlow(CollectionState())
     val state: StateFlow<CollectionState> = _state.asStateFlow()
@@ -89,12 +97,23 @@ class CollectionViewModel @Inject constructor(
         when (event) {
             is CollectionScreenEvent.onAddGameClick -> handleOnAddGameClick()
             is CollectionScreenEvent.onGameTileClick -> handleOnGameTileClick(event.gameId)
+
             is CollectionScreenEvent.onLeftSwipe -> handleOnLeftSwipe()
             is CollectionScreenEvent.onRightSwipe -> handleOnRightSwipe()
+
             is CollectionScreenEvent.onSortMenuOpen -> handleOnSortMenuOpen()
             is CollectionScreenEvent.onDraftSortChanged -> handleOnDraftSortChanged(event.query)
             is CollectionScreenEvent.onSortMenuClose -> handleOnSortMenuClose()
             is CollectionScreenEvent.onSortMenuCancel -> handleOnSortMenuCancel()
+
+            is CollectionScreenEvent.onAddSessionClick -> handleOnAddSessionClick(event.gameId)
+            is CollectionScreenEvent.onGameStatusClick -> TODO()
+
+            is CollectionScreenEvent.onRatingChange -> handleOnRatingChange(event.rating)
+            is CollectionScreenEvent.onRatingMenuCancel -> handleOnRatingMenuCancel()
+            is CollectionScreenEvent.onRatingMenuOpen -> handleOnRatingMenuOpen(event.gameId)
+            is CollectionScreenEvent.onRatingMenuTipClick -> TODO()
+            is CollectionScreenEvent.onRatingMenuClose -> handleOnRatingMenuClose()
         }
     }
 
@@ -150,5 +169,52 @@ class CollectionViewModel @Inject constructor(
             sortQuery = null,
             draftSortQuery = null,
             ) }
+    }
+
+    private fun handleOnAddSessionClick(gameId: Long){
+        viewModelScope.launch {
+            _collectionScreenEvent.emit(CollectionScreenEvent.onAddSessionClick(gameId))
+        }
+    }
+
+    private fun handleOnRatingMenuOpen(gameId: Long){
+        val currentRating = _state.value.collection
+            ?.find{ it.gameId == gameId}
+            ?.rating
+
+        _state.update { it.copy(
+            isRatingMenuOpen = true,
+            selectedGameId = gameId,
+            draftRating = currentRating
+        ) }
+    }
+
+    private fun handleOnRatingChange(rating: Int){
+        _state.update { it.copy(
+            draftRating = rating
+        ) }
+    }
+
+    private fun handleOnRatingMenuCancel(){
+        _state.update { it.copy(
+            isRatingMenuOpen = false,
+            draftRating = null,
+            selectedGameId = null
+        ) }
+    }
+
+    private fun handleOnRatingMenuClose(){
+        val rating = _state.value.draftRating
+        val selectedGameId = _state.value.selectedGameId
+
+        _state.update { it.copy(
+            isRatingMenuOpen = false,
+            draftRating = null,
+            selectedGameId = null
+        ) }
+
+        viewModelScope.launch {
+            updateGameRating(selectedGameId!!, rating)
+        }
     }
 }

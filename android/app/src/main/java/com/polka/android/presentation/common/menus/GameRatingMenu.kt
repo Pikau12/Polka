@@ -21,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.polka.android.presentation.common.buttons.CancelButton
+import com.polka.android.presentation.common.buttons.TipButton
 import com.polka.android.presentation.theme.PolkaAcceptButtonColors
 import com.polka.android.presentation.theme.PolkaStar
 
@@ -46,7 +48,9 @@ fun GameRatingMenu(
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ){
-            // TODO: add cancel button
+            CancelButton {
+                onCancelClick
+            }
 
             DropdownMenu(
                 expanded = expanded,
@@ -84,7 +88,9 @@ fun GameRatingMenu(
                 }
             }
 
-            // TODO: add tip button
+            TipButton {
+                onTipClick
+            }
         }
     }
 }

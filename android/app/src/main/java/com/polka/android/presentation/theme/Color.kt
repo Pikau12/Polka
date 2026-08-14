@@ -71,6 +71,20 @@ val PolkaSortButton = PolkaOne
 val PolkaOnButton = Color(0xFFF5EFF7)
 val PolkaStar = PolkaFive
 
+val PolkaTipButtonColors = ButtonColors(
+    containerColor = PolkaTipButton,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaTipButton,
+    disabledContentColor = PolkaOnButton
+)
+
+val PolkaCancelButtonColors = ButtonColors(
+    containerColor = PolkaCancelButton,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaCancelButton,
+    disabledContentColor = PolkaOnButton
+)
+
 val PolkaBackButtonColors = ButtonColors(
     containerColor = PolkaBackButton,
     contentColor = PolkaOnButton,

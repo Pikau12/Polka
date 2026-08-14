@@ -31,8 +31,8 @@ sealed class Destination(val route: String) {
         fun pass(sessionId: Int) = "session/$sessionId"
     }
     object SessionsSearch : Destination("sessions_search")
-    object SessionCard : Destination("session_card/{sessionId}") {
-        fun pass(sessionId: Int) = "session_card/$sessionId"
+    object SessionCard : Destination("session_card/{gameId}") {
+        fun pass(gameId: Long) = "session_card/$gameId"
     }
 
     // ===== Friends =====

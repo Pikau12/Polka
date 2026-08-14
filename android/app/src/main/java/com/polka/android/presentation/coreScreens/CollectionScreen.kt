@@ -58,7 +58,7 @@ fun CollectionScreen(
                     navController.navigate(Destination.User.route)
                 }
                 is CollectionScreenEvent.onAddSessionClick -> {
-                    navController.navigate(Destination.SessionCard.route)
+                    navController.navigate(Destination.SessionCard.pass(event.gameId))
                 }
                 else -> {}
                 // TODO: add navigation to GameSearchScreen
