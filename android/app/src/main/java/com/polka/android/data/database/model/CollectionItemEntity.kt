@@ -3,10 +3,14 @@ package com.polka.android.data.database.model
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import com.polka.android.data.image.ImageSource
+import com.polka.android.data.model.CollectionItem
+import java.util.EnumSet
 
 @Entity(
     tableName = "collection_items",
     primaryKeys = ["ownerId", "gameId"],
+
     foreignKeys = [
         ForeignKey(
             entity = UserEntity::class,
@@ -14,7 +18,6 @@ import androidx.room.Index
             childColumns = ["ownerId"],
             onDelete = ForeignKey.CASCADE
         ),
-
         ForeignKey(
             entity = GameEntity::class,
             parentColumns = ["id"],
@@ -25,20 +28,22 @@ import androidx.room.Index
 
     indices = [
         Index("ownerId"),
-        Index("gameId")
-    ]
+        Index("gameId"),
+    ],
 )
 data class CollectionItemEntity(
-    val gameId: Long,
     val ownerId: Long,
+    val gameId: Long,
+    /**
+     * Fractional, so that on order update, we can quickly move it to `(aboveId.displayOrder + belowId.displayOrder)/2`
+     */
+    val displayOrder: Double,
 
-    val status: String? = null,
-    val note: String? = null,
-
-    val userRating: Double? = null,
-
-    val displayOrder: Int = 0,
+    val note: String,
+    val rating: Int?,
+    val status: EnumSet<CollectionItem.Status>,
+    val images: List<ImageSource.Saved>,
 
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
 )
