@@ -8,6 +8,7 @@ import coil3.request.ImageRequest
  */
 data class CollectionItem (
     var name: String,
+    var ownerId: Long,
     var gameId: Long,
     var image: ImageRequest? = null,
     var status: String,

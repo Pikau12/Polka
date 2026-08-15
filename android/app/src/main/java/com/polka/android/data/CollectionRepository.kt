@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class CollectionRepository @Inject constructor(private val collectionDao: CollectionDao) {
-    fun observeCollection(): Flow<Map<Long, CollectionItem>> {
+    fun observeCollection(): Flow<List<CollectionItem>> {
         return collectionDao.getAll().map { list ->
-            list.associate {it.gameId to CollectionItem(it)}
+            list.map { CollectionItem(it) }
         }
     }
 

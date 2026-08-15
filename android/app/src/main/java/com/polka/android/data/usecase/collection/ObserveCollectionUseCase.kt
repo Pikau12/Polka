@@ -9,6 +9,7 @@ import com.polka.android.data.model.isSortQueryEmpty
 import com.polka.android.presentation.model.CollectionItem
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class ObserveCollectionUseCase(
     private val collectionRepository: CollectionRepository,
@@ -44,9 +45,10 @@ class CollectionItemMapper @Inject constructor(
     ): CollectionItem {
         return CollectionItem(
             name = game.name,
-            gameId = game.id,
+            ownerId = entity.id.ownerId,
+            gameId = entity.id.gameId,
             image = game.image?.let { imageRepository.toRequest(it) },
-            status = entity.status,
+            status = entity.status.toString(),
             rating = entity.rating
         )
     }
