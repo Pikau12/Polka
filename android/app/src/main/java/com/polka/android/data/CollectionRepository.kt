@@ -7,20 +7,10 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class CollectionRepository @Inject constructor(private val collectionDao: CollectionDao) {
-    fun observeCollection(): Flow<Map<Long, CollectionItem>> {
-        return collectionDao.getAll().map { list ->
-            list.associate {it.gameId to CollectionItem(it)}
-        }
-    }
-
-    suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?) {
-        collectionDao.updateRating(item.ownerId, item.gameId, rating)
-    }
-
-    suspend fun updateItemStatus(item: CollectionItem.Id, status: CollectionItem.Status) {
-        collectionDao.updateStatus(item.ownerId, item.gameId, status)
-    }
+interface CollectionRepository {
+    fun observeCollection(): Flow<Map<Long, CollectionItem>>
+    suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?)
+    suspend fun updateItemStatus(item: CollectionItem.Id, status: CollectionItem.Status)
 
     /**
      * Moves display order of the `itemToMove` right above the `aboveItem` or `null` if moved
@@ -31,7 +21,25 @@ class CollectionRepository @Inject constructor(private val collectionDao: Collec
      * If only one of the `aboveItem` or `belowItem` is null, the item will be dropped at the beginning
      * or the end of the list respectively, regardless of the other value.
      */
-    suspend fun moveItemInBetween(itemToMove: CollectionItem.Id, aboveItem: CollectionItem.Id?, belowItem: CollectionItem.Id?) {
+    suspend fun moveItemInBetween(itemToMove: CollectionItem.Id, aboveItem: CollectionItem.Id?, belowItem: CollectionItem.Id?)
+}
+
+class DefaultCollectionRepository @Inject constructor(private val collectionDao: CollectionDao) : CollectionRepository {
+    override fun observeCollection(): Flow<Map<Long, CollectionItem>> {
+        return collectionDao.getAll().map { list ->
+            list.associate {it.gameId to CollectionItem(it)}
+        }
+    }
+
+    override suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?) {
+        collectionDao.updateRating(item.ownerId, item.gameId, rating)
+    }
+
+    override suspend fun updateItemStatus(item: CollectionItem.Id, status: CollectionItem.Status) {
+        collectionDao.updateStatus(item.ownerId, item.gameId, status)
+    }
+
+    override suspend fun moveItemInBetween(itemToMove: CollectionItem.Id, aboveItem: CollectionItem.Id?, belowItem: CollectionItem.Id?) {
         if (aboveItem != null &&
             belowItem != null &&
             (itemToMove.ownerId != aboveItem.ownerId || aboveItem.ownerId != belowItem.ownerId)) {
