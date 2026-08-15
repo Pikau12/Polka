@@ -53,7 +53,7 @@ sealed class CollectionScreenEvent {
     data class onGameStatusClick(val id: CollectionItem.Id) : CollectionScreenEvent() // TODO : change
     data class onRatingMenuOpen(val id: CollectionItem.Id): CollectionScreenEvent()
     data class onRatingChange(val rating: Int) : CollectionScreenEvent()
-    data class onRatingMenuCancel(val gameId: Long) : CollectionScreenEvent()
+    object onRatingMenuCancel: CollectionScreenEvent()
     object onRatingMenuTipClick : CollectionScreenEvent()
     object onRatingMenuClose : CollectionScreenEvent()
     data class onAddSessionClick(val gameId: Long) : CollectionScreenEvent()

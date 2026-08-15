@@ -1,6 +1,7 @@
 package com.polka.android.presentation.coreScreens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
@@ -13,8 +14,10 @@ import androidx.compose.ui.draw.scale
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.polka.android.presentation.common.layout.VerticalReorderGrid
+import com.polka.android.presentation.common.menus.GameRatingMenu
 import com.polka.android.presentation.common.tiles.ContextMenuAction
 import com.polka.android.presentation.navigation.Destination
+import kotlin.math.exp
 
 @Composable
 fun CollectionScreen(
@@ -23,32 +26,56 @@ fun CollectionScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    Scaffold(
+    Box {
+        Scaffold { paddingValues ->
+            if (!state.isLoading) {
+                VerticalReorderGrid(
+                    modifier = Modifier.padding(paddingValues),
+                    collection = state.collection!!,
+                    onDoubleClick = { gameId ->
+                        viewModel.handleEvent(CollectionScreenEvent.onGameTileClick(gameId))
+                    },
+                    onContextMenu = { id, action ->
+                        when (action) {
+                            is ContextMenuAction.onAddSessionClick -> {
+                                viewModel.handleEvent(CollectionScreenEvent.onAddSessionClick(id.gameId))
+                            }
 
-    ) { paddingValues ->
-        if (!state.isLoading) {
-            VerticalReorderGrid(
-                modifier = Modifier.padding(paddingValues),
-                collection = state.collection!!,
-                onDoubleClick = { gameId ->
-                    viewModel.handleEvent(CollectionScreenEvent.onGameTileClick(gameId))
-                },
-                onContextMenu = { id, action ->
-                    when(action){
-                        is ContextMenuAction.onAddSessionClick -> {
-                            viewModel.handleEvent(CollectionScreenEvent.onAddSessionClick(id.gameId))
+                            is ContextMenuAction.onRatingClick -> {
+                                viewModel.handleEvent(CollectionScreenEvent.onRatingMenuOpen(id))
+                            }
+
+                            is ContextMenuAction.onStatusClick -> {
+                                viewModel.handleEvent(CollectionScreenEvent.onGameStatusClick(id))
+                            }
                         }
-                        is ContextMenuAction.onRatingClick -> {
-                            viewModel.handleEvent(CollectionScreenEvent.onRatingMenuOpen(id))
-                        }
-                        is ContextMenuAction.onStatusClick -> {
-                            viewModel.handleEvent(CollectionScreenEvent.onGameStatusClick(id))
-                        }
+                    },
+                    onAddGameClick = {
+                        viewModel.handleEvent(CollectionScreenEvent.onAddGameClick)
                     }
+                )
+            }
+        }
+
+        if (state.isRatingMenuOpen) {
+            GameRatingMenu (
+                expanded = state.isRatingMenuOpen,
+                onCancelClick = {
+                    viewModel.handleEvent(CollectionScreenEvent.onRatingMenuCancel)
                 },
-                onAddGameClick = {
-                    viewModel.handleEvent(CollectionScreenEvent.onAddGameClick)
-                }
+                onTipClick = {
+                    viewModel.handleEvent(CollectionScreenEvent.onRatingMenuTipClick)
+                },
+                onDismissRequest = {
+                    viewModel.handleEvent(CollectionScreenEvent.onRatingMenuClose)
+                },
+                onRatingListItemClick = { rating ->
+                    viewModel.handleEvent(CollectionScreenEvent.onRatingChange(rating))
+                },
+                rating = state.collection
+                    ?.find { it.id == state.selectedGameId }
+                    ?.rating
+                    ?: error("Rating not found for game ${state.selectedGameId}")
             )
         }
     }

@@ -244,19 +244,19 @@ fun PreviewGameRowTile() {
         val testGames = listOf(
             CollectionItem(
                 name = "Catan",
-                gameId = 1,
+                id = CollectionItem.Id(1, 1),
                 status = "Own",
                 rating = 8
             ),
             CollectionItem(
                 name = "Code Names",
-                gameId = 1,
+                id = CollectionItem.Id(1, 1),
                 status = "Wishlist",
                 rating = null
             ),
             CollectionItem(
                 name = "Ticket to Ride",
-                gameId = 1,
+                id = CollectionItem.Id(1, 1),
                 status = "Previous owned",
                 rating = 7
             )
