@@ -10,7 +10,7 @@ services:
       - db_data:/var/lib/postgresql
       - ./migrations:/docker-entrypoint-initdb.d
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 25s
@@ -23,6 +23,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      garage:
+        condition: service_healthy
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -32,6 +34,36 @@ services:
       PORT: 8080
     ports:
       - "8080:8080"
+  garage:
+    image: dxflrs/garage:v2.3.0
+    container_name: garage
+    command:
+      - /garage
+      - server
+      - --single-node
+      - --default-bucket
 
+    environment:
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET}
+
+      GARAGE_DEFAULT_ACCESS_KEY: ${GARAGE_ACCESS_KEY}
+      GARAGE_DEFAULT_SECRET_KEY: ${GARAGE_SECRET_KEY}
+      GARAGE_DEFAULT_BUCKET: ${GARAGE_BUCKET}
+
+    healthcheck:
+      test: [ "CMD", "/garage", "status" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - ./garage/garage.toml:/etc/garage.toml:ro
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
+
+    ports:
+      - "3900:3900"
 volumes:
   db_data:
+  garage_meta:
+  garage_data:
