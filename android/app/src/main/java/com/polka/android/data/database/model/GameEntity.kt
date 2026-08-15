@@ -11,8 +11,9 @@ import androidx.room.PrimaryKey
     ]
 )
 data class GameEntity(
-    @PrimaryKey
-    val id: Long,
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val serverId: Long? = null,
 
     val bggId: Long? = null,
 
