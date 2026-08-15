@@ -12,8 +12,7 @@ const (
 )
 
 type Session struct {
-	ID       int64
-	ServerID *int64
+	ID int64
 
 	GameID    int64
 	CreatorID int64

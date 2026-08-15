@@ -3,9 +3,8 @@ package model
 import "time"
 
 type Game struct {
-	ID       int64
-	ServerID *int64
-	BggID    *int64
+	ID    int64
+	BggID *int64
 
 	Name        string
 	Description *string
