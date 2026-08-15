@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.scale
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.polka.android.presentation.common.layout.VerticalReorderGrid
+import com.polka.android.presentation.common.tiles.ContextMenuAction
 import com.polka.android.presentation.navigation.Destination
 
 @Composable
@@ -29,14 +30,24 @@ fun CollectionScreen(
             VerticalReorderGrid(
                 modifier = Modifier.padding(paddingValues),
                 collection = state.collection!!,
-                onDoubleClick = {
-
+                onDoubleClick = { gameId ->
+                    viewModel.handleEvent(CollectionScreenEvent.onGameTileClick(gameId))
                 },
-                onContextMenu = { gameId, action ->
-
+                onContextMenu = { id, action ->
+                    when(action){
+                        is ContextMenuAction.onAddSessionClick -> {
+                            viewModel.handleEvent(CollectionScreenEvent.onAddSessionClick(id.gameId))
+                        }
+                        is ContextMenuAction.onRatingClick -> {
+                            viewModel.handleEvent(CollectionScreenEvent.onRatingMenuOpen(id))
+                        }
+                        is ContextMenuAction.onStatusClick -> {
+                            viewModel.handleEvent(CollectionScreenEvent.onGameStatusClick(id))
+                        }
+                    }
                 },
                 onAddGameClick = {
-
+                    viewModel.handleEvent(CollectionScreenEvent.onAddGameClick)
                 }
             )
         }

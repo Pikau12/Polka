@@ -33,7 +33,7 @@ data class CollectionState(
     val sortQuery: SortQuery? = null,
     val draftSortQuery: SortQuery? = null,
     val draftRating: Int? = null,
-    val selectedGameId: Long? = null,
+    val selectedGameId: CollectionItem.Id? = null,
     val isRatingMenuOpen: Boolean = false,
 )
 
@@ -50,8 +50,8 @@ sealed class CollectionScreenEvent {
     object onSortMenuCancel: CollectionScreenEvent()
 
     // GameTile context menu
-    object onGameStatusClick : CollectionScreenEvent() // TODO : change
-    data class onRatingMenuOpen(val gameId: Long): CollectionScreenEvent()
+    data class onGameStatusClick(val id: CollectionItem.Id) : CollectionScreenEvent() // TODO : change
+    data class onRatingMenuOpen(val id: CollectionItem.Id): CollectionScreenEvent()
     data class onRatingChange(val rating: Int) : CollectionScreenEvent()
     data class onRatingMenuCancel(val gameId: Long) : CollectionScreenEvent()
     object onRatingMenuTipClick : CollectionScreenEvent()
@@ -111,7 +111,7 @@ class CollectionViewModel @Inject constructor(
 
             is CollectionScreenEvent.onRatingChange -> handleOnRatingChange(event.rating)
             is CollectionScreenEvent.onRatingMenuCancel -> handleOnRatingMenuCancel()
-            is CollectionScreenEvent.onRatingMenuOpen -> handleOnRatingMenuOpen(event.gameId)
+            is CollectionScreenEvent.onRatingMenuOpen -> handleOnRatingMenuOpen(event.id)
             is CollectionScreenEvent.onRatingMenuTipClick -> TODO()
             is CollectionScreenEvent.onRatingMenuClose -> handleOnRatingMenuClose()
         }
@@ -177,14 +177,14 @@ class CollectionViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnRatingMenuOpen(gameId: Long){
+    private fun handleOnRatingMenuOpen(id: CollectionItem.Id){
         val currentRating = _state.value.collection
-            ?.find{ it.gameId == gameId}
+            ?.find{ it.id == id}
             ?.rating
 
         _state.update { it.copy(
             isRatingMenuOpen = true,
-            selectedGameId = gameId,
+            selectedGameId = id,
             draftRating = currentRating
         ) }
     }

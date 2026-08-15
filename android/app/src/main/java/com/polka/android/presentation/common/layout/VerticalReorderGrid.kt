@@ -34,7 +34,7 @@ fun VerticalReorderGrid(
     modifier: Modifier = Modifier,
     collection: List<CollectionItem>,
     onDoubleClick: (Long) -> Unit,
-    onContextMenu: (Long, ContextMenuAction) -> Unit,
+    onContextMenu: (CollectionItem.Id, ContextMenuAction) -> Unit,
     onAddGameClick: () -> Unit,
 ) {
     var isDragging by remember { mutableStateOf(false) }
@@ -61,8 +61,8 @@ fun VerticalReorderGrid(
         verticalArrangement = Arrangement.spacedBy(13.dp),
         userScrollEnabled = !isDragging,
     ) {
-        items(data.value, key = { it.gameId }) {
-            ReorderableItem(state, key = it.gameId) { dragging ->
+        items(data.value, key = { it.id.gameId }) {
+            ReorderableItem(state, key = it.id.gameId) { dragging ->
                 LaunchedEffect(dragging) {
                     isDragging = dragging
                 }
@@ -102,37 +102,37 @@ fun ReorderableGridPreview(){
     val testGames = listOf(
         CollectionItem(
             name = "Catan",
-            gameId = 1,
+            id = CollectionItem.Id(1, 1),
             status = "Own",
             rating = 8
         ),
         CollectionItem(
             name = "Code Names",
-            gameId = 1,
+            id = CollectionItem.Id(1, 2),
             status = "Wishlist",
             rating = null
         ),
         CollectionItem(
             name = "Ticket to Ride",
-            gameId = 1,
+            id = CollectionItem.Id(1, 3),
             status = "Previous owned",
             rating = 7
         ),
         CollectionItem(
             name = "Azul",
-            gameId = 1,
+            id = CollectionItem.Id(1, 4),
             status = "Own",
             rating = 8
         ),
         CollectionItem(
             name = "Coffee",
-            gameId = 1,
+            id = CollectionItem.Id(1, 5),
             status = "Wishlist",
             rating = null
         ),
         CollectionItem(
             name = "Terraforming Mars",
-            gameId = 1,
+            id = CollectionItem.Id(1, 6),
             status = "Previous owned",
             rating = 7
         ),

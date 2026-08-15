@@ -8,9 +8,10 @@ import coil3.request.ImageRequest
  */
 data class CollectionItem (
     var name: String,
-    var ownerId: Long,
-    var gameId: Long,
+    var id: Id,
     var image: ImageRequest? = null,
     var status: String,
     var rating: Int? = null,
-)
+){
+    data class Id(val ownerId: Long, val gameId: Long)
+}

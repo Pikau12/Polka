@@ -64,7 +64,7 @@ fun GameTile(
     collectionItem: CollectionItem,
     modifier: Modifier = Modifier,
     onDoubleClick: (Long) -> Unit,
-    onContextMenu: (Long, ContextMenuAction) -> Unit,
+    onContextMenu: (CollectionItem.Id, ContextMenuAction) -> Unit,
 ){
     var showContextMenu by remember { mutableStateOf(false) }
     var cardPosition by remember { mutableStateOf(Offset.Zero) }
@@ -90,7 +90,7 @@ fun GameTile(
                         showContextMenu = true
                     },
                     onDoubleClick = {
-                        onDoubleClick(collectionItem.gameId)
+                        onDoubleClick(collectionItem.id.gameId)
                     }
                 ),
             shape = RoundedCornerShape(16.dp),
@@ -168,7 +168,7 @@ fun GameTile(
                         )
                            }, // TODO: change to const string from values.xml
                     onClick = {
-                        onContextMenu(collectionItem.gameId, ContextMenuAction.onStatusClick)
+                        onContextMenu(collectionItem.id, ContextMenuAction.onStatusClick)
                         showContextMenu = false
                     },
                     leadingIcon = {
@@ -191,7 +191,7 @@ fun GameTile(
                         )
                            }, // TODO: change to const string from values.xml
                     onClick = {
-                        onContextMenu(collectionItem.gameId, ContextMenuAction.onRatingClick)
+                        onContextMenu(collectionItem.id, ContextMenuAction.onRatingClick)
                         showContextMenu = false
                     },
                     leadingIcon = {
@@ -215,7 +215,7 @@ fun GameTile(
                         )
                            }, // TODO: change to const string from values.xml
                     onClick = {
-                        onContextMenu(collectionItem.gameId, ContextMenuAction.onAddSessionClick)
+                        onContextMenu(collectionItem.id, ContextMenuAction.onAddSessionClick)
                         showContextMenu = false
                     },
                     leadingIcon = {

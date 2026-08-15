@@ -45,8 +45,7 @@ class CollectionItemMapper @Inject constructor(
     ): CollectionItem {
         return CollectionItem(
             name = game.name,
-            ownerId = entity.id.ownerId,
-            gameId = entity.id.gameId,
+            id = CollectionItem.Id(entity.id.ownerId, entity.id.gameId),
             image = game.image?.let { imageRepository.toRequest(it) },
             status = entity.status.toString(),
             rating = entity.rating
