@@ -1,0 +1,27 @@
+package postgres
+
+import (
+	"context"
+
+	"github.com/polka/backend/internal/postgres/config"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+)
+
+func New(ctx context.Context, c config.Config) (*gorm.DB, error) {
+	db, err := gorm.Open(postgres.Open(c.DSN()), &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := sqlDB.PingContext(ctx); err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
