@@ -2,5 +2,8 @@ package com.polka.android.data
 
 import jakarta.inject.Inject
 
-class SyncRepository @Inject constructor() {
+interface SyncRepository {
+}
+
+class DefaultSyncRepository @Inject constructor() : SyncRepository {
 }

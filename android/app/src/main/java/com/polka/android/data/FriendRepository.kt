@@ -2,5 +2,8 @@ package com.polka.android.data
 
 import jakarta.inject.Inject
 
-class FriendRepository @Inject constructor() {
+interface FriendRepository {
+}
+
+class DefaultFriendRepository @Inject constructor() : FriendRepository {
 }
