@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o /server .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /server ./cmd
 
 # Test
 FROM build AS test
@@ -16,7 +16,7 @@ RUN go test -v ./...
 FROM alpine:latest
 WORKDIR /app
 
-COPY --from=build /server /app/server
+COPY --from=build --chmod=755 /server /app/server
 
 EXPOSE 8080
 ENTRYPOINT ["/app/server"]
