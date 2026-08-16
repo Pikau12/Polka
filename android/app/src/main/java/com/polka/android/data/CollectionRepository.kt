@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 interface CollectionRepository {
-    fun observeCollection(): Flow<Map<Long, CollectionItem>>
+    fun observeCollection(): Flow<List<CollectionItem>>
     suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?)
     suspend fun updateItemStatus(item: CollectionItem.Id, status: CollectionItem.Status)
 
@@ -25,9 +25,9 @@ interface CollectionRepository {
 }
 
 class DefaultCollectionRepository @Inject constructor(private val collectionDao: CollectionDao) : CollectionRepository {
-    override fun observeCollection(): Flow<Map<Long, CollectionItem>> {
+    override fun observeCollection(): Flow<List<CollectionItem>> {
         return collectionDao.getAll().map { list ->
-            list.associate {it.gameId to CollectionItem(it)}
+            list.map { CollectionItem(it) }
         }
     }
 
