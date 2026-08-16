@@ -1,5 +1,7 @@
 package com.polka.android.presentation.coreScreens
 
+import android.R
+import android.os.Message
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polka.android.data.model.SortQuery
@@ -35,6 +37,8 @@ data class CollectionState(
     val draftRating: Int? = null,
     val selectedGameId: CollectionItem.Id? = null,
     val isRatingMenuOpen: Boolean = false,
+    val isTipVisible: Boolean = false,
+    val tipMessage: String? = null,
 )
 
 sealed class CollectionScreenEvent {
@@ -54,10 +58,10 @@ sealed class CollectionScreenEvent {
     data class onRatingMenuOpen(val id: CollectionItem.Id): CollectionScreenEvent()
     data class onRatingChange(val rating: Int) : CollectionScreenEvent()
     object onRatingMenuCancel: CollectionScreenEvent()
-    object onRatingMenuTipClick : CollectionScreenEvent()
     object onRatingMenuClose : CollectionScreenEvent()
     data class onAddSessionClick(val gameId: Long) : CollectionScreenEvent()
-
+    data class onRatingTipClick(val message: String) : CollectionScreenEvent()
+    object onRatingTipClose: CollectionScreenEvent()
     // TODO: add more
 }
 
@@ -112,9 +116,24 @@ class CollectionViewModel @Inject constructor(
             is CollectionScreenEvent.onRatingChange -> handleOnRatingChange(event.rating)
             is CollectionScreenEvent.onRatingMenuCancel -> handleOnRatingMenuCancel()
             is CollectionScreenEvent.onRatingMenuOpen -> handleOnRatingMenuOpen(event.id)
-            is CollectionScreenEvent.onRatingMenuTipClick -> TODO()
             is CollectionScreenEvent.onRatingMenuClose -> handleOnRatingMenuClose()
+            is CollectionScreenEvent.onRatingTipClick -> handleOnRatingTipClick(event.message)
+            is CollectionScreenEvent.onRatingTipClose -> handleOnRatingTipClose()
         }
+    }
+
+    private fun handleOnRatingTipClick(message: String){
+        _state.update { it.copy(
+            isTipVisible = true,
+            tipMessage = message,
+        ) }
+    }
+
+    private fun handleOnRatingTipClose(){
+        _state.update { it.copy(
+            isTipVisible = false,
+            tipMessage = null,
+        ) }
     }
 
     private fun handleOnAddGameClick() {

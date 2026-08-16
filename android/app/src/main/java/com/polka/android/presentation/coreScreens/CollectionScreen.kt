@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.polka.android.presentation.common.dialogs.TipPopUp
 import com.polka.android.presentation.common.layout.VerticalReorderGrid
 import com.polka.android.presentation.common.menus.GameRatingMenu
 import com.polka.android.presentation.common.tiles.ContextMenuAction
@@ -64,7 +65,9 @@ fun CollectionScreen(
                     viewModel.handleEvent(CollectionScreenEvent.onRatingMenuCancel)
                 },
                 onTipClick = {
-                    viewModel.handleEvent(CollectionScreenEvent.onRatingMenuTipClick)
+                    viewModel.handleEvent(CollectionScreenEvent.onRatingTipClick(
+                        message = "Information about rating" // TODO: change!!!!
+                    ))
                 },
                 onDismissRequest = {
                     viewModel.handleEvent(CollectionScreenEvent.onRatingMenuClose)
@@ -77,6 +80,16 @@ fun CollectionScreen(
                     ?.rating
                     ?: error("Rating not found for game ${state.selectedGameId}")
             )
+
+            if (state.isTipVisible) {
+                TipPopUp(
+                    message = state.tipMessage
+                        ?: error("Tip message is null"),
+                    onDismiss = {
+                        viewModel.handleEvent(CollectionScreenEvent.onRatingTipClose)
+                    }
+                )
+            }
         }
     }
 
