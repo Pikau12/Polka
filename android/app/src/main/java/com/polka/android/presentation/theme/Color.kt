@@ -1,6 +1,7 @@
 package com.polka.android.presentation.theme
 
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.MenuItemColors
 import androidx.compose.ui.graphics.Color
 
@@ -70,6 +71,13 @@ val PolkaAcceptButton = PolkaThree
 val PolkaSortButton = PolkaOne
 val PolkaOnButton = Color(0xFFF5EFF7)
 val PolkaStar = PolkaFive
+
+val PolkaTipPopUpColors = CardColors(
+    containerColor = Surface,
+    contentColor = OnSurface,
+    disabledContentColor = Surface,
+    disabledContainerColor = OnSurface
+)
 
 val PolkaTipButtonColors = ButtonColors(
     containerColor = PolkaTipButton,
