@@ -22,6 +22,19 @@ interface CollectionRepository {
      * or the end of the list respectively, regardless of the other value.
      */
     suspend fun moveItemInBetween(itemToMove: CollectionItem.Id, aboveItem: CollectionItem.Id?, belowItem: CollectionItem.Id?)
+
+    fun getUserCollection(userId: Long): Flow<Map<Long, CollectionItem>>
+    fun getUserCollectionOrdered(userId: Long): Flow<List<CollectionItem>>
+    suspend fun addGameToCollection(userId: Long,gameId: Long)
+    suspend fun changeGameStatus(item: CollectionItem.Id,status: CollectionItem.Status)
+    suspend fun rateGame(item: CollectionItem.Id,rating: Int?)
+    suspend fun addNote(item: CollectionItem.Id,note: String)
+    suspend fun updateNote(item: CollectionItem.Id,note: String)
+    suspend fun deleteNote(item: CollectionItem.Id)
+    suspend fun reorderGame(item: CollectionItem.Id,displayOrder: Double)
+    suspend fun moveGame(itemToMove: CollectionItem.Id,aboveItem: CollectionItem.Id?,belowItem: CollectionItem.Id?)
+    suspend fun removeGameFromCollection(item: CollectionItem.Id)
+    fun isGameInCollection(userId: Long,gameId: Long): Flow<Boolean>
 }
 
 class DefaultCollectionRepository @Inject constructor(private val collectionDao: CollectionDao) : CollectionRepository {

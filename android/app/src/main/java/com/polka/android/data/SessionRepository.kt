@@ -58,4 +58,5 @@ class DefaultSessionRepository @Inject constructor(
     suspend fun markSessionAsSynced(sessionId: Long) {
 
     */
+    }
 }

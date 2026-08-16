@@ -10,6 +10,11 @@ import kotlinx.coroutines.flow.map
 interface SearchRepository {
     fun searchUsersByUsername(name: String): Flow<List<User>>
     fun getUserFriend(userId: Long): Flow<List<User>>
+    fun searchGamesInBgg(query: String): Flow<List<Game>>
+    fun searchGamesByTagsInBgg(tags: List<String>): Flow<List<Game>>
+    fun searchGamesInCollection(userId: Long, query: String): Flow<List<Game>>
+    fun searchGamesInCollectionByTags(userId: Long, tags: List<String>): Flow<List<Game>>
+    fun getSortedUserCollection(userId: Long, sortQuery: SortQuery): Flow<List<CollectionItem>>
 }
 
 class DefaultSearchRepository @Inject constructor(
