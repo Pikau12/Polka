@@ -7,6 +7,7 @@ import com.polka.android.data.model.Game
 import com.polka.android.data.model.SortQuery
 import com.polka.android.data.model.isSortQueryEmpty
 import com.polka.android.presentation.model.CollectionItem
+import com.polka.android.presentation.model.toUIStatusSet
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,15 +25,15 @@ class ObserveCollectionUseCase(
                     mapper.map(entity, game)
                 }
             }
-            .map { items -> // How it must be: if sortQuery is null or if sortQuery doesn't have
-                // a sort part we need to sort collection by displayOrder otherwise
-                // we need to specify our sort by sort part of sortQuery and after all of this
-                // apply a filter part of sortQuery
-                when {
-                    isSortQueryEmpty(sort) -> items.sortedBy { it.name }
-                    else -> items.sortedBy(sort.comparator)
-                }
-            }
+//            .map { items -> // How it must be: if sortQuery is null or if sortQuery doesn't have
+//                // a sort part we need to sort collection by displayOrder otherwise
+//                // we need to specify our sort by sort part of sortQuery and after all of this
+//                // apply a filter part of sortQuery
+//                when {
+//                    isSortQueryEmpty(sort) -> items.sortedBy { it.name }
+//                    else -> items.sortedBy(sort.comparator)
+//                }
+//            }
     }
 }
 
@@ -47,7 +48,7 @@ class CollectionItemMapper @Inject constructor(
             name = game.name,
             id = CollectionItem.Id(entity.id.ownerId, entity.id.gameId),
             image = game.image?.let { imageRepository.toRequest(it) },
-            status = entity.status.toString(),
+            status = entity.status.toUIStatusSet(),
             rating = entity.rating
         )
     }
