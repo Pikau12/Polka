@@ -9,13 +9,15 @@ import (
 )
 
 func New(ctx context.Context, c config.Config) (*gorm.DB, error) {
-	db, err := gorm.Open(postgres.Open(c.DSN()), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(c.DSN()), &gorm.Config{TranslateError: true})
 	if err != nil {
 		return nil, err
 	}
 
 	sqlDB, err := db.DB()
 	if err != nil {
+		sqlDB.Close()
+
 		return nil, err
 	}
 

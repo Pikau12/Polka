@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS collection_items_images;
+DROP TABLE IF EXISTS collection_item_images;
 DROP TABLE IF EXISTS collection_items;
 
 DROP TABLE IF EXISTS session_participants;
@@ -33,6 +33,8 @@ DROP TABLE IF EXISTS roles;
 
 DROP TABLE IF EXISTS user_images;
 DROP TABLE IF EXISTS images;
+
+DROP TABLE IF EXISTS user_sessions;
 
 DROP TABLE IF EXISTS users;
 
