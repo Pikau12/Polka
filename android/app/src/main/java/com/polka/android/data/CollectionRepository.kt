@@ -22,6 +22,16 @@ interface CollectionRepository {
      * or the end of the list respectively, regardless of the other value.
      */
     suspend fun moveItemInBetween(itemToMove: CollectionItem.Id, aboveItem: CollectionItem.Id?, belowItem: CollectionItem.Id?)
+
+    fun getUserCollection(userId: Long): Flow<List<CollectionItem>>
+    fun getUserCollectionOrdered(userId: Long): Flow<List<CollectionItem>>
+
+    //TODO games methods
+
+    suspend fun addNote(item: CollectionItem.Id,note: String)
+    suspend fun updateNote(item: CollectionItem.Id,note: String)
+    suspend fun deleteNote(item: CollectionItem.Id)
+    suspend fun removeGameFromCollection(item: CollectionItem.Id)
 }
 
 class DefaultCollectionRepository @Inject constructor(private val collectionDao: CollectionDao) : CollectionRepository {
@@ -47,5 +57,29 @@ class DefaultCollectionRepository @Inject constructor(private val collectionDao:
         }
 
         collectionDao.moveItemInBetween(itemToMove.ownerId, itemToMove.gameId, aboveItem?.gameId, belowItem?.gameId)
+    }
+
+    override fun getUserCollection(userId: Long): Flow<List<CollectionItem>> {
+        TODO("Not implemented yet")
+    }
+
+    override fun getUserCollectionOrdered(userId: Long): Flow<List<CollectionItem>> {
+        TODO("Not implemented yet")
+    }
+
+    override suspend fun addNote(item: CollectionItem.Id, note: String) {
+        TODO("Not implemented yet")
+    }
+
+    override suspend fun updateNote(item: CollectionItem.Id, note: String) {
+        TODO("Not implemented yet")
+    }
+
+    override suspend fun deleteNote(item: CollectionItem.Id) {
+        TODO("Not implemented yet")
+    }
+
+    override suspend fun removeGameFromCollection(item: CollectionItem.Id) {
+        TODO("Not implemented yet")
     }
 }
