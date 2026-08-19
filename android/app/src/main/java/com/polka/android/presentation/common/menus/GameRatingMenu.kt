@@ -49,7 +49,7 @@ fun GameRatingMenu(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ){
             CancelButton {
-                onCancelClick
+                onCancelClick()
             }
 
             DropdownMenu(
@@ -89,7 +89,7 @@ fun GameRatingMenu(
             }
 
             TipButton {
-                onTipClick
+                onTipClick()
             }
         }
     }
