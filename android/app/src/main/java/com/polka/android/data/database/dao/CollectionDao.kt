@@ -1,12 +1,14 @@
 package com.polka.android.data.database.dao
 
 import android.util.Log
+import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.polka.android.data.database.model.CollectionItemEntity
 import com.polka.android.data.model.CollectionItem
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface CollectionDao {
     @Query("SELECT * FROM collection_items")
     fun getAll(): Flow<List<CollectionItemEntity>>
