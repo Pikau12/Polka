@@ -33,4 +33,9 @@ class DatabaseModule {
     fun provideSearchDao(appDatabase: AppDatabase): SearchDao {
         return appDatabase.searchDao()
     }
+
+    @Provides
+    fun provideCollectionDao(appDatabase: AppDatabase): CollectionDao {
+        return appDatabase.collectionDao()
+    }
 }

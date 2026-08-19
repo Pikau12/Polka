@@ -3,6 +3,7 @@ package com.polka.android.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.polka.android.data.database.dao.CollectionDao
 import com.polka.android.data.database.dao.GameDao
 import com.polka.android.data.database.dao.SearchDao
 import com.polka.android.data.database.dao.SessionDao
@@ -30,4 +31,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun gameDao(): GameDao
     abstract fun sessionDao(): SessionDao
     abstract fun searchDao(): SearchDao
+    abstract fun collectionDao(): CollectionDao
 }

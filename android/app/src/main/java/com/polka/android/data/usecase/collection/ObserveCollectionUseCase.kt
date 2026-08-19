@@ -5,14 +5,13 @@ import com.polka.android.data.GameRepository
 import com.polka.android.data.image.ImageRepository
 import com.polka.android.data.model.Game
 import com.polka.android.data.model.SortQuery
-import com.polka.android.data.model.isSortQueryEmpty
 import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.model.toUIStatusSet
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class ObserveCollectionUseCase(
+class ObserveCollectionUseCase @Inject constructor (
     private val collectionRepository: CollectionRepository,
     private val gameRepository: GameRepository,
     private val mapper: CollectionItemMapper
@@ -21,7 +20,7 @@ class ObserveCollectionUseCase(
         return collectionRepository.observeCollection()
             .map { items ->
                 items.map { entity ->
-                    val game = gameRepository.getGameById(entity.gameId)
+                    val game = gameRepository.getGame(entity.id.gameId)
                     mapper.map(entity, game)
                 }
             }
@@ -42,10 +41,10 @@ class CollectionItemMapper @Inject constructor(
 ) {
     fun map(
         entity: com.polka.android.data.model.CollectionItem,
-        game: Game
+        game: Game?
     ): CollectionItem {
         return CollectionItem(
-            name = game.name,
+            name = game?.name?: error("Game name is null"),
             id = CollectionItem.Id(entity.id.ownerId, entity.id.gameId),
             image = game.image?.let { imageRepository.toRequest(it) },
             status = entity.status.toUIStatusSet(),
