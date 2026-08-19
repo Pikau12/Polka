@@ -28,6 +28,7 @@ import com.polka.android.presentation.theme.PolkaTheme
 import okhttp3.Address
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState
+import java.util.EnumSet
 
 @Composable
 fun VerticalReorderGrid(
@@ -103,38 +104,41 @@ fun ReorderableGridPreview(){
         CollectionItem(
             name = "Catan",
             id = CollectionItem.Id(1, 1),
-            status = "Own",
+            status = EnumSet.of(CollectionItem.Status.OWN),
             rating = 8
         ),
         CollectionItem(
             name = "Code Names",
             id = CollectionItem.Id(1, 2),
-            status = "Wishlist",
+            status = EnumSet.of(
+                CollectionItem.Status.PREVIOUSLY_OWNED,
+                CollectionItem.Status.WANT_TO_PLAY
+            ),
             rating = null
         ),
         CollectionItem(
             name = "Ticket to Ride",
             id = CollectionItem.Id(1, 3),
-            status = "Previous owned",
+            status = EnumSet.of(CollectionItem.Status.WANT_TO_PLAY),
             rating = 7
         ),
         CollectionItem(
             name = "Azul",
             id = CollectionItem.Id(1, 4),
-            status = "Own",
+            status = EnumSet.of(CollectionItem.Status.OWN),
             rating = 8
         ),
         CollectionItem(
             name = "Coffee",
             id = CollectionItem.Id(1, 5),
-            status = "Wishlist",
+            status = EnumSet.of(CollectionItem.Status.PREORDERED),
             rating = null
         ),
         CollectionItem(
             name = "Terraforming Mars",
             id = CollectionItem.Id(1, 6),
-            status = "Previous owned",
-            rating = 7
+            status = EnumSet.of(CollectionItem.Status.OWN),
+            rating = 10
         ),
     )
 
