@@ -15,6 +15,45 @@ data class CollectionItem (
     var status: EnumSet<Status>,
     var rating: Int? = null,
 ){
+    fun getMostPopularOfExistStatus() : Status {
+        if (Status.OWN in status){
+            return Status.OWN
+        }
+        else if (Status.PREVIOUSLY_OWNED in status){
+            return Status.PREVIOUSLY_OWNED
+        }
+        else if (Status.FOR_TRADE in status) {
+            return Status.FOR_TRADE
+        }
+        else if (Status.WANT_IN_TRADE in status) {
+            return Status.WANT_IN_TRADE
+        }
+        else if (Status.WANT_TO_PLAY in status) {
+            return Status.WANT_TO_PLAY
+        }
+        else if (Status.WANT_TO_BUY in status) {
+            return Status.WANT_TO_BUY
+        }
+        else if (Status.PREORDERED in status) {
+            return Status.PREORDERED
+        }
+        //
+        else if (Status.WISHLIST_MUST_HAVE in status) {
+            return Status.WISHLIST_MUST_HAVE
+        }
+        else if (Status.WISHLIST_LOVE_TO_HAVE in status) {
+            return Status.WISHLIST_LOVE_TO_HAVE
+        }
+        else if (Status.WISHLIST_LIKE_TO_HAVE in status) {
+            return Status.WISHLIST_LIKE_TO_HAVE
+        }
+        else if (Status.WISHLIST_THINKING in status) {
+            return Status.WISHLIST_THINKING
+        }
+        else {
+            return Status.WISHLIST_DO_NOT_BUY
+        }
+    }
     data class Id(val ownerId: Long, val gameId: Long)
 
     enum class Status {
