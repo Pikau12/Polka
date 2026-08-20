@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import com.polka.android.presentation.common.dialogs.TipPopUp
 import com.polka.android.presentation.common.layout.VerticalReorderGrid
 import com.polka.android.presentation.common.menus.GameRatingMenu
+import com.polka.android.presentation.common.menus.GameStatusMenu
 import com.polka.android.presentation.common.tiles.ContextMenuAction
 import com.polka.android.presentation.navigation.Destination
 import kotlin.math.exp
@@ -47,7 +48,7 @@ fun CollectionScreen(
                             }
 
                             is ContextMenuAction.onStatusClick -> {
-                                viewModel.handleEvent(CollectionScreenEvent.onGameStatusClick(id))
+                                viewModel.handleEvent(CollectionScreenEvent.onStatusMenuOpen)
                             }
                         }
                     },
@@ -91,6 +92,19 @@ fun CollectionScreen(
                 )
             }
         }
+    }
+
+    if (state.isStatusMenuOpen) {
+        GameStatusMenu(
+            state.isStatusMenuOpen,
+            onDismissRequest = {
+                viewModel.handleEvent(CollectionScreenEvent.onStatusMenuClose)
+            },
+            onGameStatusItemClick = { status ->
+                viewModel.handleEvent(CollectionScreenEvent.onStatusMenuItemClick(status))
+            },
+            choicedItems = state.draftStatus!!
+        )
     }
 
     LaunchedEffect(Unit) {

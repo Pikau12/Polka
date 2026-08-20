@@ -8,6 +8,7 @@ import com.polka.android.data.model.SortQuery
 import com.polka.android.data.model.isSortQueryEmpty
 import com.polka.android.data.usecase.collection.ObserveCollectionUseCase
 import com.polka.android.data.usecase.collection.UpdateGameRatingUseCase
+import com.polka.android.data.usecase.collection.UpdateGameStatusUseCase
 import com.polka.android.presentation.model.CollectionItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.EnumSet
 
 data class CollectionState(
     val isLoading: Boolean = false,
@@ -39,6 +41,8 @@ data class CollectionState(
     val isRatingMenuOpen: Boolean = false,
     val isTipVisible: Boolean = false,
     val tipMessage: String? = null,
+    val draftStatus: EnumSet<CollectionItem.Status>? = null,
+    val isStatusMenuOpen: Boolean = false,
 )
 
 sealed class CollectionScreenEvent {
@@ -54,7 +58,9 @@ sealed class CollectionScreenEvent {
     object onSortMenuCancel: CollectionScreenEvent()
 
     // GameTile context menu
-    data class onGameStatusClick(val id: CollectionItem.Id) : CollectionScreenEvent() // TODO : change
+    object onStatusMenuOpen : CollectionScreenEvent()
+    data class onStatusMenuItemClick(val status: CollectionItem.Status) : CollectionScreenEvent()
+    object onStatusMenuClose: CollectionScreenEvent()
     data class onRatingMenuOpen(val id: CollectionItem.Id): CollectionScreenEvent()
     data class onRatingChange(val rating: Int) : CollectionScreenEvent()
     object onRatingMenuCancel: CollectionScreenEvent()
@@ -70,6 +76,7 @@ sealed class CollectionScreenEvent {
 class CollectionViewModel @Inject constructor(
     private val observeCollectionUseCase: ObserveCollectionUseCase,
     private val updateGameRatingUseCase: UpdateGameRatingUseCase,
+    private val updateGameStatusUseCase: UpdateGameStatusUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(CollectionState())
     val state: StateFlow<CollectionState> = _state.asStateFlow()
@@ -111,7 +118,10 @@ class CollectionViewModel @Inject constructor(
             is CollectionScreenEvent.onSortMenuCancel -> handleOnSortMenuCancel()
 
             is CollectionScreenEvent.onAddSessionClick -> handleOnAddSessionClick(event.gameId)
-            is CollectionScreenEvent.onGameStatusClick -> TODO()
+
+            is CollectionScreenEvent.onStatusMenuOpen -> handleOnStatusMenuOpen()
+            is CollectionScreenEvent.onStatusMenuItemClick -> handleOnStatusMenuItemClick(event.status)
+            is CollectionScreenEvent.onStatusMenuClose -> handleOnStatusMenuClose()
 
             is CollectionScreenEvent.onRatingChange -> handleOnRatingChange(event.rating)
             is CollectionScreenEvent.onRatingMenuCancel -> handleOnRatingMenuCancel()
@@ -119,6 +129,81 @@ class CollectionViewModel @Inject constructor(
             is CollectionScreenEvent.onRatingMenuClose -> handleOnRatingMenuClose()
             is CollectionScreenEvent.onRatingTipClick -> handleOnRatingTipClick(event.message)
             is CollectionScreenEvent.onRatingTipClose -> handleOnRatingTipClose()
+        }
+    }
+
+    private fun handleOnStatusMenuOpen(){
+        val selectedGame = state.value.collection?.find {
+            it.id == state.value.selectedGameId
+        }
+
+        _state.update { it.copy(
+            isStatusMenuOpen = true,
+            draftStatus = EnumSet.noneOf(CollectionItem.Status::class.java)
+        ) }
+    }
+
+    private fun handleOnStatusMenuItemClick(status: CollectionItem.Status){ // TODO: check
+        if (status.toWishlist() == null){
+            if (status in state.value.draftStatus!!) {
+                _state.update {
+                    it.copy(
+                        draftStatus = (state.value.draftStatus as Set<Any> - status) as EnumSet<CollectionItem.Status>
+                    )
+                }
+            }
+            else {
+                _state.update {
+                    it.copy(
+                        draftStatus = (state.value.draftStatus as Set<Any> + status) as EnumSet<CollectionItem.Status>
+                    )
+                }
+            }
+        }
+        else {
+            if (status in state.value.draftStatus!!) {
+                _state.update {
+                    it.copy(
+                        draftStatus = (state.value.draftStatus as Set<Any> - status) as EnumSet<CollectionItem.Status>
+                    )
+                }
+            }
+            else if (CollectionItem.Status.Wishlist.entries.any {
+                state.value.draftStatus?.contains(it.toStatus()) == true
+            }) {
+                var currentStatus = state.value.draftStatus
+
+                for (wishlistStatus in CollectionItem.Status.Wishlist.entries) {
+                    currentStatus?.minus(wishlistStatus)
+                }
+
+                currentStatus?.plus(status)
+
+                _state.update { it.copy(
+                    draftStatus = currentStatus
+                ) }
+            }
+            else {
+                _state.update { it.copy(
+                    draftStatus = (state.value.draftStatus as Set<Any> + status) as EnumSet<CollectionItem.Status>
+                ) }
+            }
+        }
+    }
+
+    private fun handleOnStatusMenuClose(){
+        val currentStatus = state.value.draftStatus
+
+        _state.update { it.copy(
+            draftStatus = null,
+            isStatusMenuOpen = false,
+        ) }
+
+        viewModelScope.launch {
+            updateGameStatusUseCase(
+                state.value.selectedGameId!!,
+                currentStatus!!
+            )
         }
     }
 

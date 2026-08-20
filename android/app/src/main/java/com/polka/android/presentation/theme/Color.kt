@@ -2,8 +2,10 @@ package com.polka.android.presentation.theme
 
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.MenuItemColors
 import androidx.compose.ui.graphics.Color
+import coil3.compose.AsyncImagePainter
 
 // ===== Main colors =====
 val Primary = Color(0xFF9B5860)
@@ -71,6 +73,23 @@ val PolkaAcceptButton = PolkaThree
 val PolkaSortButton = PolkaOne
 val PolkaOnButton = Color(0xFFF5EFF7)
 val PolkaStar = PolkaFive
+
+val EmptyColor = Color(0x00FFFFFF)
+
+val PolkaCheckBoxColors = CheckboxColors(
+    checkedCheckmarkColor = OnSurface,
+    uncheckedCheckmarkColor = EmptyColor,
+    checkedBoxColor = Primary,
+    uncheckedBoxColor = EmptyColor,
+    disabledCheckedBoxColor = Primary,
+    disabledUncheckedBoxColor = EmptyColor,
+    disabledIndeterminateBoxColor = EmptyColor,
+    checkedBorderColor = EmptyColor,
+    uncheckedBorderColor = OnSurface,
+    disabledBorderColor = EmptyColor,
+    disabledUncheckedBorderColor = OnSurface,
+    disabledIndeterminateBorderColor = EmptyColor
+)
 
 val PolkaTipPopUpColors = CardColors(
     containerColor = Surface,

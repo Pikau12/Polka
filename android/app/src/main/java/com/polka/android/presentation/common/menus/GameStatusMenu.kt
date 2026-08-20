@@ -1,10 +1,13 @@
 package com.polka.android.presentation.common.menus
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -16,17 +19,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.polka.android.presentation.model.CollectionItem
+import com.polka.android.presentation.theme.PolkaCheckBoxColors
 import com.polka.android.presentation.theme.PolkaStar
+import com.polka.android.presentation.theme.PolkaTheme
+import java.util.EnumSet
 
 @Composable
 fun GameStatusMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     onGameStatusItemClick: (CollectionItem.Status) -> Unit,
-    choicedItems: Set<CollectionItem.Status>
+    choicedItems: EnumSet<CollectionItem.Status>
 ){
     DropdownMenu(
         expanded = expanded,
@@ -42,11 +50,12 @@ fun GameStatusMenu(
                     onGameStatusItemClick(status)
                 },
                 leadingIcon = {
-                    Checkbox( // TODO: add colors
+                    Checkbox(
                         checked = status in choicedItems,
                         onCheckedChange = {
                             onGameStatusItemClick(status)
-                        }
+                        },
+                        colors = PolkaCheckBoxColors
                     )
                 }
             )
@@ -60,7 +69,8 @@ fun GameStatusMenu(
             leadingIcon = {
                 Checkbox(
                     checked = choicedItems.any { it.toWishlist() != null },
-                    onCheckedChange = null
+                    onCheckedChange = null,
+                    colors = PolkaCheckBoxColors
                 )
             },
             trailingIcon = {
@@ -83,13 +93,44 @@ fun GameStatusMenu(
                     onClick = {
                         onGameStatusItemClick(status)
                         wishlistExpanded = false
-                    },
-                    leadingIcon = {
-                        Checkbox(
-                            checked = status in choicedItems,
-                            onCheckedChange = { onGameStatusItemClick(status) }
-                        )
                     }
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 400, heightDp = 800)
+@Composable
+fun GameStatusMenuPreview() {
+    var expanded by remember { mutableStateOf(true) }
+    var selectedStatuses by remember { mutableStateOf(setOf<CollectionItem.Status>()) }
+
+    PolkaTheme {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            // Кнопка, к которой привязано меню
+            Box {
+                Button(
+                    onClick = { expanded = true },
+                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    Text("Open menu")
+                }
+
+                GameStatusMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    onGameStatusItemClick = { status ->
+                        selectedStatuses = if (status in selectedStatuses) {
+                            selectedStatuses - status
+                        } else {
+                            selectedStatuses + status
+                        }
+                    },
+                    choicedItems = selectedStatuses
                 )
             }
         }

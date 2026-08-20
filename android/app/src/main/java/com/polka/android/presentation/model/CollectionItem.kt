@@ -112,6 +112,10 @@ data class CollectionItem (
             removeAll(Wishlist.entries.map { it.toStatus() })
             add(wishlist.toStatus())
         }
+
+        fun toDataStatus(): CollectionItem.Status {
+            return CollectionItem.Status.valueOf(this.name)
+        }
     }
 }
 
@@ -122,5 +126,11 @@ fun CollectionItem.Status.toUIStatus(): com.polka.android.presentation.model.Col
 fun EnumSet<CollectionItem.Status>.toUIStatusSet(): EnumSet<com.polka.android.presentation.model.CollectionItem.Status> {
     val result = EnumSet.noneOf(com.polka.android.presentation.model.CollectionItem.Status::class.java)
     this.forEach { result.add(it.toUIStatus()) }
+    return result
+}
+
+fun EnumSet<com.polka.android.presentation.model.CollectionItem.Status>.toDataStatusSet(): EnumSet<CollectionItem.Status> {
+    val result = EnumSet.noneOf(CollectionItem::class.java)
+    this.forEach { result.add(it.toDataStatus()) }
     return result
 }
