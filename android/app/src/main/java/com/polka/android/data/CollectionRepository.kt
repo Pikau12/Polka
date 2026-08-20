@@ -6,12 +6,11 @@ import com.polka.android.data.model.CollectionItem
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.EnumSet
 
 interface CollectionRepository {
     fun observeCollection(): Flow<List<CollectionItem>>
     suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?)
-    suspend fun updateItemStatus(item: CollectionItem.Id, status: EnumSet<CollectionItem.Status>)
+    suspend fun updateItemStatus(item: CollectionItem.Id, status: Set<CollectionItem.Status>)
 
     /**
      * Moves display order of the `itemToMove` right above the `aboveItem` or `null` if moved
@@ -46,8 +45,8 @@ class DefaultCollectionRepository @Inject constructor(private val collectionDao:
         collectionDao.updateRating(item.ownerId, item.gameId, rating)
     }
 
-    override suspend fun updateItemStatus(item: CollectionItem.Id, status: EnumSet<CollectionItem.Status>) {
-        collectionDao.updateStatus(item.ownerId, item.gameId, status) // TODO : переделыывайте collectionDao, изменили поле статуса у collectionItem, но остальное не изменили
+    override suspend fun updateItemStatus(item: CollectionItem.Id, status: Set<CollectionItem.Status>) {
+        collectionDao.updateStatus(item.ownerId, item.gameId, status)
     }
 
     override suspend fun moveItemInBetween(itemToMove: CollectionItem.Id, aboveItem: CollectionItem.Id?, belowItem: CollectionItem.Id?) {

@@ -2,14 +2,13 @@ package com.polka.android.data.model
 
 import com.polka.android.data.database.model.CollectionItemEntity
 import com.polka.android.data.image.ImageSource
-import java.util.EnumSet
 
 data class CollectionItem(
     val id: Id,
     val displayOrder: Double,
     val note: String,
     val rating: Int?,
-    val status: EnumSet<Status>,
+    val status: Set<Status>,
     val images: List<ImageSource>,
 ) {
     data class Id(val ownerId: Long, val gameId: Long)
@@ -66,9 +65,8 @@ data class CollectionItem(
             }
         }
 
-        fun EnumSet<Status>.wishlist(wishlist: Wishlist) {
-            removeAll(Wishlist.entries.map { it.toStatus() })
-            add(wishlist.toStatus())
+        fun Set<Status>.wishlist(wishlist: Wishlist): Set<Status> {
+            return (this - Wishlist.entries.map { it.toStatus() }.toSet()) + wishlist.toStatus()
         }
     }
 

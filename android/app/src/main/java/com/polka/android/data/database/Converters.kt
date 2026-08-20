@@ -6,10 +6,9 @@ import com.polka.android.data.image.fromDatabaseToSavedImage
 import com.polka.android.data.image.toDatabaseString
 import com.polka.android.data.model.CollectionItem
 import com.polka.android.utils.toBitmask
-import com.polka.android.utils.toEnumSet
+import com.polka.android.utils.toSet
 import org.json.JSONArray
 import org.json.JSONException
-import java.util.EnumSet
 
 class Converters {
     @TypeConverter
@@ -57,12 +56,12 @@ class Converters {
     }
 
     @TypeConverter
-    fun collectionItemStatusSetToBitmask(status: EnumSet<CollectionItem.Status>?): Long? {
+    fun collectionItemStatusSetToBitmask(status: Set<CollectionItem.Status>?): Long? {
         return status?.toBitmask()
     }
 
     @TypeConverter
-    fun bitmaskToCollectionItemStatusSet(bitmask: Long?): EnumSet<CollectionItem.Status>? {
-        return bitmask?.toEnumSet<CollectionItem.Status>()
+    fun bitmaskToCollectionItemStatusSet(bitmask: Long?): Set<CollectionItem.Status>? {
+        return bitmask?.toSet<CollectionItem.Status>()
     }
 }

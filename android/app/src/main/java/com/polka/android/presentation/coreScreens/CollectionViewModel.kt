@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.EnumSet
 
 data class CollectionState(
     val isLoading: Boolean = false,
@@ -41,7 +40,7 @@ data class CollectionState(
     val isRatingMenuOpen: Boolean = false,
     val isTipVisible: Boolean = false,
     val tipMessage: String? = null,
-    val draftStatus: EnumSet<CollectionItem.Status>? = null,
+    val draftStatus: Set<CollectionItem.Status>? = null,
     val isStatusMenuOpen: Boolean = false,
 )
 
@@ -139,7 +138,7 @@ class CollectionViewModel @Inject constructor(
 
         _state.update { it.copy(
             isStatusMenuOpen = true,
-            draftStatus = EnumSet.noneOf(CollectionItem.Status::class.java)
+            draftStatus = setOf()
         ) }
     }
 
@@ -148,14 +147,14 @@ class CollectionViewModel @Inject constructor(
             if (status in state.value.draftStatus!!) {
                 _state.update {
                     it.copy(
-                        draftStatus = (state.value.draftStatus as Set<Any> - status) as EnumSet<CollectionItem.Status>
+                        draftStatus = state.value.draftStatus?.minus(status)
                     )
                 }
             }
             else {
                 _state.update {
                     it.copy(
-                        draftStatus = (state.value.draftStatus as Set<Any> + status) as EnumSet<CollectionItem.Status>
+                        draftStatus = state.value.draftStatus?.plus(status)
                     )
                 }
             }
@@ -164,7 +163,7 @@ class CollectionViewModel @Inject constructor(
             if (status in state.value.draftStatus!!) {
                 _state.update {
                     it.copy(
-                        draftStatus = (state.value.draftStatus as Set<Any> - status) as EnumSet<CollectionItem.Status>
+                        draftStatus = state.value.draftStatus?.minus(status)
                     )
                 }
             }
@@ -185,7 +184,7 @@ class CollectionViewModel @Inject constructor(
             }
             else {
                 _state.update { it.copy(
-                    draftStatus = (state.value.draftStatus as Set<Any> + status) as EnumSet<CollectionItem.Status>
+                    draftStatus = state.value.draftStatus?.plus(status)
                 ) }
             }
         }

@@ -17,7 +17,7 @@ interface CollectionDao {
     suspend fun updateRating(ownerId: Long, gameId: Long, rating: Int?)
 
     @Query("UPDATE collection_items SET status = :status WHERE ownerId = :ownerId AND gameId = :gameId")
-    suspend fun updateStatus(ownerId: Long, gameId: Long, status: CollectionItem.Status)
+    suspend fun updateStatus(ownerId: Long, gameId: Long, status: Set<CollectionItem.Status>)
 
     @Query("UPDATE collection_items SET displayOrder = :newOrder WHERE ownerId = :ownerId AND gameId = :gameId")
     suspend fun updateOrder(ownerId: Long, gameId: Long, newOrder: Double)

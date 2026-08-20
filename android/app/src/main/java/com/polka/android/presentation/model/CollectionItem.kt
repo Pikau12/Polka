@@ -2,7 +2,6 @@ package com.polka.android.presentation.model
 
 import coil3.request.ImageRequest
 import com.polka.android.data.model.CollectionItem
-import java.util.EnumSet
 
 /**
  * Class that represents [CollectionItem] from data/model to UI layer
@@ -12,7 +11,7 @@ data class CollectionItem (
     var name: String,
     var id: Id,
     var image: ImageRequest? = null,
-    var status: EnumSet<Status>,
+    var status: Set<Status>,
     var rating: Int? = null,
 ){
     fun getMostPopularOfExistStatus() : Status {
@@ -108,9 +107,8 @@ data class CollectionItem (
             }
         }
 
-        fun EnumSet<Status>.wishlist(wishlist: Wishlist) {
-            removeAll(Wishlist.entries.map { it.toStatus() })
-            add(wishlist.toStatus())
+        fun Set<Status>.wishlist(wishlist: Wishlist): Set<Status> {
+            return (this - Wishlist.entries.map { it.toStatus() }.toSet()) + wishlist.toStatus()
         }
 
         fun toDataStatus(): CollectionItem.Status {
@@ -123,14 +121,14 @@ fun CollectionItem.Status.toUIStatus(): com.polka.android.presentation.model.Col
     return com.polka.android.presentation.model.CollectionItem.Status.valueOf(this.name)
 }
 
-fun EnumSet<CollectionItem.Status>.toUIStatusSet(): EnumSet<com.polka.android.presentation.model.CollectionItem.Status> {
-    val result = EnumSet.noneOf(com.polka.android.presentation.model.CollectionItem.Status::class.java)
+fun Set<CollectionItem.Status>.toUIStatusSet(): Set<com.polka.android.presentation.model.CollectionItem.Status> {
+    val result = java.util.EnumSet.noneOf(com.polka.android.presentation.model.CollectionItem.Status::class.java)
     this.forEach { result.add(it.toUIStatus()) }
     return result
 }
 
-fun EnumSet<com.polka.android.presentation.model.CollectionItem.Status>.toDataStatusSet(): EnumSet<CollectionItem.Status> {
-    val result = EnumSet.noneOf(CollectionItem::class.java)
+fun Set<com.polka.android.presentation.model.CollectionItem.Status>.toDataStatusSet(): Set<CollectionItem.Status> {
+    val result = java.util.EnumSet.noneOf(CollectionItem.Status::class.java)
     this.forEach { result.add(it.toDataStatus()) }
     return result
 }

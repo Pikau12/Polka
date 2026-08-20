@@ -27,14 +27,13 @@ import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.theme.PolkaCheckBoxColors
 import com.polka.android.presentation.theme.PolkaStar
 import com.polka.android.presentation.theme.PolkaTheme
-import java.util.EnumSet
 
 @Composable
 fun GameStatusMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     onGameStatusItemClick: (CollectionItem.Status) -> Unit,
-    choicedItems: EnumSet<CollectionItem.Status>
+    choicedItems: Set<CollectionItem.Status>
 ){
     DropdownMenu(
         expanded = expanded,
