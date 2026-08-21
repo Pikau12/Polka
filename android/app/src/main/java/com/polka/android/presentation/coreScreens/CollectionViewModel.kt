@@ -67,7 +67,6 @@ sealed class CollectionScreenEvent {
     data class onAddSessionClick(val gameId: Long) : CollectionScreenEvent()
     data class onRatingTipClick(val message: String) : CollectionScreenEvent()
     object onRatingTipClose: CollectionScreenEvent()
-    // TODO: add more
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -138,7 +137,7 @@ class CollectionViewModel @Inject constructor(
 
         _state.update { it.copy(
             isStatusMenuOpen = true,
-            draftStatus = setOf()
+            draftStatus = selectedGame?.status
         ) }
     }
 
@@ -173,7 +172,7 @@ class CollectionViewModel @Inject constructor(
                 var currentStatus = state.value.draftStatus
 
                 for (wishlistStatus in CollectionItem.Status.Wishlist.entries) {
-                    currentStatus?.minus(wishlistStatus)
+                    currentStatus = currentStatus?.minus(wishlistStatus.toStatus())
                 }
 
                 currentStatus?.plus(status)
