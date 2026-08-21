@@ -92,19 +92,19 @@ fun CollectionScreen(
                 )
             }
         }
-    }
 
-    if (state.isStatusMenuOpen) {
-        GameStatusMenu(
-            state.isStatusMenuOpen,
-            onDismissRequest = {
-                viewModel.handleEvent(CollectionScreenEvent.onStatusMenuClose)
-            },
-            onGameStatusItemClick = { status ->
-                viewModel.handleEvent(CollectionScreenEvent.onStatusMenuItemClick(status))
-            },
-            choicedItems = state.draftStatus!!
-        )
+        if (state.isStatusMenuOpen) {
+            GameStatusMenu(
+                state.isStatusMenuOpen,
+                onDismissRequest = {
+                    viewModel.handleEvent(CollectionScreenEvent.onStatusMenuClose)
+                },
+                onGameStatusItemClick = { status ->
+                    viewModel.handleEvent(CollectionScreenEvent.onStatusMenuItemClick(status))
+                },
+                choicedItems = state.draftStatus!!
+            )
+        }
     }
 
     LaunchedEffect(Unit) {
