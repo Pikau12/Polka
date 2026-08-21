@@ -57,7 +57,7 @@ sealed class CollectionScreenEvent {
     object onSortMenuCancel: CollectionScreenEvent()
 
     // GameTile context menu
-    object onStatusMenuOpen : CollectionScreenEvent()
+    data class onStatusMenuOpen(val id: CollectionItem.Id) : CollectionScreenEvent()
     data class onStatusMenuItemClick(val status: CollectionItem.Status) : CollectionScreenEvent()
     object onStatusMenuClose: CollectionScreenEvent()
     data class onRatingMenuOpen(val id: CollectionItem.Id): CollectionScreenEvent()
@@ -117,7 +117,7 @@ class CollectionViewModel @Inject constructor(
 
             is CollectionScreenEvent.onAddSessionClick -> handleOnAddSessionClick(event.gameId)
 
-            is CollectionScreenEvent.onStatusMenuOpen -> handleOnStatusMenuOpen()
+            is CollectionScreenEvent.onStatusMenuOpen -> handleOnStatusMenuOpen(event.id)
             is CollectionScreenEvent.onStatusMenuItemClick -> handleOnStatusMenuItemClick(event.status)
             is CollectionScreenEvent.onStatusMenuClose -> handleOnStatusMenuClose()
 
@@ -130,13 +130,14 @@ class CollectionViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnStatusMenuOpen(){
+    private fun handleOnStatusMenuOpen(id: CollectionItem.Id){
         val selectedGame = state.value.collection?.find {
             it.id == state.value.selectedGameId
         }
 
         _state.update { it.copy(
             isStatusMenuOpen = true,
+            selectedGameId = id,
             draftStatus = selectedGame?.status
         ) }
     }
@@ -191,15 +192,17 @@ class CollectionViewModel @Inject constructor(
 
     private fun handleOnStatusMenuClose(){
         val currentStatus = state.value.draftStatus
+        val id = state.value.selectedGameId
 
         _state.update { it.copy(
             draftStatus = null,
+            selectedGameId = null,
             isStatusMenuOpen = false,
         ) }
 
         viewModelScope.launch {
             updateGameStatusUseCase(
-                state.value.selectedGameId!!,
+                id!!,
                 currentStatus!!
             )
         }
