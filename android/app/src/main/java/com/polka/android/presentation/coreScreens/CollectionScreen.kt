@@ -30,7 +30,7 @@ fun CollectionScreen(
 
     Box {
         Scaffold { paddingValues ->
-            if (!state.isLoading) {
+            if (!state.isLoading && state.collection != null) {
                 VerticalReorderGrid(
                     modifier = Modifier.padding(paddingValues),
                     collection = state.collection!!,
@@ -48,7 +48,7 @@ fun CollectionScreen(
                             }
 
                             is ContextMenuAction.onStatusClick -> {
-                                viewModel.handleEvent(CollectionScreenEvent.onStatusMenuOpen)
+                                viewModel.handleEvent(CollectionScreenEvent.onStatusMenuOpen(id))
                             }
                         }
                     },
