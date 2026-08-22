@@ -29,6 +29,8 @@ fun CollectionScreen(
     val state by viewModel.state.collectAsState()
 
     Box {
+
+
         Scaffold { paddingValues ->
             if (!state.isLoading && state.collection != null) {
                 VerticalReorderGrid(

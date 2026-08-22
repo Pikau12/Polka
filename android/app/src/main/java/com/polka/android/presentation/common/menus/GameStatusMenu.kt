@@ -26,14 +26,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.theme.PolkaCheckBoxColors
+import com.polka.android.presentation.theme.PolkaRadioButtonColors
 import com.polka.android.presentation.theme.PolkaTheme
 
 @Composable
@@ -42,17 +44,18 @@ fun CenteredDropdownMenu(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     offset: DpOffset = DpOffset(0.dp, 0.dp),
+    showShadow: Boolean = true,
     content: @Composable ColumnScope.() -> Unit
 ) {
     if (expanded) {
-        Popup(
-            alignment = Alignment.Center,
-            offset = IntOffset(offset.x.value.toInt(), offset.y.value.toInt()),
+        Dialog(
             onDismissRequest = onDismissRequest,
-            properties = PopupProperties(
-                focusable = true,
-                dismissOnClickOutside = true
-            )
+            properties = DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true,
+                usePlatformDefaultWidth = false,
+                decorFitsSystemWindows = false,
+            ),
         ) {
             Box(
                 modifier = Modifier
@@ -64,6 +67,19 @@ fun CenteredDropdownMenu(
                     modifier = modifier
                         .wrapContentWidth()
                         .clickable { }
+                        .offset(x = offset.x, y = offset.y)
+                        .then(
+                            if (showShadow) {
+                                Modifier.shadow(
+                                    elevation = 4.dp,
+                                    shape = RoundedCornerShape(4.dp),
+                                    ambientColor = Color.Black.copy(alpha = 0.2f),
+                                    spotColor = Color.Black.copy(alpha = 0.2f)
+                                )
+                            } else {
+                                Modifier
+                            }
+                        )
                         .background(
                             color = MaterialTheme.colorScheme.surface,
                             shape = RoundedCornerShape(4.dp)
@@ -87,7 +103,8 @@ fun GameStatusMenu(
 
     CenteredDropdownMenu(
         expanded = expanded,
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        showShadow = true
     ) {
         for (status in CollectionItem.Status.entries.filter { it.toWishlist() == null }) {
             Row(
@@ -136,11 +153,11 @@ fun GameStatusMenu(
         }
     }
 
-    // Подменю Wishlist — отдельное, позиционируется ниже
     CenteredDropdownMenu(
         expanded = wishlistExpanded,
         onDismissRequest = { wishlistExpanded = false },
-        offset = DpOffset(0.dp, 200.dp)
+        offset = DpOffset(0.dp, 200.dp),
+        showShadow = false
     ) {
         for (wishlistStatus in CollectionItem.Status.Wishlist.entries) {
             val status = wishlistStatus.toStatus()
@@ -155,7 +172,8 @@ fun GameStatusMenu(
             ) {
                 RadioButton(
                     selected = isSelected,
-                    onClick = { onGameStatusItemClick(status) }
+                    onClick = { onGameStatusItemClick(status) },
+                    colors = PolkaRadioButtonColors
                 )
                 Text(
                     text = wishlistStatus.toString(),
@@ -200,5 +218,3 @@ fun GameStatusMenuPreview() {
         }
     }
 }
-
-// TODO: must to fix submenu shadow problem

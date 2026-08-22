@@ -4,6 +4,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.MenuItemColors
+import androidx.compose.material3.RadioButtonColors
 import androidx.compose.ui.graphics.Color
 import coil3.compose.AsyncImagePainter
 
@@ -75,6 +76,13 @@ val PolkaOnButton = Color(0xFFF5EFF7)
 val PolkaStar = PolkaFive
 
 val EmptyColor = Color(0x00FFFFFF)
+
+val PolkaRadioButtonColors = RadioButtonColors(
+    selectedColor = Primary,
+    unselectedColor = OnSurface,
+    disabledSelectedColor = Primary,
+    disabledUnselectedColor = OnSurface
+)
 
 val PolkaCheckBoxColors = CheckboxColors(
     checkedCheckmarkColor = OnSurface,
