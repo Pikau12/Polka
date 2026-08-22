@@ -89,7 +89,7 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 	if err := c.ShouldBindJSON(&request); err != nil {
 		h.log.ErrorContext(
 			c.Request.Context(),
-			"failed to bind logout request",
+			"failed to bind refresh request",
 			slog.Any("error", err),
 		)
 

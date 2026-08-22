@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/polka/backend/internal/api/dto"
+	"github.com/polka/backend/internal/auth/jwt"
 	"github.com/polka/backend/internal/model"
 	"github.com/polka/backend/internal/repository"
-	"github.com/polka/backend/internal/service/jwt"
 )
 
 type AuthRepository interface {

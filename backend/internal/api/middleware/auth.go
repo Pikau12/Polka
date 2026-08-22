@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/polka/backend/internal/service/jwt"
+	"github.com/polka/backend/internal/auth/jwt"
 )
 
 type AccessTokenParser interface {

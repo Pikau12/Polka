@@ -35,14 +35,28 @@ type AccessTokenClaims struct {
 	UserID int64
 }
 
-func NewTokenManager() *TokenManager {
-	return &TokenManager{
+func NewTokenManager() (*TokenManager, error) {
+	manager := &TokenManager{
 		secret:     []byte(os.Getenv("JWT_SECRET")),
 		accessTTL:  time.Duration(15) * time.Minute,
 		refreshTTL: time.Duration(30) * time.Hour * 24,
 		issuer:     os.Getenv("JWT_ISSUER"),
 		audience:   os.Getenv("JWT_AUDIENCE"),
 	}
+
+	if len(manager.secret) == 0 {
+		return nil, fmt.Errorf("failed to get JWT_SECRET env")
+	}
+
+	if manager.issuer == "" {
+		return nil, fmt.Errorf("failed to get JWT_ISSUER env")
+	}
+
+	if manager.audience == "" {
+		return nil, fmt.Errorf("failed to get JWT_AUDIENCE env")
+	}
+
+	return manager, nil
 }
 
 func (t *TokenManager) CreateAccessToken(userID int64) (*AccessToken, error) {
