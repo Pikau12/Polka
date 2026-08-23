@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 interface CollectionRepository {
-    fun observeCollection(): Flow<Map<Long, CollectionItem>>
+    fun observeCollection(): Flow<List<CollectionItem>>
     suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?)
-    suspend fun updateItemStatus(item: CollectionItem.Id, status: CollectionItem.Status)
+    suspend fun updateItemStatus(item: CollectionItem.Id, status: Set<CollectionItem.Status>)
 
     /**
      * Moves display order of the `itemToMove` right above the `aboveItem` or `null` if moved
@@ -35,9 +35,9 @@ interface CollectionRepository {
 }
 
 class DefaultCollectionRepository @Inject constructor(private val collectionDao: CollectionDao) : CollectionRepository {
-    override fun observeCollection(): Flow<Map<Long, CollectionItem>> {
+    override fun observeCollection(): Flow<List<CollectionItem>> {
         return collectionDao.getAll().map { list ->
-            list.associate {it.gameId to CollectionItem(it)}
+            list.map { CollectionItem(it) }
         }
     }
 
@@ -45,7 +45,7 @@ class DefaultCollectionRepository @Inject constructor(private val collectionDao:
         collectionDao.updateRating(item.ownerId, item.gameId, rating)
     }
 
-    override suspend fun updateItemStatus(item: CollectionItem.Id, status: CollectionItem.Status) {
+    override suspend fun updateItemStatus(item: CollectionItem.Id, status: Set<CollectionItem.Status>) {
         collectionDao.updateStatus(item.ownerId, item.gameId, status)
     }
 

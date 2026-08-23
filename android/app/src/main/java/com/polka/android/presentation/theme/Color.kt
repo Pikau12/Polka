@@ -1,8 +1,12 @@
 package com.polka.android.presentation.theme
 
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.MenuItemColors
+import androidx.compose.material3.RadioButtonColors
 import androidx.compose.ui.graphics.Color
+import coil3.compose.AsyncImagePainter
 
 // ===== Main colors =====
 val Primary = Color(0xFF9B5860)
@@ -67,7 +71,54 @@ val PolkaCurrentItemButton = PolkaThree
 val PolkaSupportProjectButton = PolkaSeven
 val PolkaBackButton = PolkaSeven
 val PolkaAcceptButton = PolkaThree
+val PolkaSortButton = PolkaOne
 val PolkaOnButton = Color(0xFFF5EFF7)
+val PolkaStar = PolkaFive
+
+val EmptyColor = Color(0x00FFFFFF)
+
+val PolkaRadioButtonColors = RadioButtonColors(
+    selectedColor = Primary,
+    unselectedColor = OnSurface,
+    disabledSelectedColor = Primary,
+    disabledUnselectedColor = OnSurface
+)
+
+val PolkaCheckBoxColors = CheckboxColors(
+    checkedCheckmarkColor = OnSurface,
+    uncheckedCheckmarkColor = EmptyColor,
+    checkedBoxColor = Primary,
+    uncheckedBoxColor = EmptyColor,
+    disabledCheckedBoxColor = Primary,
+    disabledUncheckedBoxColor = EmptyColor,
+    disabledIndeterminateBoxColor = EmptyColor,
+    checkedBorderColor = EmptyColor,
+    uncheckedBorderColor = OnSurface,
+    disabledBorderColor = EmptyColor,
+    disabledUncheckedBorderColor = OnSurface,
+    disabledIndeterminateBorderColor = EmptyColor
+)
+
+val PolkaTipPopUpColors = CardColors(
+    containerColor = Surface,
+    contentColor = OnSurface,
+    disabledContentColor = Surface,
+    disabledContainerColor = OnSurface
+)
+
+val PolkaTipButtonColors = ButtonColors(
+    containerColor = PolkaTipButton,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaTipButton,
+    disabledContentColor = PolkaOnButton
+)
+
+val PolkaCancelButtonColors = ButtonColors(
+    containerColor = PolkaCancelButton,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaCancelButton,
+    disabledContentColor = PolkaOnButton
+)
 
 val PolkaBackButtonColors = ButtonColors(
     containerColor = PolkaBackButton,
@@ -80,6 +131,13 @@ val PolkaAcceptButtonColors = ButtonColors(
     containerColor = PolkaAcceptButton,
     contentColor = PolkaOnButton,
     disabledContainerColor = PolkaAcceptButton,
+    disabledContentColor = PolkaOnButton
+)
+
+val PolkaSortButtonColors = ButtonColors(
+    containerColor = PolkaSortButton,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaSortButton,
     disabledContentColor = PolkaOnButton
 )
 

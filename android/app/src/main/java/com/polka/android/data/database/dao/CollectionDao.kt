@@ -1,12 +1,14 @@
 package com.polka.android.data.database.dao
 
 import android.util.Log
+import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.polka.android.data.database.model.CollectionItemEntity
 import com.polka.android.data.model.CollectionItem
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface CollectionDao {
     @Query("SELECT * FROM collection_items")
     fun getAll(): Flow<List<CollectionItemEntity>>
@@ -15,7 +17,7 @@ interface CollectionDao {
     suspend fun updateRating(ownerId: Long, gameId: Long, rating: Int?)
 
     @Query("UPDATE collection_items SET status = :status WHERE ownerId = :ownerId AND gameId = :gameId")
-    suspend fun updateStatus(ownerId: Long, gameId: Long, status: CollectionItem.Status)
+    suspend fun updateStatus(ownerId: Long, gameId: Long, status: Set<CollectionItem.Status>)
 
     @Query("UPDATE collection_items SET displayOrder = :newOrder WHERE ownerId = :ownerId AND gameId = :gameId")
     suspend fun updateOrder(ownerId: Long, gameId: Long, newOrder: Double)

@@ -28,12 +28,14 @@ import com.polka.android.presentation.theme.PolkaTheme
 import okhttp3.Address
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState
+import java.util.EnumSet
 
 @Composable
 fun VerticalReorderGrid(
+    modifier: Modifier = Modifier,
     collection: List<CollectionItem>,
     onDoubleClick: (Long) -> Unit,
-    onContextMenu: (Long, ContextMenuAction) -> Unit,
+    onContextMenu: (CollectionItem.Id, ContextMenuAction) -> Unit,
     onAddGameClick: () -> Unit,
 ) {
     var isDragging by remember { mutableStateOf(false) }
@@ -52,16 +54,15 @@ fun VerticalReorderGrid(
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         state = lazyGridState,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background), // TODO: change color
+        modifier = modifier
+            .fillMaxSize(),
         contentPadding = PaddingValues(16.dp, 16.dp),
         horizontalArrangement = Arrangement.spacedBy(13.dp),
         verticalArrangement = Arrangement.spacedBy(13.dp),
         userScrollEnabled = !isDragging,
     ) {
-        items(data.value, key = { it.collectionItemId }) {
-            ReorderableItem(state, key = it.collectionItemId) { dragging ->
+        items(data.value, key = { it.id.gameId }) {
+            ReorderableItem(state, key = it.id.gameId) { dragging ->
                 LaunchedEffect(dragging) {
                     isDragging = dragging
                 }
@@ -101,51 +102,42 @@ fun ReorderableGridPreview(){
     val testGames = listOf(
         CollectionItem(
             name = "Catan",
-            gameId = 1,
-            collectionItemId = 1,
-            displayOrder = 1,
-            status = "Own",
+            id = CollectionItem.Id(1, 1),
+            status = EnumSet.of(CollectionItem.Status.OWN),
             rating = 8
         ),
         CollectionItem(
             name = "Code Names",
-            gameId = 1,
-            collectionItemId = 2,
-            displayOrder = 2,
-            status = "Wishlist",
+            id = CollectionItem.Id(1, 2),
+            status = EnumSet.of(
+                CollectionItem.Status.PREVIOUSLY_OWNED,
+                CollectionItem.Status.WANT_TO_PLAY
+            ),
             rating = null
         ),
         CollectionItem(
             name = "Ticket to Ride",
-            gameId = 1,
-            collectionItemId = 3,
-            displayOrder = 3,
-            status = "Previous owned",
+            id = CollectionItem.Id(1, 3),
+            status = EnumSet.of(CollectionItem.Status.WANT_TO_PLAY),
             rating = 7
         ),
         CollectionItem(
             name = "Azul",
-            gameId = 1,
-            collectionItemId = 4,
-            displayOrder = 1,
-            status = "Own",
+            id = CollectionItem.Id(1, 4),
+            status = EnumSet.of(CollectionItem.Status.OWN),
             rating = 8
         ),
         CollectionItem(
             name = "Coffee",
-            gameId = 1,
-            collectionItemId = 5,
-            displayOrder = 2,
-            status = "Wishlist",
+            id = CollectionItem.Id(1, 5),
+            status = EnumSet.of(CollectionItem.Status.PREORDERED),
             rating = null
         ),
         CollectionItem(
             name = "Terraforming Mars",
-            gameId = 1,
-            collectionItemId = 6,
-            displayOrder = 3,
-            status = "Previous owned",
-            rating = 7
+            id = CollectionItem.Id(1, 6),
+            status = EnumSet.of(CollectionItem.Status.OWN),
+            rating = 10
         ),
     )
 

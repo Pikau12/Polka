@@ -16,23 +16,7 @@ fun NavGraphBuilder.coreAndOtherNavGraph(
         route = "core"
     ){
         composable(Destination.CollectionCore.route){
-            CollectionScreen(
-                onToLeftSwipe = {
-                    navController.navigate(Destination.SessionsCore.route)
-                },
-                onToRightSwipe = {
-                    navController.navigate(Destination.User.route)
-                },
-                onGamesSearchClick = {
-                    navController.navigate(Destination.GamesSearch.route)
-                },
-                onGameClick = { gameId ->
-                    navController.navigate(Destination.Game.pass(gameId))
-                },
-                onAddGameClick = {
-                    navController.navigate(Destination.GameCard.route)
-                }
-            )
+            CollectionScreen(navController = navController)
         }
 
         composable(Destination.SessionsCore.route){
@@ -55,7 +39,7 @@ fun NavGraphBuilder.coreAndOtherNavGraph(
                 },
                 onAddSessionClick = {
                     navController.navigate(Destination.SessionCard.route)
-                }
+                } // TODO: change
             )
         }
 
@@ -94,19 +78,19 @@ fun NavGraphBuilder.coreAndOtherNavGraph(
                         popUpTo(Destination.User.route){ inclusive = true }
                     }
                 }
-            )
+            ) // TODO: change
         }
 
         composable(Destination.Settings.route){
 
-        }
+        } // TODO: change
 
         composable(Destination.Account.route){
 
-        }
+        } // TODO: change
 
         composable(Destination.SupportProject.route){
 
-        }
+        } // TODO: change
     }
 }

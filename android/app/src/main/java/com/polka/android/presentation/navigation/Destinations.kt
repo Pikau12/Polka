@@ -18,7 +18,7 @@ sealed class Destination(val route: String) {
     // ===== Games =====
     object CollectionGames : Destination("collection_games")
     object Game : Destination("game/{gameId}"){
-        fun pass(gameId: Int) = "game/$gameId"
+        fun pass(gameId: Long) = "game/$gameId"
     }
     object GamesSearch : Destination("games_search")
     object GameCard : Destination("game_card/{gameId}") {
@@ -31,8 +31,8 @@ sealed class Destination(val route: String) {
         fun pass(sessionId: Int) = "session/$sessionId"
     }
     object SessionsSearch : Destination("sessions_search")
-    object SessionCard : Destination("session_card/{sessionId}") {
-        fun pass(sessionId: Int) = "session_card/$sessionId"
+    object SessionCard : Destination("session_card/{gameId}") {
+        fun pass(gameId: Long) = "session_card/$gameId"
     }
 
     // ===== Friends =====

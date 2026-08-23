@@ -64,7 +64,7 @@ fun GameTile(
     collectionItem: CollectionItem,
     modifier: Modifier = Modifier,
     onDoubleClick: (Long) -> Unit,
-    onContextMenu: (Long, ContextMenuAction) -> Unit,
+    onContextMenu: (CollectionItem.Id, ContextMenuAction) -> Unit,
 ){
     var showContextMenu by remember { mutableStateOf(false) }
     var cardPosition by remember { mutableStateOf(Offset.Zero) }
@@ -90,7 +90,7 @@ fun GameTile(
                         showContextMenu = true
                     },
                     onDoubleClick = {
-                        onDoubleClick(collectionItem.gameId)
+                        onDoubleClick(collectionItem.id.gameId)
                     }
                 ),
             shape = RoundedCornerShape(16.dp),
@@ -163,12 +163,12 @@ fun GameTile(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = "Status: ${collectionItem.status}",
+                            text = "Status: ${collectionItem.status.toString()}",
                             style = MaterialTheme.typography.bodyLarge
                         )
-                           }, // TODO: change to const string from values.xml
+                           },
                     onClick = {
-                        onContextMenu(collectionItem.gameId, ContextMenuAction.onStatusClick)
+                        onContextMenu(collectionItem.id, ContextMenuAction.onStatusClick)
                         showContextMenu = false
                     },
                     leadingIcon = {
@@ -191,7 +191,7 @@ fun GameTile(
                         )
                            }, // TODO: change to const string from values.xml
                     onClick = {
-                        onContextMenu(collectionItem.gameId, ContextMenuAction.onRatingClick)
+                        onContextMenu(collectionItem.id, ContextMenuAction.onRatingClick)
                         showContextMenu = false
                     },
                     leadingIcon = {
@@ -215,7 +215,7 @@ fun GameTile(
                         )
                            }, // TODO: change to const string from values.xml
                     onClick = {
-                        onContextMenu(collectionItem.gameId, ContextMenuAction.onAddSessionClick)
+                        onContextMenu(collectionItem.id, ContextMenuAction.onAddSessionClick)
                         showContextMenu = false
                     },
                     leadingIcon = {
@@ -227,94 +227,6 @@ fun GameTile(
                         )
                     }
                 )
-            }
-        }
-    }
-}
-
-@Preview( // TIP: only for preview
-    name = "GameTile Row (3 items)",
-    showBackground = true,
-    backgroundColor = 0xFFF5F5F5,
-    device = Devices.PIXEL_4
-)
-@Composable
-fun PreviewGameRowTile() {
-    PolkaTheme {
-        val testGames = listOf(
-            CollectionItem(
-                name = "Catan",
-                gameId = 1,
-                collectionItemId = 1,
-                displayOrder = 1,
-                status = "Own",
-                rating = 8
-            ),
-            CollectionItem(
-                name = "Code Names",
-                gameId = 1,
-                collectionItemId = 1,
-                displayOrder = 2,
-                status = "Wishlist",
-                rating = null
-            ),
-            CollectionItem(
-                name = "Ticket to Ride",
-                gameId = 1,
-                collectionItemId = 1,
-                displayOrder = 3,
-                status = "Previous owned",
-                rating = 7
-            )
-        )
-
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(13.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(13.dp)
-            ) {
-                testGames.forEach { collectionItem ->
-                    GameTile(
-                        collectionItem = collectionItem,
-                        modifier = Modifier.weight(1f),
-                        onDoubleClick = { /* заглушка */ },
-                        onContextMenu = { _, _ -> /* заглушка */ },
-                    )
-                }
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(13.dp)
-            ) {
-                testGames.forEach { collectionItem ->
-                    GameTile(
-                        collectionItem = collectionItem,
-                        modifier = Modifier.weight(1f),
-                        onDoubleClick = { /* заглушка */ },
-                        onContextMenu = { _, _ -> /* заглушка */ },
-                    )
-                }
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(13.dp)
-            ) {
-                testGames.forEach { collectionItem ->
-                    GameTile(
-                        collectionItem = collectionItem,
-                        modifier = Modifier.weight(1f),
-                        onDoubleClick = { /* заглушка */ },
-                        onContextMenu = { _, _ -> /* заглушка */ },
-                    )
-                }
             }
         }
     }
