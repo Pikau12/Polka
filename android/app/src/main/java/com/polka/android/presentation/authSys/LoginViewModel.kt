@@ -1,7 +1,11 @@
 package com.polka.android.presentation.authSys
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.polka.android.data.usecase.login.LoginUseCase
+import com.polka.android.data.usecase.login.ShouldShowOnboarding
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -12,6 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class LoginState (
+    val showSignUpSuccess: Boolean = false,
     val loginString: String = "",
     val passwordString: String = "",
     val message: String? = null,
@@ -27,8 +32,16 @@ sealed class LoginScreenEvent {
     data class onPasswordChange(val password: String): LoginScreenEvent()
 }
 
-class LoginViewModel : ViewModel() {
-    private val _state = MutableStateFlow(LoginState())
+class LoginViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val loginUseCase: LoginUseCase,
+    private val shouldShowOnboarding: ShouldShowOnboarding,
+): ViewModel() {
+    private val _state = MutableStateFlow(
+        LoginState(
+            showSignUpSuccess = savedStateHandle.get<Boolean>("showSignUpSuccess") ?: false
+        )
+    )
     val state: StateFlow<LoginState> = _state.asStateFlow()
 
     private val _loginScreenEvent = MutableSharedFlow<LoginScreenEvent>()
@@ -47,7 +60,24 @@ class LoginViewModel : ViewModel() {
     }
 
     private fun handleOnLogInClick() {
+        viewModelScope.launch {
+            try {
+                loginUseCase(
+                    login = state.value.loginString,
+                    password = state.value.passwordString
+                )
 
+                if (shouldShowOnboarding()) {
+                    _loginScreenEvent.emit(LoginScreenEvent.onToOverviewScreenNav)
+                }
+                else {
+                    _loginScreenEvent.emit(LoginScreenEvent.onToCollectionScreenNav)
+                }
+
+            } catch (e: Exception) {
+                // TODO: what to do if password or login is incorrect
+            }
+        }
     }
 
     private fun handleOnLoginChange(login: String) {

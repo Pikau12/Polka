@@ -3,8 +3,8 @@ package com.polka.android.presentation.navigation
 sealed class Destination(val route: String) {
     // ===== Auth =====
     object Overview : Destination("overview")
-    object Login : Destination("login/{showSigninSuccess}"){
-        fun pass(showSigninSuccess: Boolean = false) = "login/$showSigninSuccess"
+    object Login : Destination("login/{showSignUpSuccess}"){
+        fun pass(showSignUpSuccess: Boolean = false) = "login/$showSignUpSuccess"
     }
     object SignUp : Destination("login/{showSignUpFailure}"){
         fun pass(showSignUpFailure: Boolean = false) = "login/$showSignUpFailure"

@@ -1,7 +1,9 @@
 package com.polka.android.presentation.navigation
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
@@ -10,7 +12,7 @@ import com.polka.android.presentation.authSys.OverviewScreen
 import com.polka.android.presentation.authSys.SigninScreen
 
 fun NavGraphBuilder.authNavGraph (
-    navController: NavHostController
+    navController: NavController
 ) {
     navigation(
         startDestination = Destination.Login.route,
@@ -19,35 +21,24 @@ fun NavGraphBuilder.authNavGraph (
         composable(
             route = Destination.Login.route,
             arguments = listOf(
-                navArgument("showSigninSuccess"){ defaultValue = false }
-            )
-        ){ backStackEntry ->
-            val showSuccess = backStackEntry.arguments?.getBoolean("showSigninSuccess") ?: false
-
-            LoginScreen(
-                showSigninSuccess = showSuccess,
-                onSigninClick = {
-                    navController.navigate(Destination.SignUp.route)
-                },
-                onSuccess = { userId ->
-                    navController.navigate(
-                        Destination.getNextDestinationAfterLogin(userId)
-                    ){
-                        popUpTo(Destination.Login.route){ inclusive = true }
-                    }
+                navArgument("showSignUpSuccess") {
+                    type = NavType.BoolType
+                    defaultValue = false
                 }
             )
+        ) {
+            LoginScreen(navController = navController)
         }
 
         composable(Destination.SignUp.route){
             SigninScreen(
                 onLoginClick = {
-                    navController.navigate(Destination.Login.pass(showSigninSuccess = false)){
+                    navController.navigate(Destination.Login.pass(showSignUpSuccess = false)){
                         popUpTo(Destination.SignUp.route){ inclusive = true }
                     }
                 },
                 onSigninSuccess = {
-                    navController.navigate(Destination.Login.pass(showSigninSuccess = true)){
+                    navController.navigate(Destination.Login.pass(showSignUpSuccess = true)){
                         popUpTo(Destination.SignUp.route){ inclusive = true }
                     }
                 }
