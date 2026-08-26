@@ -27,7 +27,7 @@ fun NavGraphBuilder.authNavGraph (
             LoginScreen(
                 showSigninSuccess = showSuccess,
                 onSigninClick = {
-                    navController.navigate(Destination.Signin.route)
+                    navController.navigate(Destination.SignUp.route)
                 },
                 onSuccess = { userId ->
                     navController.navigate(
@@ -39,16 +39,16 @@ fun NavGraphBuilder.authNavGraph (
             )
         }
 
-        composable(Destination.Signin.route){
+        composable(Destination.SignUp.route){
             SigninScreen(
                 onLoginClick = {
                     navController.navigate(Destination.Login.pass(showSigninSuccess = false)){
-                        popUpTo(Destination.Signin.route){ inclusive = true }
+                        popUpTo(Destination.SignUp.route){ inclusive = true }
                     }
                 },
                 onSigninSuccess = {
                     navController.navigate(Destination.Login.pass(showSigninSuccess = true)){
-                        popUpTo(Destination.Signin.route){ inclusive = true }
+                        popUpTo(Destination.SignUp.route){ inclusive = true }
                     }
                 }
             )
