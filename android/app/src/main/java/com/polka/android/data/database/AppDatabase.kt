@@ -32,4 +32,11 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
     abstract fun searchDao(): SearchDao
     abstract fun collectionDao(): CollectionDao
+
+    /**
+     * Used for updating `updatedAt` columns. Time in milliseconds.
+     */
+    companion object {
+        const val NOW_MS = "(strftime('%s', 'now') * 1000)"
+    }
 }

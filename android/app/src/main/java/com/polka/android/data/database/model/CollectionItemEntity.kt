@@ -1,8 +1,10 @@
 package com.polka.android.data.database.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import com.polka.android.data.database.AppDatabase.Companion.NOW_MS
 import com.polka.android.data.image.ImageSource
 import com.polka.android.data.model.CollectionItem
 
@@ -44,5 +46,6 @@ data class CollectionItemEntity(
     val images: List<ImageSource.Saved>,
 
     val createdAt: Long = System.currentTimeMillis(),
+    @ColumnInfo(defaultValue = NOW_MS)
     val updatedAt: Long = System.currentTimeMillis(),
 )
