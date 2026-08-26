@@ -1,5 +1,6 @@
 package com.polka.android.data
 
+import com.polka.android.data.database.dao.GameDao
 import com.polka.android.data.model.Game
 import jakarta.inject.Inject
 
@@ -13,13 +14,15 @@ interface GameRepository {
     suspend fun updateGame(game: Game): Game
 }
 
-class DefaultGameRepository @Inject constructor() : GameRepository {
+class DefaultGameRepository @Inject constructor(private val gameDao: GameDao) : GameRepository {
     override suspend fun getGame(gameId: Long): Game? {
-        TODO("Not implemented yet")
+        val game = gameDao.get(gameId) ?: return null
+        return Game(game)
     }
 
     override suspend fun getGameByBggId(bggId: Long): Game? {
-        TODO("Not implemented yet")
+        val game = gameDao.getByBggId(bggId) ?: return null
+        return Game(game)
     }
 
     override suspend fun createGame(name: String): Game {
