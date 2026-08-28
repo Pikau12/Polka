@@ -20,9 +20,45 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.polka.android.presentation.theme.PolkaTheme
+
+@Composable
+fun StringInputLarge(
+    label: String,
+    placeholder: String,
+    onValueChange: (String) -> Unit,
+    value: String,
+) {
+    StringInput (
+        label = label,
+        placeholder = placeholder,
+        onValueChange = onValueChange,
+        value = value,
+        height = 40.dp,
+        textStyle = MaterialTheme.typography.bodyLarge
+    )
+}
+
+@Composable
+fun StringInputMedium(
+    label: String,
+    placeholder: String,
+    onValueChange: (String) -> Unit,
+    value: String,
+) {
+    StringInput (
+        label = label,
+        placeholder = placeholder,
+        onValueChange = onValueChange,
+        value = value,
+        height = 36.dp,
+        textStyle = MaterialTheme.typography.bodyMedium
+    )
+}
 
 @Composable
 fun StringInput(
@@ -30,11 +66,13 @@ fun StringInput(
     placeholder: String,
     onValueChange: (String) -> Unit,
     value: String,
+    height: Dp,
+    textStyle: TextStyle,
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp)
+            .height(height)
             .clip(RoundedCornerShape(16.dp))
             .background(color = MaterialTheme.colorScheme.surface)
     ) {
@@ -46,7 +84,7 @@ fun StringInput(
                 modifier = Modifier.padding(horizontal = 12.dp),
                 text = label,
                 color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyLarge,
+                style = textStyle,
             )
 
             Box(
@@ -61,7 +99,7 @@ fun StringInput(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 12.dp),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    textStyle = textStyle.copy(
                         color = MaterialTheme.colorScheme.onSurface
                     ),
                     singleLine = true,
@@ -75,7 +113,7 @@ fun StringInput(
                                     modifier = Modifier.alpha(0.5f),
                                     text = placeholder,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    style = MaterialTheme.typography.bodyLarge
+                                    style = textStyle
                                 )
                             }
                             innerTextField()
@@ -104,7 +142,7 @@ fun StringInputPreview() {
                 .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 16.dp, vertical = 40.dp)
         ) {
-            StringInput(
+            StringInputLarge(
                 label = "Login",
                 placeholder = "Enter your login*",
                 onValueChange = { text = it },
