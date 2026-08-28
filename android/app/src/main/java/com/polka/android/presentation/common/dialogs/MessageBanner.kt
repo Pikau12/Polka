@@ -27,10 +27,10 @@ fun MessageBanner (
     AnimatedVisibility(
         visible = isVisible,
         enter = slideInVertically(
-            initialOffsetY = { -it }  // съезжает сверху
+            initialOffsetY = { -it }
         ) + fadeIn(),
         exit = slideOutVertically(
-            targetOffsetY = { -it }   // уходит наверх
+            targetOffsetY = { -it }
         ) + fadeOut()
     ) {
         Box(
