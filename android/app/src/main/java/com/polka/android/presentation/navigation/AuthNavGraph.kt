@@ -2,14 +2,13 @@ package com.polka.android.presentation.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.polka.android.presentation.authSys.LoginScreen
 import com.polka.android.presentation.authSys.OverviewScreen
-import com.polka.android.presentation.authSys.SigninScreen
+import com.polka.android.presentation.authSys.SignUpScreen
 
 fun NavGraphBuilder.authNavGraph (
     navController: NavController
@@ -31,7 +30,7 @@ fun NavGraphBuilder.authNavGraph (
         }
 
         composable(Destination.SignUp.route){
-            SigninScreen(
+            SignUpScreen(
                 onLoginClick = {
                     navController.navigate(Destination.Login.pass(showSignUpSuccess = false)){
                         popUpTo(Destination.SignUp.route){ inclusive = true }

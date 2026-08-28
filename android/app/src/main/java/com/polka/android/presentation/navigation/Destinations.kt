@@ -6,9 +6,7 @@ sealed class Destination(val route: String) {
     object Login : Destination("login/{showSignUpSuccess}"){
         fun pass(showSignUpSuccess: Boolean = false) = "login/$showSignUpSuccess"
     }
-    object SignUp : Destination("login/{showSignUpFailure}"){
-        fun pass(showSignUpFailure: Boolean = false) = "login/$showSignUpFailure"
-    }
+    object SignUp : Destination("login")
 
     // ===== Core =====
     object CollectionCore : Destination("collection_core")
