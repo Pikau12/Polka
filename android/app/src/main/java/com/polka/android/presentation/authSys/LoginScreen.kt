@@ -45,12 +45,12 @@ fun LoginScreen(
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-
+        viewModel.handleEvent(LoginScreenEvent.onScreenStart)
     }
 
     Box {
         Image(
-            painter = painterResource(R.drawable.collection_screen_background), // TODO: change image
+            painter = painterResource(R.drawable.auth_screens_background),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
