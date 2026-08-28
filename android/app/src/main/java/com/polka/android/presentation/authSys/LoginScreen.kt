@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -26,9 +30,9 @@ import androidx.navigation.NavController
 import com.polka.android.R
 import com.polka.android.presentation.common.inputs.StringInput
 import com.polka.android.presentation.navigation.Destination
-import com.polka.android.presentation.theme.PolkaLogInButton
 import com.polka.android.presentation.theme.PolkaLogInButtonColors
 import com.polka.android.presentation.theme.PolkaOnButton
+import com.polka.android.presentation.theme.PolkaSix
 
 @Composable
 fun LoginScreen(
@@ -51,6 +55,27 @@ fun LoginScreen(
         Scaffold(
             containerColor = Color.Transparent
         ) { paddingValues ->
+
+            if (state.isBannerVisible) {
+                Box(
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    Card (
+                        modifier = Modifier.alpha(0.5f),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            contentColor = PolkaSix,
+                            disabledContainerColor = MaterialTheme.colorScheme.surface,
+                            disabledContentColor = PolkaSix
+                        )
+                    ) {
+                        Text(
+                            text = state.bannerMessage!!,
+                        )
+                    }
+                }
+            }
 
             Column(
                 modifier = Modifier
