@@ -1,13 +1,17 @@
 package com.polka.android.presentation.authSys
 
-import android.os.Message
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polka.android.data.usecase.login.LoginUseCase
+import com.polka.android.data.usecase.login.ShouldShowLoginScreen
 import com.polka.android.data.usecase.login.ShouldShowOnboarding
 import com.polka.android.presentation.navigation.Destination
+import com.polka.android.presentation.theme.PolkaErrorTextColor
+import com.polka.android.presentation.theme.PolkaSuccessTextColor
 import jakarta.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +28,8 @@ data class LoginState (
     val loginString: String = "",
     val passwordString: String = "",
     val isBannerVisible: Boolean = false,
-    val bannerMessage: String? = null
+    val bannerMessage: String? = null,
+    val bannerTextColor: Color? = null,
 )
 
 sealed class LoginScreenEvent {
@@ -35,14 +40,17 @@ sealed class LoginScreenEvent {
     object onLogInClick: LoginScreenEvent()
     data class onLoginChange(val login: String): LoginScreenEvent()
     data class onPasswordChange(val password: String): LoginScreenEvent()
+    object onScreenStart: LoginScreenEvent()
 
-    data class showBanner(val message: String): LoginScreenEvent()
+    data class showErrorBanner(val message: String): LoginScreenEvent()
+    object showSignUpSuccess: LoginScreenEvent()
 }
 
 class LoginViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val loginUseCase: LoginUseCase,
     private val shouldShowOnboarding: ShouldShowOnboarding,
+    private val shouldShowLoginScreen: ShouldShowLoginScreen,
 ): ViewModel() {
     private val _state = MutableStateFlow(
         LoginState(
@@ -54,6 +62,14 @@ class LoginViewModel @Inject constructor(
     private val _loginScreenEvent = MutableSharedFlow<LoginScreenEvent>()
     val loginScreenEvent: SharedFlow<LoginScreenEvent> = _loginScreenEvent.asSharedFlow()
 
+    private var bannerJob: Job? = null
+
+    init {
+        if (_state.value.showSignUpSuccess) {
+            handleShowSignUpSuccess()
+        }
+    }
+
     fun handleEvent(event: LoginScreenEvent) {
         when (event) {
             is LoginScreenEvent.onToCollectionScreenNav -> handleToCollectionScreenNav()
@@ -63,43 +79,69 @@ class LoginViewModel @Inject constructor(
             is LoginScreenEvent.onLogInClick -> handleOnLogInClick()
             is LoginScreenEvent.onLoginChange -> handleOnLoginChange(event.login)
             is LoginScreenEvent.onPasswordChange -> handleOnPasswordChange(event.password)
+            is LoginScreenEvent.onScreenStart -> handleOnScreenStart()
 
-            is LoginScreenEvent.showBanner -> handleShowBanner(event.message)
+            is LoginScreenEvent.showErrorBanner -> handleShowErrorBanner(event.message)
+            is LoginScreenEvent.showSignUpSuccess -> handleShowSignUpSuccess()
         }
     }
 
-    private fun handleShowBanner(message: String) {
+    private fun handleOnScreenStart() {
+        if (!shouldShowLoginScreen()) {
+            handleToCollectionScreenNav()
+        }
+    }
+
+    private fun showBanner(message: String, color: Color) {
+        bannerJob?.cancel()
+
         _state.update { it.copy(
             isBannerVisible = true,
-            bannerMessage = message
+            bannerMessage = message,
+            bannerTextColor = color
         ) }
 
-        viewModelScope.launch {
+        bannerJob = viewModelScope.launch {
             delay(3000.milliseconds)
             _state.update { it.copy(
                 isBannerVisible = false,
-                bannerMessage = null
+                bannerMessage = null,
+                bannerTextColor = null,
             ) }
         }
     }
+    private fun handleShowSignUpSuccess() {
+        showBanner("Registration was successful", PolkaSuccessTextColor)
+    }
+
+    private fun handleShowErrorBanner(message: String) {
+        showBanner(message, PolkaErrorTextColor)
+    }
 
     private fun handleOnLogInClick() {
-        viewModelScope.launch {
-            try {
-                loginUseCase(
-                    login = state.value.loginString,
-                    password = state.value.passwordString
-                )
+        if (state.value.loginString == "") {
+            handleShowErrorBanner("You need to enter your login to log in to your account")
+        }
+        else if (state.value.passwordString == "") {
+            handleShowErrorBanner("You need to enter your login password to log in to your account")
+        }
+        else {
+            viewModelScope.launch {
+                try {
+                    loginUseCase(
+                        login = state.value.loginString,
+                        password = state.value.passwordString
+                    )
 
-                if (shouldShowOnboarding()) {
-                    _loginScreenEvent.emit(LoginScreenEvent.onToOverviewScreenNav)
-                }
-                else {
-                    _loginScreenEvent.emit(LoginScreenEvent.onToCollectionScreenNav)
-                }
+                    if (shouldShowOnboarding()) {
+                        _loginScreenEvent.emit(LoginScreenEvent.onToOverviewScreenNav)
+                    } else {
+                        _loginScreenEvent.emit(LoginScreenEvent.onToCollectionScreenNav)
+                    }
 
-            } catch (e: Exception) {
-                handleEvent(LoginScreenEvent.showBanner(e.toString())) // TODO: check
+                } catch (e: Exception) {
+                    handleShowErrorBanner(e.toString()) // TODO: check
+                }
             }
         }
     }
