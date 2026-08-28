@@ -144,7 +144,9 @@ fun LoginScreen(
         viewModel.loginScreenEvent.collect { event ->
             when (event) {
                 is LoginScreenEvent.onToSignUpScreenNav -> {
-                    TODO()
+                    navController.navigate(Destination.SignUp.route) {
+                        popUpTo(Destination.Login.route) { inclusive = true }
+                    }
                 }
                 is LoginScreenEvent.onToCollectionScreenNav -> {
                     navController.navigate(Destination.CollectionCore.route) {
