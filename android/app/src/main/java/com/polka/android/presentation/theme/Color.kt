@@ -74,8 +74,18 @@ val PolkaAcceptButton = PolkaThree
 val PolkaSortButton = PolkaOne
 val PolkaOnButton = Color(0xFFF5EFF7)
 val PolkaStar = PolkaFive
+val PolkaLogInButton = PolkaThree
+val PolkaSuccessTextColor = PolkaThree
+val PolkaErrorTextColor = PolkaSix
 
 val EmptyColor = Color(0x00FFFFFF)
+
+val PolkaLogInButtonColors = ButtonColors (
+    containerColor = PolkaLogInButton,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaLogInButton,
+    disabledContentColor = PolkaOnButton
+)
 
 val PolkaRadioButtonColors = RadioButtonColors(
     selectedColor = Primary,
