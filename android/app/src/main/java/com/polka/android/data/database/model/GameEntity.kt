@@ -3,6 +3,7 @@ package com.polka.android.data.database.model
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.polka.android.data.image.ImageSource
 
 @Entity(
     tableName = "games",
@@ -13,38 +14,28 @@ import androidx.room.PrimaryKey
 data class GameEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val serverId: Long? = null,
-
-    val bggId: Long? = null,
-
+    val serverId: Long?,
     val name: String,
-    val description: String? = null,
-    val imageUrl: String? = null,
-
-    val bggRating: Double? = null,
-    val polkaRating: Double? = null,
-    val ratingsCountAll: Int? = null,
-    val ratingsCountPolka: Int? = null,
-
-    /*
-        A list of integers.
-     */
-    val availablePlayerCount: String? = null,
-    val bestPlayerCount: String? = null,
-
-    val minPlayTimeMinutes: Int? = null,
-    val maxPlayTimeMinutes: Int? = null,
-
-    val minAge: Int? = null,
-
-    val weight: Double? = null,
-
-    val designers: String? = null,
-    val artists: String? = null,
-    val publishers: String? = null,
-    val categories: String? = null,
-    val mechanics: String? = null,
-    val tags: String? = null,
+    val shortDescription: String?,
+    val image: ImageSource.Saved?,
+    val playerCount: List<Int>,
+    val bestPlayerCount: List<Int>,
+    val minPlayTimeMinutes: Int?,
+    val maxPlayTimeMinutes: Int?,
+    val ageRestriction: Int?,
+    val weight: Double?,
+    val designers: List<String>,
+    val artists: List<String>,
+    val publishers: List<String>,
+    val type: List<String>,
+    val categories: List<String>,
+    val mechanics: List<String>,
+    val tags: List<String>,
+    val bggId: Long?,
+    val bggAverageRating: Double?,
+    val polkaAverageRating: Double?,
+    val bggNumberOfRatings: Int?,
+    val polkaNumberOfRatings: Int?,
 
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()

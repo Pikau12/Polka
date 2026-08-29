@@ -4,22 +4,23 @@ import android.util.Log
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import com.polka.android.data.database.AppDatabase.Companion.NOW_MS
 import com.polka.android.data.database.model.CollectionItemEntity
 import com.polka.android.data.model.CollectionItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CollectionDao {
-    @Query("SELECT * FROM collection_items")
-    fun getAll(): Flow<List<CollectionItemEntity>>
+    @Query("SELECT * FROM collection_items WHERE ownerId = :ownerId")
+    fun getAll(ownerId: Long): Flow<List<CollectionItemEntity>>
 
-    @Query("UPDATE collection_items SET rating = :rating WHERE ownerId = :ownerId AND gameId = :gameId")
+    @Query("UPDATE collection_items SET rating = :rating, updatedAt = $NOW_MS WHERE ownerId = :ownerId AND gameId = :gameId")
     suspend fun updateRating(ownerId: Long, gameId: Long, rating: Int?)
 
-    @Query("UPDATE collection_items SET status = :status WHERE ownerId = :ownerId AND gameId = :gameId")
+    @Query("UPDATE collection_items SET status = :status, updatedAt = $NOW_MS WHERE ownerId = :ownerId AND gameId = :gameId")
     suspend fun updateStatus(ownerId: Long, gameId: Long, status: Set<CollectionItem.Status>)
 
-    @Query("UPDATE collection_items SET displayOrder = :newOrder WHERE ownerId = :ownerId AND gameId = :gameId")
+    @Query("UPDATE collection_items SET displayOrder = :newOrder, updatedAt = $NOW_MS WHERE ownerId = :ownerId AND gameId = :gameId")
     suspend fun updateOrder(ownerId: Long, gameId: Long, newOrder: Double)
 
     @Query("SELECT MIN(displayOrder) FROM collection_items WHERE ownerId = :ownerId")
@@ -31,6 +32,9 @@ interface CollectionDao {
     @Query("SELECT displayOrder FROM collection_items WHERE ownerId = :ownerId AND gameId = :gameId")
     suspend fun getOrderById(ownerId: Long, gameId: Long): Double?
 
+    @Query("SELECT gameId FROM collection_items WHERE ownerId = :ownerId ORDER BY displayOrder ASC")
+    suspend fun getOrderedIds(ownerId: Long): List<Long>
+
     /**
      * @see com.polka.android.data.CollectionRepository.moveItemInBetween
      */
@@ -41,6 +45,7 @@ interface CollectionDao {
         aboveItem: Long?,
         belowItem: Long?
     ) {
+        val epsilon = 1e-12
         val tag = "CollectionDao::moveItemInBetween"
 
         val newOrder = when {
@@ -52,7 +57,11 @@ interface CollectionDao {
                 val orderBelow = getOrderById(ownerId, belowItem) ?: return Log.e(
                     tag, "`belowItem` didn't correspond to a valid id"
                 ).let {}
-                (orderAbove + orderBelow) / 2.0
+                if (orderAbove - orderBelow < epsilon) {
+                    null
+                } else {
+                    (orderAbove + orderBelow) / 2.0
+                }
             }
 
             // Dropped at the very end
@@ -68,6 +77,22 @@ interface CollectionDao {
             }
         }
 
-        updateOrder(ownerId, itemToMove, newOrder)
+        if (newOrder == null) { // distance between orders is too small, updating all orders
+            val ordered = getOrderedIds(ownerId)
+            var currentOrder = 1.0
+            for (id in ordered) {
+                if (id == itemToMove) {
+                    continue
+                }
+                updateOrder(ownerId, id, currentOrder)
+                currentOrder += 1.0
+                if (id == aboveItem) {
+                    updateOrder(ownerId, itemToMove, currentOrder)
+                    currentOrder += 1.0
+                }
+            }
+        } else {
+            updateOrder(ownerId, itemToMove, newOrder)
+        }
     }
 }
