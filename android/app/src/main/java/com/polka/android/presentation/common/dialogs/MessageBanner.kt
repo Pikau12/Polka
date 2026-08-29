@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.polka.android.presentation.common.UiConstants
 
 @Composable
 fun MessageBanner (
@@ -37,7 +38,7 @@ fun MessageBanner (
             contentAlignment = Alignment.TopCenter
         ) {
             Card(
-                modifier = Modifier.alpha(0.5f),
+                modifier = Modifier.alpha(UiConstants.BANNER_ALPHA),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardColors(
                     containerColor = MaterialTheme.colorScheme.surface,

@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
+import com.polka.android.presentation.common.UiConstants
 
 data class LoginState (
     val showSignUpSuccess: Boolean = false,
@@ -102,7 +103,7 @@ class LoginViewModel @Inject constructor(
         ) }
 
         bannerJob = viewModelScope.launch {
-            delay(3000.milliseconds)
+            delay(UiConstants.BANNER_DURATION)
             _state.update { it.copy(
                 isBannerVisible = false,
                 bannerMessage = null,

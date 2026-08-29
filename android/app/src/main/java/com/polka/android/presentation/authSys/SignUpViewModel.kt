@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polka.android.data.usecase.signup.RegisterUseCase
+import com.polka.android.presentation.common.UiConstants
 import com.polka.android.presentation.theme.PolkaErrorTextColor
 import jakarta.inject.Inject
 import kotlinx.coroutines.Job
@@ -81,7 +82,7 @@ class SignUpViewModel @Inject constructor(
                         password = state.value.passwordString,
                     )
 
-                    handleOnToLoginScreen(true)
+                    _signUpScreenEvent.emit(SignUpScreenEvent.onToLoginScreen(true))
 
                 } catch (e: Exception) {
                     handleShowErrorBanner(e.toString())
@@ -124,7 +125,7 @@ class SignUpViewModel @Inject constructor(
         ) }
 
         bannerJob = viewModelScope.launch {
-            delay(3000.milliseconds)
+            delay(UiConstants.BANNER_DURATION)
             _state.update { it.copy(
                 isBannerVisible = false,
                 bannerMessage = null,

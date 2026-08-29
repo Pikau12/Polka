@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -69,6 +70,7 @@ fun SignUpScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -87,7 +89,7 @@ fun SignUpScreen(
                         onValueChange = { username ->
                             viewModel.handleEvent(SignUpScreenEvent.onUsernameChange(username))
                         },
-                        value = state.loginString
+                        value = state.usernameString
                     )
 
                     StringInputLarge(
@@ -101,12 +103,13 @@ fun SignUpScreen(
                 }
 
                 Column(
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button (
                         modifier = Modifier
-                            .height(94.dp)
+                            .width(94.dp)
                             .height(40.dp),
                         onClick = {
                             viewModel.handleEvent(SignUpScreenEvent.onSignUpClick)
