@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/polka/backend/internal/api/dto"
-	"github.com/polka/backend/internal/domain"
+	"github.com/polka/backend/internal/service"
 )
 
 type GameHandler struct {
@@ -16,7 +16,7 @@ type GameHandler struct {
 }
 
 type GameService interface {
-	SearchGameByFilter(c context.Context, request dto.GameRequest) ([]domain.GameSearchInfo, error)
+	SearchGames(ctx context.Context, request dto.SearchGameRequest) (*service.SearchGameResult, error)
 }
 
 func NewGameHandler(service GameService, log *slog.Logger) *GameHandler {
@@ -24,18 +24,26 @@ func NewGameHandler(service GameService, log *slog.Logger) *GameHandler {
 }
 
 func (h *GameHandler) SearchGames(c *gin.Context) {
-	request := dto.GameRequest{}
+	request := dto.SearchGameRequest{}
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	_, err := h.gameService.SearchGameByFilter(c, request)
+	searchGamesRes, err := h.gameService.SearchGames(c, request)
 	if err != nil {
 		h.log.ErrorContext(c.Request.Context(), "search game by filter", slog.Any("error", err))
 
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
+
+	response := dto.SearchGameResponse{
+		Games:      searchGamesRes.Games,
+		NextOffset: searchGamesRes.NextOffset,
+		HasNext:    searchGamesRes.HasNext,
+	}
+
+	c.JSON(http.StatusOK, response)
 }

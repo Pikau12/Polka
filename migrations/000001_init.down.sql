@@ -34,7 +34,7 @@ DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS user_images;
 DROP TABLE IF EXISTS images;
 
-DROP TABLE IF EXISTS user_sessions;
+DROP TABLE IF EXISTS auth_sessions;
 
 DROP TABLE IF EXISTS users;
 

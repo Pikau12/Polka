@@ -6,11 +6,11 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-	"os"
 	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/polka/backend/internal/config"
 )
 
 type TokenManager struct {
@@ -35,28 +35,14 @@ type AccessTokenClaims struct {
 	UserID int64
 }
 
-func NewTokenManager() (*TokenManager, error) {
-	manager := &TokenManager{
-		secret:     []byte(os.Getenv("JWT_SECRET")),
-		accessTTL:  time.Duration(15) * time.Minute,
-		refreshTTL: time.Duration(30) * time.Hour * 24,
-		issuer:     os.Getenv("JWT_ISSUER"),
-		audience:   os.Getenv("JWT_AUDIENCE"),
+func NewTokenManager(config *config.AuthConfig) *TokenManager {
+	return &TokenManager{
+		secret:     config.JWTSecret,
+		accessTTL:  config.AccessTTL,
+		refreshTTL: config.RefreshTTL,
+		issuer:     config.JWTIssuer,
+		audience:   config.JWTAudience,
 	}
-
-	if len(manager.secret) == 0 {
-		return nil, fmt.Errorf("failed to get JWT_SECRET env")
-	}
-
-	if manager.issuer == "" {
-		return nil, fmt.Errorf("failed to get JWT_ISSUER env")
-	}
-
-	if manager.audience == "" {
-		return nil, fmt.Errorf("failed to get JWT_AUDIENCE env")
-	}
-
-	return manager, nil
 }
 
 func (t *TokenManager) CreateAccessToken(userID int64) (*AccessToken, error) {

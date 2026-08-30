@@ -4,15 +4,18 @@ import (
 	"context"
 	"log/slog"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/polka/backend/internal/api"
 	"github.com/polka/backend/internal/api/handler"
 	"github.com/polka/backend/internal/auth/hasher"
 	"github.com/polka/backend/internal/auth/jwt"
+	"github.com/polka/backend/internal/bgg"
+	"github.com/polka/backend/internal/config"
 	"github.com/polka/backend/internal/logger"
 	"github.com/polka/backend/internal/postgres"
-	"github.com/polka/backend/internal/postgres/config"
 	"github.com/polka/backend/internal/repository"
 	"github.com/polka/backend/internal/service"
 )
@@ -23,7 +26,30 @@ func main() {
 
 	log := logger.New()
 
-	db, err := postgres.New(ctx, config.New())
+	postgresConfig := config.NewPostgresConfig()
+	authConfig, err := config.NewAuthConfig()
+	if err != nil {
+		log.ErrorContext(
+			ctx,
+			"could not create auth config",
+			slog.Any("error", err),
+		)
+
+		os.Exit(1)
+	}
+
+	bggConfig, err := config.NewBggConfig()
+	if err != nil {
+		log.ErrorContext(
+			ctx,
+			"could not create BGG config",
+			slog.Any("error", err),
+		)
+
+		os.Exit(1)
+	}
+
+	db, err := postgres.New(ctx, postgresConfig)
 	if err != nil {
 		log.ErrorContext(
 			ctx,
@@ -37,19 +63,16 @@ func main() {
 	userRepo := repository.NewUserRepository(db)
 	gameRepo := repository.NewGameRepository(db)
 
-	tokenManager, err := jwt.NewTokenManager()
-	if err != nil {
-		log.ErrorContext(
-			ctx,
-			"unable to create token manager",
-			slog.Any("error", err),
-		)
+	appCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 
-		os.Exit(1)
-	}
+	tokenManager := jwt.NewTokenManager(authConfig)
+	bggClient := bgg.NewClient(bggConfig)
+	cachedClient := bgg.NewCachedClient(bggClient, bggConfig.GameCacheTTL)
+	cachedClient.Start(appCtx)
 
 	authService := service.NewAuthService(userRepo, hasher.NewBcryptHasher(), tokenManager)
-	gameService := service.NewGameService(gameRepo)
+	gameService := service.NewGameService(gameRepo, cachedClient)
 
 	authHandler := handler.NewAuthHandler(authService, log)
 	gameHandler := handler.NewGameHandler(gameService, log)

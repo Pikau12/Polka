@@ -9,6 +9,8 @@ type Game struct {
 	Name        string
 	Description *string
 
+	YearPublished *int32
+
 	BggRating   *float64
 	PolkaRating *float64
 

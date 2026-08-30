@@ -111,32 +111,49 @@ func (s *AuthService) Login(ctx context.Context, request dto.LoginRequest) (*jwt
 	return accessToken, refreshToken, nil
 }
 
-func (s *AuthService) Refresh(ctx context.Context, request dto.RefreshRequest) (*jwt.AccessToken, error) {
+func (s *AuthService) Refresh(ctx context.Context, request dto.RefreshRequest) (*jwt.AccessToken, *jwt.RefreshToken, error) {
 	hash := s.tokenManager.HashRefreshToken(request.RefreshToken)
 
 	authSession, err := s.authRepository.FindAuthSessionByHash(ctx, hash)
 	if err != nil {
 		if errors.Is(err, repository.ErrAuthSessionNotFound) {
-			return nil, ErrInvalidRefreshToken
+			return nil, nil, ErrInvalidRefreshToken
 		}
 
-		return nil, fmt.Errorf("find auth session: %w", err)
+		return nil, nil, fmt.Errorf("find auth session: %w", err)
 	}
 
 	if authSession.ExpiresAt.Before(time.Now()) {
-		return nil, ErrInvalidRefreshToken
+		return nil, nil, ErrInvalidRefreshToken
 	}
 
 	if authSession.RevokedAt != nil {
-		return nil, ErrInvalidRefreshToken
+		return nil, nil, ErrInvalidRefreshToken
 	}
 
 	accessToken, err := s.tokenManager.CreateAccessToken(authSession.UserID)
 	if err != nil {
-		return nil, fmt.Errorf("create access token: %w", err)
+		return nil, nil, fmt.Errorf("create access token: %w", err)
 	}
 
-	return accessToken, nil
+	refreshToken, err := s.tokenManager.CreateRefreshToken()
+	if err != nil {
+		return nil, nil, fmt.Errorf("create refresh token: %w", err)
+	}
+
+	if err := s.authRepository.RevokeAuthSession(ctx, authSession.ID, time.Now()); err != nil {
+		return nil, nil, fmt.Errorf("revoke auth session: %w", err)
+	}
+
+	if err := s.authRepository.CreateAuthSession(ctx, &model.AuthSession{
+		UserID:           authSession.UserID,
+		RefreshTokenHash: s.tokenManager.HashRefreshToken(refreshToken.Value),
+		ExpiresAt:        refreshToken.ExpiresAt,
+	}); err != nil {
+		return nil, nil, fmt.Errorf("create auth session: %w", err)
+	}
+
+	return accessToken, refreshToken, nil
 }
 
 func (s *AuthService) Logout(ctx context.Context, request dto.LogoutRequest) error {

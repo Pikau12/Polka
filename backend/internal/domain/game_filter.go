@@ -1,7 +1,7 @@
 package domain
 
 type GameFilter struct {
-	Name *string
+	Name string
 
 	MinPlayTimeMinutes *int32
 	MaxPlayTimeMinutes *int32
@@ -21,6 +21,6 @@ type GameFilter struct {
 	Publishers []string
 	Designers  []string
 
-	Page     int32
-	PageSize int32
+	Offset int32
+	Limit  int32
 }

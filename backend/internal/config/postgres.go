@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-type Config struct {
+type PostgresConfig struct {
 	Host     string
 	Port     string
 	User     string
@@ -13,14 +13,14 @@ type Config struct {
 	DBName   string
 }
 
-func New() Config {
+func NewPostgresConfig() PostgresConfig {
 	/*
 		Uncomment if u want start project without docker
 		if err := godotenv.Load(".env", "../.env"); err != nil {
 			log.Fatal("Error loading .env file")
 		}
 	*/
-	config := Config{
+	config := PostgresConfig{
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
 		User:     os.Getenv("DB_USER"),
@@ -51,6 +51,6 @@ func New() Config {
 	return config
 }
 
-func (c *Config) DSN() string {
+func (c *PostgresConfig) DSN() string {
 	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", c.Host, c.Port, c.User, c.Password, c.DBName)
 }

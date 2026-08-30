@@ -97,7 +97,7 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := h.service.Refresh(c.Request.Context(), request)
+	accessToken, refreshToken, err := h.service.Refresh(c.Request.Context(), request)
 	if err != nil {
 		if errors.Is(err, service.ErrInvalidRefreshToken) {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
@@ -115,9 +115,10 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 	}
 
 	response := dto.RefreshResponse{
-		AccessToken: accessToken.Value,
-		TokenType:   "Bearer",
-		ExpiresAt:   accessToken.ExpiresAt.Unix(),
+		AccessToken:  accessToken.Value,
+		RefreshToken: refreshToken.Value,
+		TokenType:    "Bearer",
+		ExpiresAt:    accessToken.ExpiresAt.Unix(),
 	}
 
 	c.JSON(http.StatusOK, response)

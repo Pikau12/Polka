@@ -2,8 +2,8 @@ package dto
 
 import "github.com/polka/backend/internal/domain"
 
-type GameRequest struct {
-	Name *string `json:"name,omitempty"`
+type SearchGameRequest struct {
+	Name string `json:"name"`
 
 	MinPlayTimeMinutes *int32 `json:"min_play_time_minutes,omitempty"`
 	MaxPlayTimeMinutes *int32 `json:"max_play_time_minutes,omitempty"`
@@ -23,15 +23,14 @@ type GameRequest struct {
 	Publishers []string `json:"publishers,omitempty"`
 	Designers  []string `json:"designers,omitempty"`
 
-	Page     int32 `json:"page"`
-	PageSize int32 `json:"page_size"`
+	Offset int32 `json:"offset"`
+	Limit  int32 `json:"limit"`
 }
 
-type GameResponse struct {
+type SearchGameResponse struct {
 	Games []domain.GameSearchInfo `json:"games"`
 
-	Page     int32 `json:"page"`
-	PageSize int32 `json:"page_size"`
+	NextOffset int32 `json:"next_offset"`
 
 	HasNext bool `json:"has_next"`
 }

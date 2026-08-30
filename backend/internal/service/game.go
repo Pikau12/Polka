@@ -8,36 +8,135 @@ import (
 	"github.com/polka/backend/internal/domain"
 )
 
+type SearchGameResult struct {
+	Games      []domain.GameSearchInfo
+	NextOffset int32
+	HasNext    bool
+}
+
 type GameService struct {
 	gameRepository GameRepository
+	bggClient      GameClient
 }
 
 type GameRepository interface {
 	SearchGameByFilter(c context.Context, gameFilter *domain.GameFilter) ([]domain.GameSearchInfo, error)
+	FindGamesByBggID(ctx context.Context, ids []int64) ([]int64, error)
+	GetCountGamesByName(ctx context.Context, name string) (int64, error)
 }
 
-func NewGameService(gameRepository GameRepository) *GameService {
-	return &GameService{gameRepository: gameRepository}
+type GameClient interface {
+	Search(ctx context.Context, name string) ([]domain.BggGameSearchInfo, error)
 }
 
-func (s *GameService) SearchGameByFilter(ctx context.Context, request dto.GameRequest) ([]domain.GameSearchInfo, error) {
-	filter := gameRequestToGameFilter(request)
+func NewGameService(gameRepository GameRepository, bggClient GameClient) *GameService {
+	return &GameService{gameRepository: gameRepository, bggClient: bggClient}
+}
+
+func (s *GameService) SearchGames(ctx context.Context, request dto.SearchGameRequest) (*SearchGameResult, error) {
+	res := &SearchGameResult{}
+
+	filter := searchGameRequestToGameFilter(request)
+
+	normalizeFilter(filter)
 
 	if err := validateFilter(filter); err != nil {
 		return nil, fmt.Errorf("invalid filter: %w", err)
 	}
-
-	normalizeFilter(filter)
 
 	games, err := s.gameRepository.SearchGameByFilter(ctx, filter)
 	if err != nil {
 		return nil, err
 	}
 
-	return games, nil
+	localCount, err := s.gameRepository.GetCountGamesByName(ctx, request.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	if localCount > int64(request.Offset+request.Limit) {
+		res.HasNext = true
+	} else {
+		needCount := int(request.Limit) - len(games)
+		bggOffset := int(request.Offset) - int(localCount)
+		if bggOffset < 0 {
+			bggOffset = 0
+		}
+
+		bggGames, hasNext, err := s.searchGamesWithBgg(ctx, request.Name, bggOffset, needCount)
+		if err != nil {
+			return nil, fmt.Errorf("search bgg games: %w", err)
+		}
+
+		games = append(games, bggGames...)
+		res.HasNext = hasNext
+	}
+
+	res.Games = games
+	res.NextOffset = request.Offset + int32(len(games))
+
+	return res, nil
 }
 
-func gameRequestToGameFilter(request dto.GameRequest) *domain.GameFilter {
+func (s *GameService) searchGamesWithBgg(ctx context.Context, name string, bggOffset int, needCount int) ([]domain.GameSearchInfo, bool, error) {
+	games := make([]domain.GameSearchInfo, 0, needCount)
+
+	bggGames, err := s.bggClient.Search(ctx, name)
+	if err != nil {
+		return nil, false, fmt.Errorf("search game: %w", err)
+	}
+
+	gamesBggIDs := make([]int64, 0, len(bggGames))
+
+	for _, item := range bggGames {
+		gamesBggIDs = append(gamesBggIDs, item.BggID)
+	}
+
+	usedBggIDs, err := s.gameRepository.FindGamesByBggID(ctx, gamesBggIDs)
+	if err != nil {
+		return nil, false, fmt.Errorf("find bgg: %w", err)
+	}
+
+	usedSet := make(map[int64]bool, len(usedBggIDs))
+	for _, id := range usedBggIDs {
+		usedSet[id] = true
+	}
+
+	skip := bggOffset
+
+	addedCount := 0
+
+	for _, game := range bggGames {
+		if usedSet[game.BggID] {
+			continue
+		}
+
+		if skip > 0 {
+			skip--
+			continue
+		}
+
+		if addedCount == needCount {
+			break
+		}
+
+		games = append(games, domain.GameSearchInfo{
+			BggID:         game.BggID,
+			Name:          game.Name,
+			YearPublished: &game.YearPublished,
+		})
+
+		addedCount++
+	}
+
+	if (len(bggGames) - len(usedBggIDs)) > (bggOffset + addedCount) {
+		return games, true, nil
+	}
+
+	return games, false, nil
+}
+
+func searchGameRequestToGameFilter(request dto.SearchGameRequest) *domain.GameFilter {
 	return &domain.GameFilter{
 		Name: request.Name,
 
@@ -59,8 +158,8 @@ func gameRequestToGameFilter(request dto.GameRequest) *domain.GameFilter {
 		Publishers: request.Publishers,
 		Designers:  request.Designers,
 
-		Page:     request.Page,
-		PageSize: request.PageSize,
+		Offset: request.Offset,
+		Limit:  request.Limit,
 	}
 }
 
@@ -101,12 +200,12 @@ func validateFilter(filter *domain.GameFilter) error {
 		return fmt.Errorf("min_bgg_rating must be greater than or equal to 0")
 	}
 
-	if filter.Page <= 0 {
-		return fmt.Errorf("invalid page")
+	if filter.Offset < 0 {
+		return fmt.Errorf("invalid offset")
 	}
 
-	if filter.PageSize <= 0 && filter.PageSize > 100 {
-		return fmt.Errorf("invalid page_size")
+	if filter.Limit < 0 && filter.Limit > 100 {
+		return fmt.Errorf("invalid limit")
 	}
 
 	return nil

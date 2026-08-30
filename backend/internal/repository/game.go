@@ -21,15 +21,15 @@ func (r *GameRepository) SearchGameByFilter(ctx context.Context, filter *domain.
 		return nil, fmt.Errorf("game filter is nil")
 	}
 
-	games := make([]domain.GameSearchInfo, 0)
+	games := make([]domain.GameSearchInfo, 0, filter.Limit)
 
 	query := r.db.
 		WithContext(ctx).
 		Table("games").
 		Select("games.id, games.name, games.description, games.polka_rating, games.bgg_rating")
 
-	if filter.Name != nil {
-		query = query.Where("games.name ILIKE ?", "%"+*filter.Name+"%")
+	if filter.Name != "" {
+		query = query.Where("games.name ILIKE ?", "%"+filter.Name+"%")
 	}
 
 	if filter.MinPlayTimeMinutes != nil {
@@ -124,12 +124,43 @@ func (r *GameRepository) SearchGameByFilter(ctx context.Context, filter *domain.
 
 	query = query.
 		Order("games.id ASC").
-		Limit(int(filter.PageSize)).
-		Offset(int((filter.Page - 1) * filter.PageSize))
+		Limit(int(filter.Limit)).
+		Offset(int(filter.Offset))
 
 	if err := query.Scan(&games).Error; err != nil {
 		return nil, fmt.Errorf("search game by filter: %w", err)
 	}
 
 	return games, nil
+}
+
+func (r *GameRepository) FindGamesByBggID(ctx context.Context, ids []int64) ([]int64, error) {
+	if len(ids) == 0 {
+		return []int64{}, nil
+	}
+
+	matched := make([]int64, 0)
+
+	if err := r.db.
+		WithContext(ctx).
+		Table("games").
+		Where("games.bgg_id IN (?)", ids).
+		Pluck("games.bgg_id", &matched).
+		Error; err != nil {
+		return nil, fmt.Errorf("find games by bgg_id: %w", err)
+	}
+
+	return matched, nil
+}
+
+func (r *GameRepository) GetCountGamesByName(ctx context.Context, name string) (int64, error) {
+	var count int64
+
+	r.db.
+		WithContext(ctx).
+		Table("games").
+		Where("games.name ILIKE ?", "%"+name+"%").
+		Count(&count)
+
+	return count, nil
 }

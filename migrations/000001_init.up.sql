@@ -132,6 +132,8 @@ CREATE TABLE games(
     name non_empty_varchar_255 NOT NULL,
     description VARCHAR(1024),
 
+    year_published INTEGER,
+
     bgg_rating FLOAT,
     polka_rating FLOAT,
 
