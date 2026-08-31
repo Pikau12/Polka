@@ -4,7 +4,7 @@ import com.polka.android.data.CollectionRepository
 import com.polka.android.data.GameRepository
 import com.polka.android.data.image.ImageRepository
 import com.polka.android.data.model.Game
-import com.polka.android.data.model.SortQuery
+import com.polka.android.data.model.CollectionSortQuery
 import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.model.toUIStatusSet
 import jakarta.inject.Inject
@@ -16,7 +16,7 @@ class ObserveCollectionUseCase @Inject constructor (
     private val gameRepository: GameRepository,
     private val mapper: CollectionItemMapper
 ) {
-    operator fun invoke(sort: SortQuery?): Flow<List<CollectionItem>> {
+    operator fun invoke(sort: CollectionSortQuery?): Flow<List<CollectionItem>> {
         return collectionRepository.observeCollection()
             .map { items ->
                 items.map { entity ->

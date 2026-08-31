@@ -12,10 +12,10 @@ enum class GroupStatus{
 }
 
 /**
- * The [SortQuery] data class contains a grouping status component that defines the grouping request,
+ * The [CollectionSortQuery] data class contains a grouping status component that defines the grouping request,
  * and a filtering component that identifies suitable games based on the selected option
  */
-data class SortQuery (
+data class CollectionSortQuery (
     var groupStatus: GroupStatus? = null,
     var rangeOfPlayerCountsFilter : List<Int>? = null,
     var sessionTimeFilterLessTimeThan: Int? = null
@@ -24,7 +24,7 @@ data class SortQuery (
 /**
  * This function determines whether the sort request is empty.
  */
-fun isSortQueryEmpty(query: SortQuery): Boolean{
+fun isSortQueryEmpty(query: CollectionSortQuery): Boolean{
     return query.groupStatus == null &&
     query.rangeOfPlayerCountsFilter == null &&
     query.sessionTimeFilterLessTimeThan == null

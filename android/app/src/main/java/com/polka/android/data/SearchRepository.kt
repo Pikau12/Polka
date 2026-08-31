@@ -4,7 +4,7 @@ import com.polka.android.data.database.dao.SearchDao
 import com.polka.android.data.mapper.toModel
 import com.polka.android.data.model.CollectionItem
 import com.polka.android.data.model.Game
-import com.polka.android.data.model.SortQuery
+import com.polka.android.data.model.CollectionSortQuery
 import com.polka.android.data.model.User
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +17,7 @@ interface SearchRepository {
     fun searchGamesByTagsInBgg(tags: List<String>): Flow<List<Game>>
     fun searchGamesInCollection(userId: Long, query: String): Flow<List<Game>>
     fun searchGamesInCollectionByTags(userId: Long, tags: List<String>): Flow<List<Game>>
-    fun getSortedUserCollection(userId: Long, sortQuery: SortQuery): Flow<List<CollectionItem>>
+    fun getSortedUserCollection(userId: Long, sortQuery: CollectionSortQuery): Flow<List<CollectionItem>>
 }
 
 class DefaultSearchRepository @Inject constructor(
@@ -65,7 +65,7 @@ class DefaultSearchRepository @Inject constructor(
         TODO("Not implemented yet")
     }
 
-    override fun getSortedUserCollection(userId: Long, sortQuery: SortQuery): Flow<List<CollectionItem>> {
+    override fun getSortedUserCollection(userId: Long, sortQuery: CollectionSortQuery): Flow<List<CollectionItem>> {
         TODO("Not implemented yet")
     }
 }

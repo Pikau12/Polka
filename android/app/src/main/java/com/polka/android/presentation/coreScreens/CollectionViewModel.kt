@@ -1,10 +1,8 @@
 package com.polka.android.presentation.coreScreens
 
-import android.R
-import android.os.Message
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.polka.android.data.model.SortQuery
+import com.polka.android.data.model.CollectionSortQuery
 import com.polka.android.data.model.isSortQueryEmpty
 import com.polka.android.data.usecase.collection.ObserveCollectionUseCase
 import com.polka.android.data.usecase.collection.UpdateGameRatingUseCase
@@ -33,8 +31,8 @@ data class CollectionState(
     val isSortMenuOpen: Boolean = false,
     val collection: List<CollectionItem>? = null,
     val searchQuery: String? = null,
-    val sortQuery: SortQuery? = null,
-    val draftSortQuery: SortQuery? = null,
+    val sortQuery: CollectionSortQuery? = null,
+    val draftSortQuery: CollectionSortQuery? = null,
     val draftRating: Int? = null,
     val selectedGameId: CollectionItem.Id? = null,
     val isRatingMenuOpen: Boolean = false,
@@ -53,7 +51,7 @@ sealed class CollectionScreenEvent {
     // Sort
     object onSortMenuOpen : CollectionScreenEvent()
     object onSortMenuClose : CollectionScreenEvent()
-    data class onDraftSortChanged(val query: SortQuery): CollectionScreenEvent()
+    data class onDraftSortChanged(val query: CollectionSortQuery): CollectionScreenEvent()
     object onSortMenuCancel: CollectionScreenEvent()
 
     // GameTile context menu
@@ -83,7 +81,7 @@ class CollectionViewModel @Inject constructor(
     val collectionScreenEvent: SharedFlow<CollectionScreenEvent> =
         _collectionScreenEvent.asSharedFlow()
 
-    private val _sortQuery = MutableStateFlow<SortQuery?>(null)
+    private val _sortQuery = MutableStateFlow<CollectionSortQuery?>(null)
 
     init {
         _sortQuery
@@ -249,11 +247,11 @@ class CollectionViewModel @Inject constructor(
     private fun handleOnSortMenuOpen() {
         _state.update { it.copy(
             isSortMenuOpen = true,
-            draftSortQuery = it.sortQuery ?: SortQuery()
+            draftSortQuery = it.sortQuery ?: CollectionSortQuery()
         )}
     }
 
-    private fun handleOnDraftSortChanged(query: SortQuery) {
+    private fun handleOnDraftSortChanged(query: CollectionSortQuery) {
         _state.update { it.copy(draftSortQuery = query) }
     }
 
