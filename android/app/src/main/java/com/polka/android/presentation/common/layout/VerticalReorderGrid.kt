@@ -55,8 +55,7 @@ fun VerticalReorderGrid(
         columns = GridCells.Fixed(3),
         state = lazyGridState,
         modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background), // TODO: change color
+            .fillMaxSize(),
         contentPadding = PaddingValues(16.dp, 16.dp),
         horizontalArrangement = Arrangement.spacedBy(13.dp),
         verticalArrangement = Arrangement.spacedBy(13.dp),

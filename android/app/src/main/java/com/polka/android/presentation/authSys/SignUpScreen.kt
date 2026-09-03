@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -31,22 +32,17 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.polka.android.R
 import com.polka.android.presentation.common.dialogs.MessageBanner
-import com.polka.android.presentation.common.inputs.StringInput
 import com.polka.android.presentation.common.inputs.StringInputLarge
 import com.polka.android.presentation.navigation.Destination
 import com.polka.android.presentation.theme.PolkaLogInButtonColors
 import com.polka.android.presentation.theme.PolkaOnButton
 
 @Composable
-fun LoginScreen(
+fun SignUpScreen(
     navController: NavController,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.handleEvent(LoginScreenEvent.onScreenStart)
-    }
 
     Box {
         Image(
@@ -74,6 +70,7 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -81,37 +78,47 @@ fun LoginScreen(
                         label = "Login",
                         placeholder = "Enter your login*",
                         onValueChange = { login ->
-                            viewModel.handleEvent(LoginScreenEvent.onLoginChange(login))
+                            viewModel.handleEvent(SignUpScreenEvent.onLoginChange(login))
                         },
                         value = state.loginString
+                    )
+
+                    StringInputLarge(
+                        label = "Username",
+                        placeholder = "Enter your username*",
+                        onValueChange = { username ->
+                            viewModel.handleEvent(SignUpScreenEvent.onUsernameChange(username))
+                        },
+                        value = state.usernameString
                     )
 
                     StringInputLarge(
                         label = "Password",
                         placeholder = "Enter password of account*",
                         onValueChange = { password ->
-                            viewModel.handleEvent(LoginScreenEvent.onPasswordChange(password))
+                            viewModel.handleEvent(SignUpScreenEvent.onPasswordChange(password))
                         },
                         value = state.passwordString
                     )
                 }
 
                 Column(
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button (
                         modifier = Modifier
-                            .height(94.dp)
+                            .width(94.dp)
                             .height(40.dp),
                         onClick = {
-                            viewModel.handleEvent(LoginScreenEvent.onLogInClick)
+                            viewModel.handleEvent(SignUpScreenEvent.onSignUpClick)
                         },
                         colors = PolkaLogInButtonColors,
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Text(
-                            text = "Log in",
+                            text = "Sign up",
                             color = PolkaOnButton,
                             style = MaterialTheme.typography.bodyLarge
                         )
@@ -119,20 +126,20 @@ fun LoginScreen(
 
                     Text(
                         text = buildAnnotatedString {
-                            append("Don't have an account? ")
+                            append("Have an account? ")
                             withStyle(
                                 style = SpanStyle(
                                     color = Color.Blue,
                                     fontWeight = FontWeight.Bold
                                 )
                             ) {
-                                append("Sign up!")
+                                append("Log in!")
                             }
                         },
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.clickable {
-                            viewModel.handleEvent(LoginScreenEvent.onToSignUpScreenNav)
+                            viewModel.handleEvent(SignUpScreenEvent.onToLoginScreen(false))
                         }
                     )
                 }
@@ -141,21 +148,11 @@ fun LoginScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.loginScreenEvent.collect { event ->
+        viewModel.signUpScreenEvent.collect { event ->
             when (event) {
-                is LoginScreenEvent.onToSignUpScreenNav -> {
-                    navController.navigate(Destination.SignUp.route) {
-                        popUpTo(Destination.Login.route) { inclusive = true }
-                    }
-                }
-                is LoginScreenEvent.onToCollectionScreenNav -> {
-                    navController.navigate(Destination.CollectionCore.route) {
-                        popUpTo(Destination.Login.route) { inclusive = true }
-                    }
-                }
-                is LoginScreenEvent.onToOverviewScreenNav -> {
-                    navController.navigate(Destination.Overview.route) {
-                        popUpTo(Destination.Login.route) { inclusive = true }
+                is SignUpScreenEvent.onToLoginScreen -> {
+                    navController.navigate(Destination.Login.pass(event.showSignUpSuccess)) {
+                        popUpTo(Destination.SignUp.route) { inclusive = true }
                     }
                 }
                 else -> { }

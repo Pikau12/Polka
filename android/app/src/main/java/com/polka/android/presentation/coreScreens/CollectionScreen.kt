@@ -1,7 +1,9 @@
 package com.polka.android.presentation.coreScreens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
@@ -11,15 +13,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.polka.android.R
 import com.polka.android.presentation.common.dialogs.TipPopUp
 import com.polka.android.presentation.common.layout.VerticalReorderGrid
 import com.polka.android.presentation.common.menus.GameRatingMenu
 import com.polka.android.presentation.common.menus.GameStatusMenu
 import com.polka.android.presentation.common.tiles.ContextMenuAction
 import com.polka.android.presentation.navigation.Destination
-import kotlin.math.exp
 
 @Composable
 fun CollectionScreen(
@@ -29,8 +34,18 @@ fun CollectionScreen(
     val state by viewModel.state.collectAsState()
 
     Box {
-        Scaffold { paddingValues ->
-            if (!state.isLoading) {
+        Image(
+            painter = painterResource(R.drawable.collection_screen_background),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+
+        Scaffold (
+            containerColor = Color.Transparent
+        ){ paddingValues ->
+            if (!state.isLoading && state.collection != null) {
                 VerticalReorderGrid(
                     modifier = Modifier.padding(paddingValues),
                     collection = state.collection!!,
@@ -48,7 +63,7 @@ fun CollectionScreen(
                             }
 
                             is ContextMenuAction.onStatusClick -> {
-                                viewModel.handleEvent(CollectionScreenEvent.onStatusMenuOpen)
+                                viewModel.handleEvent(CollectionScreenEvent.onStatusMenuOpen(id))
                             }
                         }
                     },
@@ -92,19 +107,19 @@ fun CollectionScreen(
                 )
             }
         }
-    }
 
-    if (state.isStatusMenuOpen) {
-        GameStatusMenu(
-            state.isStatusMenuOpen,
-            onDismissRequest = {
-                viewModel.handleEvent(CollectionScreenEvent.onStatusMenuClose)
-            },
-            onGameStatusItemClick = { status ->
-                viewModel.handleEvent(CollectionScreenEvent.onStatusMenuItemClick(status))
-            },
-            choicedItems = state.draftStatus!!
-        )
+        if (state.isStatusMenuOpen) {
+            GameStatusMenu(
+                state.isStatusMenuOpen,
+                onDismissRequest = {
+                    viewModel.handleEvent(CollectionScreenEvent.onStatusMenuClose)
+                },
+                onGameStatusItemClick = { status ->
+                    viewModel.handleEvent(CollectionScreenEvent.onStatusMenuItemClick(status))
+                },
+                choicedItems = state.draftStatus!!
+            )
+        }
     }
 
     LaunchedEffect(Unit) {

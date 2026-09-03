@@ -57,7 +57,7 @@ sealed class CollectionScreenEvent {
     object onSortMenuCancel: CollectionScreenEvent()
 
     // GameTile context menu
-    object onStatusMenuOpen : CollectionScreenEvent()
+    data class onStatusMenuOpen(val id: CollectionItem.Id) : CollectionScreenEvent()
     data class onStatusMenuItemClick(val status: CollectionItem.Status) : CollectionScreenEvent()
     object onStatusMenuClose: CollectionScreenEvent()
     data class onRatingMenuOpen(val id: CollectionItem.Id): CollectionScreenEvent()
@@ -67,7 +67,6 @@ sealed class CollectionScreenEvent {
     data class onAddSessionClick(val gameId: Long) : CollectionScreenEvent()
     data class onRatingTipClick(val message: String) : CollectionScreenEvent()
     object onRatingTipClose: CollectionScreenEvent()
-    // TODO: add more
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -118,7 +117,7 @@ class CollectionViewModel @Inject constructor(
 
             is CollectionScreenEvent.onAddSessionClick -> handleOnAddSessionClick(event.gameId)
 
-            is CollectionScreenEvent.onStatusMenuOpen -> handleOnStatusMenuOpen()
+            is CollectionScreenEvent.onStatusMenuOpen -> handleOnStatusMenuOpen(event.id)
             is CollectionScreenEvent.onStatusMenuItemClick -> handleOnStatusMenuItemClick(event.status)
             is CollectionScreenEvent.onStatusMenuClose -> handleOnStatusMenuClose()
 
@@ -131,14 +130,15 @@ class CollectionViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnStatusMenuOpen(){
+    private fun handleOnStatusMenuOpen(id: CollectionItem.Id){
         val selectedGame = state.value.collection?.find {
             it.id == state.value.selectedGameId
         }
 
         _state.update { it.copy(
             isStatusMenuOpen = true,
-            draftStatus = setOf()
+            selectedGameId = id,
+            draftStatus = selectedGame?.status
         ) }
     }
 
@@ -173,7 +173,7 @@ class CollectionViewModel @Inject constructor(
                 var currentStatus = state.value.draftStatus
 
                 for (wishlistStatus in CollectionItem.Status.Wishlist.entries) {
-                    currentStatus?.minus(wishlistStatus)
+                    currentStatus = currentStatus?.minus(wishlistStatus.toStatus())
                 }
 
                 currentStatus?.plus(status)
@@ -192,15 +192,17 @@ class CollectionViewModel @Inject constructor(
 
     private fun handleOnStatusMenuClose(){
         val currentStatus = state.value.draftStatus
+        val id = state.value.selectedGameId
 
         _state.update { it.copy(
             draftStatus = null,
+            selectedGameId = null,
             isStatusMenuOpen = false,
         ) }
 
         viewModelScope.launch {
             updateGameStatusUseCase(
-                state.value.selectedGameId!!,
+                id!!,
                 currentStatus!!
             )
         }
