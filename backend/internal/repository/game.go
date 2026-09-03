@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/polka/backend/internal/domain"
+	"github.com/polka/backend/internal/model"
 	"gorm.io/gorm"
 )
 
@@ -26,7 +27,8 @@ func (r *GameRepository) SearchGameByFilter(ctx context.Context, filter *domain.
 	query := r.db.
 		WithContext(ctx).
 		Table("games").
-		Select("games.id, games.name, games.description, games.polka_rating, games.bgg_rating")
+		Select("games.id, games.name, games.description, games.polka_rating, games.bgg_rating").
+		Where("games.bgg_id IS NOT NULL")
 
 	if filter.Name != "" {
 		query = query.Where("games.name ILIKE ?", "%"+filter.Name+"%")
@@ -163,4 +165,31 @@ func (r *GameRepository) GetCountGamesByName(ctx context.Context, name string) (
 		Count(&count)
 
 	return count, nil
+}
+
+func (r *GameRepository) CreateGame(ctx context.Context, game model.Game) (*model.Game, error) {
+	if err := r.db.
+		WithContext(ctx).
+		Table("games").
+		Create(&game).
+		Error; err != nil {
+		return nil, fmt.Errorf("create game: %w", err)
+	}
+
+	return &game, nil
+}
+
+func (r *GameRepository) GetGameByID(ctx context.Context, gameID int64) (*model.Game, error) {
+	game := &model.Game{}
+
+	if err := r.db.
+		WithContext(ctx).
+		Table("games").
+		Where("id = ?", gameID).
+		First(&game).
+		Error; err != nil {
+		return nil, fmt.Errorf("get game: %w", err)
+	}
+
+	return game, nil
 }

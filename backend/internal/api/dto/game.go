@@ -1,6 +1,8 @@
 package dto
 
-import "github.com/polka/backend/internal/domain"
+import (
+	"github.com/polka/backend/internal/domain"
+)
 
 type SearchGameRequest struct {
 	Name string `json:"name"`
@@ -33,4 +35,13 @@ type SearchGameResponse struct {
 	NextOffset int32 `json:"next_offset"`
 
 	HasNext bool `json:"has_next"`
+}
+
+type CreateGameRequest struct {
+	Name string `json:"name" binding:"required"`
+}
+
+type CreateGameResponse struct {
+	GameID int64  `json:"game_id"`
+	Name   string `json:"name"`
 }

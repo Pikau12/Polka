@@ -6,12 +6,18 @@ import (
 
 	"github.com/polka/backend/internal/api/dto"
 	"github.com/polka/backend/internal/domain"
+	"github.com/polka/backend/internal/model"
 )
 
 type SearchGameResult struct {
 	Games      []domain.GameSearchInfo
 	NextOffset int32
 	HasNext    bool
+}
+
+type CreateGameResult struct {
+	GameID int64
+	Name   string
 }
 
 type GameService struct {
@@ -23,6 +29,7 @@ type GameRepository interface {
 	SearchGameByFilter(c context.Context, gameFilter *domain.GameFilter) ([]domain.GameSearchInfo, error)
 	FindGamesByBggID(ctx context.Context, ids []int64) ([]int64, error)
 	GetCountGamesByName(ctx context.Context, name string) (int64, error)
+	CreateGame(ctx context.Context, game model.Game) (*model.Game, error)
 }
 
 type GameClient interface {
@@ -76,6 +83,18 @@ func (s *GameService) SearchGames(ctx context.Context, request dto.SearchGameReq
 	res.NextOffset = request.Offset + int32(len(games))
 
 	return res, nil
+}
+
+func (s *GameService) CreateGame(ctx context.Context, name string) (*CreateGameResult, error) {
+	game, err := s.gameRepository.CreateGame(ctx, model.Game{Name: name})
+	if err != nil {
+		return nil, fmt.Errorf("create game: %w", err)
+	}
+
+	return &CreateGameResult{
+		GameID: game.ID,
+		Name:   game.Name,
+	}, nil
 }
 
 func (s *GameService) searchGamesWithBgg(ctx context.Context, name string, bggOffset int, needCount int) ([]domain.GameSearchInfo, bool, error) {

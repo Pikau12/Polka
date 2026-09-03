@@ -8,28 +8,31 @@ import (
 	"github.com/polka/backend/internal/api/middleware"
 )
 
-func New(log *slog.Logger, authHandler *handler.AuthHandler, gameHandler *handler.GameHandler, parser middleware.AccessTokenParser) *gin.Engine {
-	r := gin.New()
-	r.Use(middleware.LoggerMiddleware(log), gin.Recovery())
+type Dependencies struct {
+	AuthHandler       *handler.AuthHandler
+	GameHandler       *handler.GameHandler
+	CollectionHandler *handler.CollectionHandler
+	TokenParser       middleware.AccessTokenParser
+	Log               *slog.Logger
+}
 
-	registerRoutes(r, authHandler, gameHandler, parser)
+func New(deps Dependencies) *gin.Engine {
+	r := gin.New()
+	r.Use(middleware.LoggerMiddleware(deps.Log), gin.Recovery())
+
+	registerRoutes(r, deps)
 	return r
 }
 
-func registerRoutes(r *gin.Engine, authHandler *handler.AuthHandler, gameHandler *handler.GameHandler, parser middleware.AccessTokenParser) {
+func registerRoutes(r *gin.Engine, deps Dependencies) {
 	api := r.Group("api")
 
-	auth := api.Group("/auth")
-	{
-		auth.POST("/register", authHandler.Register)
-		auth.POST("/login", authHandler.Login)
-		auth.POST("/refresh", authHandler.Refresh)
-		auth.POST("/logout", authHandler.Logout)
-	}
+	registerAuthRoutes(deps.AuthHandler, api)
 
 	protected := api.Group("/protected")
-	protected.Use(middleware.AuthMiddleware(parser))
+	protected.Use(middleware.AuthMiddleware(deps.TokenParser))
 	{
-		protected.GET("/games", gameHandler.SearchGames)
+		registerGameRoutes(deps.GameHandler, protected)
+		registerCollectionRoutes(deps.CollectionHandler, protected)
 	}
 }

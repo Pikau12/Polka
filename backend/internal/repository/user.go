@@ -109,3 +109,22 @@ func (r *UserRepository) RevokeAuthSession(ctx context.Context, id int64, revoke
 
 	return nil
 }
+
+func (r *UserRepository) GetByID(ctx context.Context, id int64) (*model.User, error) {
+	user := &model.User{}
+
+	if err := r.db.
+		WithContext(ctx).
+		Table("users").
+		Where("id = ?", id).
+		Take(user).
+		Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrUserNotFound
+		}
+
+		return nil, fmt.Errorf("get user by id: %w", err)
+	}
+
+	return user, nil
+}

@@ -14,8 +14,8 @@ type Game struct {
 	BggRating   *float64
 	PolkaRating *float64
 
-	BestCountPlayers      []int32
-	AvailableCountPlayers []int32
+	BestCountPlayers      []int32 `gorm:"type:integer[]"`
+	AvailableCountPlayers []int32 `gorm:"type:integer[]"`
 
 	MinPlayTimeMinutes *int32
 	MaxPlayTimeMinutes *int32

@@ -17,6 +17,7 @@ type GameHandler struct {
 
 type GameService interface {
 	SearchGames(ctx context.Context, request dto.SearchGameRequest) (*service.SearchGameResult, error)
+	CreateGame(ctx context.Context, name string) (*service.CreateGameResult, error)
 }
 
 func NewGameHandler(service GameService, log *slog.Logger) *GameHandler {
@@ -43,6 +44,28 @@ func (h *GameHandler) SearchGames(c *gin.Context) {
 		Games:      searchGamesRes.Games,
 		NextOffset: searchGamesRes.NextOffset,
 		HasNext:    searchGamesRes.HasNext,
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *GameHandler) CreateGame(c *gin.Context) {
+	request := dto.CreateGameRequest{}
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	game, err := h.gameService.CreateGame(c.Request.Context(), request.Name)
+	if err != nil {
+		h.log.ErrorContext(c.Request.Context(), "create game", slog.Any("error", err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	response := dto.CreateGameResponse{
+		GameID: game.GameID,
+		Name:   game.Name,
 	}
 
 	c.JSON(http.StatusOK, response)

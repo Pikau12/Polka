@@ -8,10 +8,12 @@ import (
 	"time"
 
 	"github.com/polka/backend/internal/domain"
+	"github.com/polka/backend/internal/model"
 )
 
 type Searcher interface {
 	Search(ctx context.Context, name string) ([]domain.BggGameSearchInfo, error)
+	GetGame(ctx context.Context, gameID int64) (model.Game, error)
 }
 
 type CachedClient struct {
