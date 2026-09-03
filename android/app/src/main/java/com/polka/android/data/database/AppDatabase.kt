@@ -7,6 +7,7 @@ import com.polka.android.data.database.dao.CollectionDao
 import com.polka.android.data.database.dao.GameDao
 import com.polka.android.data.database.dao.SearchDao
 import com.polka.android.data.database.dao.SessionDao
+import com.polka.android.data.database.dao.UserDao
 import com.polka.android.data.database.model.CollectionItemEntity
 import com.polka.android.data.database.model.FriendshipEntity
 import com.polka.android.data.database.model.GameEntity
@@ -28,6 +29,8 @@ import com.polka.android.data.database.model.UserEntity
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
+
+    abstract fun userDao(): UserDao
     abstract fun gameDao(): GameDao
     abstract fun sessionDao(): SessionDao
     abstract fun searchDao(): SearchDao

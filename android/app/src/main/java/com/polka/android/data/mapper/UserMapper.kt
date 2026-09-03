@@ -3,7 +3,7 @@ package com.polka.android.data.mapper
 import com.polka.android.data.database.model.UserEntity
 import com.polka.android.data.model.User
 
-fun UserEntity.toModel(userEntity: UserEntity): User {
+fun UserEntity.toModel(): User {
     return User(
         id = id,
         login = login,
@@ -14,7 +14,7 @@ fun UserEntity.toModel(userEntity: UserEntity): User {
     )
 }
 
-fun User.toEntity(user: User): UserEntity {
+fun User.toEntity(): UserEntity {
     return UserEntity(
         id = id,
         login = login,

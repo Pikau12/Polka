@@ -6,6 +6,7 @@ import com.polka.android.data.database.dao.CollectionDao
 import com.polka.android.data.database.dao.GameDao
 import com.polka.android.data.database.dao.SearchDao
 import com.polka.android.data.database.dao.SessionDao
+import com.polka.android.data.database.dao.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,14 +17,22 @@ import jakarta.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class DatabaseModule {
+
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
+    fun provideAppDatabase(
+        @ApplicationContext appContext: Context
+    ): AppDatabase {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java,
             "Model"
         ).build()
+    }
+
+    @Provides
+    fun provideUserDao(appDatabase: AppDatabase): UserDao {
+        return appDatabase.userDao()
     }
 
     @Provides

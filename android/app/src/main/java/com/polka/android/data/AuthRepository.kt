@@ -14,7 +14,7 @@ interface AuthRepository {
     fun shouldShowOnboarding(): Boolean
     suspend fun markOnboardingAsSeen()
     fun shouldShowLoginScreen(): Boolean
-    fun getCurrentUser(): User
+    fun getCurrentUser(): User?
 
 }
 
