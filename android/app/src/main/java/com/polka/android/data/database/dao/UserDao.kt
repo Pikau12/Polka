@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.polka.android.data.database.model.UserEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -23,10 +24,10 @@ interface UserDao {
     @Update
     suspend fun updateUser(user: UserEntity)
 
-    @Query("UPDATE users SET name = :name WHERE id = :userId")
-    suspend fun updateUserName(
+    @Query("UPDATE users SET username = :username WHERE id = :userId")
+    suspend fun updateUsername(
         userId: Long,
-        name: String
+        username: String
     )
 
     @Query("UPDATE users SET login = :login WHERE id = :userId")
@@ -35,11 +36,14 @@ interface UserDao {
         login: String
     )
 
-    @Query("UPDATE users SET avatar = :avatar WHERE id = :userId")
+    @Query("UPDATE users SET avatarUrl = :avatarUrl WHERE id = :userId")
     suspend fun updateUserAvatar(
         userId: Long,
-        avatar: String?
+        avatarUrl: String?
     )
+
+    @Query("SELECT * FROM users WHERE id = :userId")
+    fun observeUserById(userId: Long): Flow<UserEntity?>
 
     @Delete
     suspend fun deleteUser(user: UserEntity)

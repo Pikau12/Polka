@@ -14,14 +14,22 @@ import jakarta.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class DatabaseModule {
+
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
+    fun provideAppDatabase(
+        @ApplicationContext appContext: Context
+    ): AppDatabase {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java,
             "Model"
         ).build()
+    }
+
+    @Provides
+    fun provideUserDao(appDatabase: AppDatabase): UserDao {
+        return appDatabase.userDao()
     }
 
     @Provides
