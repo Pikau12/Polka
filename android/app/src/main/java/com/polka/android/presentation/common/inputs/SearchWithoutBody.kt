@@ -19,12 +19,12 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SearchWithoutBody (
     query: String,
-    onValueChange: () -> Unit,
+    onValueChange: (String) -> Unit,
     placeholderText: String
 ) {
     TextField(
         value = query,
-        onValueChange = { onValueChange() },
+        onValueChange = { onValueChange(it) },
         placeholder = {
             Text(
                 modifier = Modifier.alpha(0.5f),

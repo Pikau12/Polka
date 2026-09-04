@@ -2,6 +2,7 @@ package com.polka.android.presentation.coreScreens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.polka.android.presentation.model.CollectionItemSummary
 import com.polka.android.presentation.model.SessionSummary
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,13 +16,19 @@ import kotlinx.coroutines.launch
 data class SessionsState (
     val isLoading: Boolean = false,
     val sessions: List<SessionSummary>? = null,
+    val collectionList: List<CollectionItemSummary>? = null,
+    val isSearchGameOpen: Boolean = false,
+    val gameSearchQuery: String = "",
 )
 
 sealed class SessionsScreenEvent {
     object onLeftSwipe : SessionsScreenEvent()
     object onRightSwipe : SessionsScreenEvent()
     data class onSessionClick(val sessionId: Long) : SessionsScreenEvent()
-    data class onAddSessionClick(val gameId: Long) : SessionsScreenEvent()
+    object onAddSessionClick : SessionsScreenEvent()
+    data class onGameSearchItemClick(val id: CollectionItemSummary.Id) : SessionsScreenEvent()
+    object onGameSearchBackClick : SessionsScreenEvent()
+    data class onGameSearchChange(val query: String) : SessionsScreenEvent()
 }
 
 class SessionsViewModel @Inject constructor(
@@ -38,14 +45,27 @@ class SessionsViewModel @Inject constructor(
             is SessionsScreenEvent.onLeftSwipe -> handleOnLeftSwipe()
             is SessionsScreenEvent.onRightSwipe -> handleOnRightSwipe()
             is SessionsScreenEvent.onSessionClick -> handleOnSessionClick(event.sessionId)
-            is SessionsScreenEvent.onAddSessionClick -> handleOnAddSessionClick(event.gameId)
+
+            is SessionsScreenEvent.onAddSessionClick -> handleOnAddSessionClick()
+            is SessionsScreenEvent.onGameSearchItemClick -> TODO()
+            is SessionsScreenEvent.onGameSearchBackClick -> handleOnGameSearchBackClick()
         }
     }
 
-    private fun handleOnAddSessionClick(gameId: Long) {
-        viewModelScope.launch {
-            _sessionsScreenEvent.emit(SessionsScreenEvent.onAddSessionClick(gameId))
-        }
+    private fun handleOnGameSearchChange() {
+
+    }
+
+    private fun handleOnGameSearchBackClick() {
+        // TODO
+    }
+
+    private fun handleOnGameSearchItemClick(id: CollectionItemSummary.Id) {
+        // TODO
+    }
+
+    private fun handleOnAddSessionClick() {
+       // TODO
     }
 
     private fun handleOnLeftSwipe() {

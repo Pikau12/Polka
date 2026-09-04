@@ -46,7 +46,7 @@ import com.polka.android.presentation.theme.PolkaUserRatingStar
 fun SessionSearchGameLayout (
     enabled: Boolean,
     onBackClick: () -> Unit,
-    onSearchChange: () -> Unit,
+    onSearchChange: (String) -> Unit,
     @DrawableRes backgroundImageId: Int,
     query: String,
     placeholderText: String,
