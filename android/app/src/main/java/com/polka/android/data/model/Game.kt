@@ -12,7 +12,7 @@ data class Game(
     val image: ImageSource?,
     val bggAverageRating: Double?,
     val bggNumberOfRatings: Int?,
-    val playerCount: ClosedRange<Int>?,
+    val playerCount: ClosedRange<Int>?, // TODO: change to list
     val bestPlayerCount: ClosedRange<Int>?,
     val timeRange: ClosedRange<Int>?,
     val ageRestriction: Int?,
