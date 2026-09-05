@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"github.com/lib/pq"
+)
 
 type Game struct {
 	ID    int64
@@ -14,8 +18,8 @@ type Game struct {
 	BggRating   *float64
 	PolkaRating *float64
 
-	BestCountPlayers      []int32 `gorm:"type:integer[]"`
-	AvailableCountPlayers []int32 `gorm:"type:integer[]"`
+	BestCountPlayers      pq.Int32Array `gorm:"type:integer[]"`
+	AvailableCountPlayers pq.Int32Array `gorm:"type:integer[]"`
 
 	MinPlayTimeMinutes *int32
 	MaxPlayTimeMinutes *int32

@@ -280,8 +280,6 @@ func (s *GameService) searchGamesWithBgg(ctx context.Context, name string, bggOf
 
 	skip := bggOffset
 
-	addedCount := 0
-
 	for _, game := range bggGames {
 		if usedSet[game.BggID] {
 			continue
@@ -292,8 +290,8 @@ func (s *GameService) searchGamesWithBgg(ctx context.Context, name string, bggOf
 			continue
 		}
 
-		if addedCount == needCount {
-			break
+		if len(games) == needCount {
+			return games, true, nil
 		}
 
 		games = append(games, domain.GameSearchInfo{
@@ -301,12 +299,6 @@ func (s *GameService) searchGamesWithBgg(ctx context.Context, name string, bggOf
 			Name:          game.Name,
 			YearPublished: &game.YearPublished,
 		})
-
-		addedCount++
-	}
-
-	if (len(bggGames) - len(usedBggIDs)) > (bggOffset + addedCount) {
-		return games, true, nil
 	}
 
 	return games, false, nil
