@@ -8,12 +8,11 @@ import (
 	"time"
 
 	"github.com/polka/backend/internal/domain"
-	"github.com/polka/backend/internal/model"
 )
 
 type Searcher interface {
-	Search(ctx context.Context, name string) ([]domain.BggGameSearchInfo, error)
-	GetGame(ctx context.Context, gameID int64) (model.Game, error)
+	Search(ctx context.Context, name string) ([]domain.BggGameSearch, error)
+	Thing(ctx context.Context, bggIDs []int64) ([]domain.BggGameThing, error)
 }
 
 type CachedClient struct {
@@ -28,7 +27,7 @@ type CachedClient struct {
 }
 
 type searchGameCacheEntry struct {
-	games     []domain.BggGameSearchInfo
+	games     []domain.BggGameSearch
 	expiresAt time.Time
 }
 
@@ -41,7 +40,7 @@ func NewCachedClient(client Searcher, ttl time.Duration) *CachedClient {
 	}
 }
 
-func (c *CachedClient) Search(ctx context.Context, name string) ([]domain.BggGameSearchInfo, error) {
+func (c *CachedClient) Search(ctx context.Context, name string) ([]domain.BggGameSearch, error) {
 	formattedName := formatName(name)
 
 	entry, exists := c.get(formattedName)
@@ -60,6 +59,10 @@ func (c *CachedClient) Search(ctx context.Context, name string) ([]domain.BggGam
 	})
 
 	return res, nil
+}
+
+func (c *CachedClient) Thing(ctx context.Context, bggIDs []int64) ([]domain.BggGameThing, error) {
+	return c.client.Thing(ctx, bggIDs)
 }
 
 func (c *CachedClient) Start(ctx context.Context) {
@@ -84,6 +87,10 @@ func (c *CachedClient) get(name string) (searchGameCacheEntry, bool) {
 	defer c.mtx.RUnlock()
 
 	entry, ok := c.cache[name]
+
+	if time.Now().After(entry.expiresAt) {
+		return searchGameCacheEntry{}, false
+	}
 
 	return entry, ok
 }
