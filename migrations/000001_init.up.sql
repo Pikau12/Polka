@@ -130,7 +130,7 @@ CREATE TABLE games(
     bgg_id BIGINT UNIQUE,
 
     name non_empty_varchar_255 NOT NULL,
-    description VARCHAR(1024),
+    description TEXT,
 
     year_published INTEGER,
 
