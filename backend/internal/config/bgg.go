@@ -2,6 +2,8 @@ package config
 
 import (
 	"errors"
+	"fmt"
+	"net/url"
 	"os"
 	"time"
 )
@@ -25,9 +27,14 @@ func NewBggConfig() (*BggConfig, error) {
 		config.GameCacheTTL = gameCacheTTL
 	}
 
-	if config.BaseURL == "" {
-		return nil, errors.New("BGG_BASE_URL environment variable not set")
+	baseURL := os.Getenv("BGG_BASE_URL")
+
+	_, err = url.ParseRequestURI(baseURL)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing BGG_BASE_URL: %w", err)
 	}
+
+	config.BaseURL = baseURL
 
 	if config.Token == "" {
 		return nil, errors.New("BGG_TOKEN environment variable not set")
