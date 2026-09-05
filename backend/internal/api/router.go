@@ -29,10 +29,9 @@ func registerRoutes(r *gin.Engine, deps Dependencies) {
 
 	registerAuthRoutes(deps.AuthHandler, api)
 
-	protected := api.Group("/protected")
-	protected.Use(middleware.AuthMiddleware(deps.TokenParser))
+	api.Use(middleware.AuthMiddleware(deps.TokenParser))
 	{
-		registerGameRoutes(deps.GameHandler, protected)
-		registerCollectionRoutes(deps.CollectionHandler, protected)
+		registerGameRoutes(deps.GameHandler, api)
+		registerCollectionRoutes(deps.CollectionHandler, api)
 	}
 }
