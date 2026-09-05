@@ -32,6 +32,13 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       PORT: 8080
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_TTL: ${JWT_ACCESS_TTL}
+      JWT_REFRESH_TTL: ${JWT_REFRESH_TTL}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_AUDIENCE: ${JWT_AUDIENCE}
+      BGG_BASE_URL: ${BGG_BASE_URL}
+      BGG_TOKEN: ${BGG_TOKEN}
     ports:
       - "8080:8080"
   garage:

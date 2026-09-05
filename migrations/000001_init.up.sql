@@ -4,10 +4,23 @@ CREATE DOMAIN non_empty_varchar_255 VARCHAR(255)
 CREATE TABLE users(
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     bgg_id BIGINT UNIQUE,
-    login non_empty_varchar_255 NOT NULL UNIQUE,
+    login non_empty_varchar_255 NOT NULL,
     username non_empty_varchar_255 NOT NULL,
     password_hash non_empty_varchar_255 NOT NULL,
-    email non_empty_varchar_255 NOT NULL
+    email non_empty_varchar_255 NOT NULL,
+
+    CONSTRAINT uq_users_login UNIQUE(login),
+
+    CONSTRAINT uq_users_email UNIQUE(email)
+);
+
+CREATE TABLE auth_sessions(
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    refresh_token_hash non_empty_varchar_255 NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    expires_at TIMESTAMPTZ NOT NULL,
+    revoked_at TIMESTAMPTZ
 );
 
 CREATE TABLE images(
@@ -114,11 +127,12 @@ CREATE TABLE friendships(
 
 CREATE TABLE games(
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    server_id BIGINT,
     bgg_id BIGINT UNIQUE,
 
     name non_empty_varchar_255 NOT NULL,
-    description VARCHAR(1024),
+    description TEXT,
+
+    year_published INTEGER,
 
     bgg_rating FLOAT,
     polka_rating FLOAT,
@@ -277,7 +291,6 @@ CREATE TABLE game_mechanics(
 
 CREATE TABLE sessions(
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    server_id BIGINT,
 
     game_id BIGINT NOT NULL,
 
