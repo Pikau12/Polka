@@ -9,6 +9,7 @@ func registerGameRoutes(gameHandler *handler.GameHandler, parentRoute *gin.Route
 	games := parentRoute.Group("/games")
 	{
 		games.GET("/search", gameHandler.SearchGames)
+		games.GET("", gameHandler.GetGame)
 		games.POST("/create", gameHandler.CreateGame)
 	}
 }
