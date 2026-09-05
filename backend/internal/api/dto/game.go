@@ -5,7 +5,7 @@ import (
 )
 
 type SearchGameRequest struct {
-	Name string `json:"name"`
+	Name string `json:"name" binding:"required"`
 
 	MinPlayTimeMinutes *int32 `json:"min_play_time_minutes,omitempty"`
 	MaxPlayTimeMinutes *int32 `json:"max_play_time_minutes,omitempty"`
@@ -44,4 +44,32 @@ type CreateGameRequest struct {
 type CreateGameResponse struct {
 	GameID int64  `json:"game_id"`
 	Name   string `json:"name"`
+}
+
+type GameIDs struct {
+	ServerID int64 `json:"server_id"`
+	BggID    int64 `json:"bgg_id"`
+}
+type GetGamesRequest struct {
+	IDs []GameIDs `json:"game_ids" binding:"required"`
+}
+
+type GetGamesResponse struct {
+	Games []GetGameResponse `json:"games"`
+}
+
+type GetGameResponse struct {
+	ServerID              int64    `json:"server_id"`
+	BggID                 *int64   `json:"bgg_id"`
+	Name                  string   `json:"name"`
+	Description           *string  `json:"description"`
+	YearPublished         int32    `json:"year_published"`
+	BggRating             *float64 `json:"bgg_rating"`
+	PolkaRating           *float64 `json:"polka_rating"`
+	BestCountPlayers      []int32  `json:"best_count_players"`
+	AvailableCountPlayers []int32  `json:"available_count_players"`
+	MinPlayTimeMinutes    *int32   `json:"min_play_time_minutes"`
+	MaxPlayTimeMinutes    *int32   `json:"max_play_time_minutes"`
+	MinAge                *int32   `json:"min_age"`
+	Weight                *float64 `json:"weight"`
 }
