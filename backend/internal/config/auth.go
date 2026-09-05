@@ -22,15 +22,19 @@ func NewAuthConfig() (*AuthConfig, error) {
 		return nil, fmt.Errorf("failed to get JWT_SECRET env")
 	}
 
-	cfg.AccessTTL, _ = time.ParseDuration(os.Getenv("JWT_ACCESS_TTL"))
-	if cfg.AccessTTL == 0 {
-		return nil, fmt.Errorf("failed to get JWT_ACCESS_TTL env")
+	accessTTL, err := time.ParseDuration(os.Getenv("JWT_ACCESS_TTL"))
+	if err != nil || accessTTL <= 0 {
+		return nil, fmt.Errorf("failed to get JWT_ACCESS_TTL env: %w", err)
 	}
 
-	cfg.RefreshTTL, _ = time.ParseDuration(os.Getenv("JWT_REFRESH_TTL"))
-	if cfg.RefreshTTL == 0 {
-		return nil, fmt.Errorf("failed to get JWT_REFRESH_TTL env")
+	cfg.AccessTTL = accessTTL
+
+	refreshTTL, err := time.ParseDuration(os.Getenv("JWT_REFRESH_TTL"))
+	if err != nil || refreshTTL <= 0 {
+		return nil, fmt.Errorf("failed to get JWT_REFRESH_TTL env: %w", err)
 	}
+
+	cfg.RefreshTTL = refreshTTL
 
 	cfg.JWTIssuer = os.Getenv("JWT_ISSUER")
 	if cfg.JWTIssuer == "" {
