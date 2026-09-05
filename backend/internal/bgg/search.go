@@ -11,7 +11,7 @@ import (
 	"github.com/polka/backend/internal/domain"
 )
 
-func (c *Client) Search(ctx context.Context, name string) ([]domain.BggGameSearchInfo, error) {
+func (c *Client) Search(ctx context.Context, name string) ([]domain.BggGameSearch, error) {
 	u, err := url.Parse(c.baseURL + "/search")
 	if err != nil {
 		return nil, fmt.Errorf("parse bgg search: %w", err)
@@ -46,19 +46,28 @@ func (c *Client) Search(ctx context.Context, name string) ([]domain.BggGameSearc
 		return nil, fmt.Errorf("decode bgg response: %w", err)
 	}
 
-	games := make([]domain.BggGameSearchInfo, 0, len(searchResponse.Items))
+	games := make([]domain.BggGameSearch, 0, len(searchResponse.Items))
 
 	for _, item := range searchResponse.Items {
-		yearPublished, err := strconv.ParseInt(item.YearPublished.Value, 10, 32)
-		if err != nil {
-			return nil, fmt.Errorf("parse year published: %w", err)
+		game := domain.BggGameSearch{}
+
+		if item.ID <= 0 {
+			continue
 		}
 
-		games = append(games, domain.BggGameSearchInfo{
-			BggID:         item.ID,
-			Name:          item.Name.Value,
-			YearPublished: int32(yearPublished),
-		})
+		if item.Name.Value == ""{
+			continue
+		}
+
+		if item.YearPublished.Value != "" {
+			yearPublished, err := strconv.ParseInt(item.YearPublished.Value, 10, 32)
+			if err != nil {
+				return nil, fmt.Errorf("parse year published: %w", err)
+			}
+			game.YearPublished = int32(yearPublished)
+		}
+
+		games = append(games, game)
 	}
 
 	return games, nil
