@@ -18,6 +18,7 @@ type GameHandler struct {
 type GameService interface {
 	SearchGames(ctx context.Context, request dto.SearchGameRequest) (*service.SearchGameResult, error)
 	CreateGame(ctx context.Context, name string) (*service.CreateGameResult, error)
+	GetGame(ctx context.Context, request dto.GetGamesRequest) ([]service.GetGameResult, error)
 }
 
 func NewGameHandler(service GameService, log *slog.Logger) *GameHandler {
@@ -66,6 +67,44 @@ func (h *GameHandler) CreateGame(c *gin.Context) {
 	response := dto.CreateGameResponse{
 		GameID: game.GameID,
 		Name:   game.Name,
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *GameHandler) GetGame(c *gin.Context) {
+	request := dto.GetGamesRequest{}
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	games, err := h.gameService.GetGame(c.Request.Context(), request)
+	if err != nil {
+		h.log.ErrorContext(c.Request.Context(), "get game", slog.Any("error", err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	response := dto.GetGamesResponse{Games: make([]dto.GetGameResponse, 0, len(games))}
+
+	for _, game := range games {
+		response.Games = append(response.Games, dto.GetGameResponse{
+			ServerID:              game.ServerID,
+			BggID:                 game.BggID,
+			Name:                  game.Name,
+			Description:           game.Description,
+			YearPublished:         game.YearPublished,
+			BggRating:             game.BggRating,
+			PolkaRating:           game.PolkaRating,
+			BestCountPlayers:      game.BestCountPlayers,
+			AvailableCountPlayers: game.AvailableCountPlayers,
+			MinPlayTimeMinutes:    game.MinPlayTimeMinutes,
+			MaxPlayTimeMinutes:    game.MaxPlayTimeMinutes,
+			MinAge:                game.MinAge,
+			Weight:                game.Weight,
+		})
 	}
 
 	c.JSON(http.StatusOK, response)
