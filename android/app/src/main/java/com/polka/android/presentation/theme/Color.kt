@@ -33,7 +33,7 @@ val OnBackground = Color(0xFF1C1B1F) // -
 val Surface = Color(0xFF484D6D) // TIP: tiles and input container background
 val OnSurface = Color(0xFFF5EFF7)  // TIP: text on Surface
 val SurfaceVariant = Color(0xFFECE6F0) // TIP: search bar background
-val OnSurfaceVariant = Color(0xFF49454F) // TIP: text on SurfaceVariant
+val OnSurfaceVariant = Color(0xFF49454F) // TIP: elements on SurfaceVariant
 
 // ===== Errors =====
 val Error = Color(0xFFBA1A1A) // -
@@ -82,20 +82,28 @@ val PolkaUserRatingStar = PolkaThree
 
 val EmptyColor = Color(0x00FFFFFF)
 
-val PolkaGameSearchCardColors = CardColors(
+// Bubble
+val PolkaBubbleName = PolkaSeven
+val PolkaBubbleDate = PolkaTwo
+val PolkaBubblePlace = PolkaOne
+val PolkaBubbleWinner = PolkaThree
+val PolkaBubblePlayer = PolkaSix
+
+val PolkaOnBubble = Color(0xFF000000)
+//
+
+val PolkaSessionCardColors = CardColors(
     containerColor = Surface,
     contentColor = OnSurface,
     disabledContentColor = Surface,
     disabledContainerColor = OnSurface
 )
 
-val PolkaSearchColors = TextFieldDefaults.colors(
-    focusedContainerColor = SurfaceVariant,
-    unfocusedContainerColor = SurfaceVariant,
-    disabledContainerColor = SurfaceVariant,
-    cursorColor = OnSurfaceVariant,
-    focusedIndicatorColor = Color.Transparent,
-    unfocusedIndicatorColor = Color.Transparent
+val PolkaGameSearchCardColors = CardColors(
+    containerColor = Surface,
+    contentColor = OnSurface,
+    disabledContentColor = Surface,
+    disabledContainerColor = OnSurface
 )
 
 val PolkaLogInButtonColors = ButtonColors (
