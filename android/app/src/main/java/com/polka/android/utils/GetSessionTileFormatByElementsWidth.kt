@@ -4,7 +4,7 @@ import androidx.compose.ui.unit.Dp
 import com.polka.android.presentation.common.tiles.BubbleType
 import com.polka.android.presentation.common.tiles.SessionTileFormat
 
-fun GetCardSizeByElementWidth (
+fun GetSessionTileFormatByElementsWidth (
     cardWidth: Dp,
     fieldWidth: Dp,
     elements: List<Pair<String, BubbleType>>
