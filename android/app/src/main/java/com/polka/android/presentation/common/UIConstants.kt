@@ -11,4 +11,6 @@ object UiConstants {
     val SESSION_TILE_SINGLE_ROW_HEIGHT = 50.dp
     val SESSION_TILE_TWO_ROWS_HEIGHT = 94.dp
     val SESSION_TILE_THREE_ROWS_HEIGHT = 135.dp
+
+    val STROKE_SIZE = 3.dp
 }

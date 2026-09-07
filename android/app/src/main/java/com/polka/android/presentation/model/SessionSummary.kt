@@ -4,12 +4,12 @@ import coil3.request.ImageRequest
 import java.time.LocalDate
 
 data class SessionSummary (
-    var sessionId: Long,
-    var gameName: String,
-    var gameImage: ImageRequest? = null,
-    var date: LocalDate,
-    var duration: Long? = null,
-    var place: String? = null,
-    var players: List<String>? = null,
-    var winners: Map<String, Boolean>? = null,
+    val sessionId: Long,
+    val gameName: String,
+    val gameImage: ImageRequest? = null,
+    val date: LocalDate,
+    val duration: Long? = null,
+    val place: String? = null,
+    val players: List<String>? = null,
+    val winners: Map<String, Boolean>? = null,
 )
