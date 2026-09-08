@@ -4,8 +4,10 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.MenuItemColors
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import coil3.compose.AsyncImagePainter
 
@@ -91,6 +93,17 @@ val PolkaBubblePlayer = PolkaSix
 
 val PolkaOnBubble = Color(0xFF000000)
 //
+
+@Composable
+fun polkaSearchWithoutBodyColors() = OutlinedTextFieldDefaults.colors(
+    focusedBorderColor = Surface,
+    unfocusedBorderColor = Surface,
+    focusedContainerColor = SurfaceVariant,
+    unfocusedContainerColor = SurfaceVariant,
+    cursorColor = OnSurfaceVariant,
+    focusedTextColor = OnSurfaceVariant,
+    unfocusedTextColor = OnSurfaceVariant
+)
 
 val PolkaSessionCardColors = CardColors(
     containerColor = Surface,
