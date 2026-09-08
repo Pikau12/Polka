@@ -47,13 +47,14 @@ class SessionsViewModel @Inject constructor(
             is SessionsScreenEvent.onSessionClick -> handleOnSessionClick(event.sessionId)
 
             is SessionsScreenEvent.onAddSessionClick -> handleOnAddSessionClick()
-            is SessionsScreenEvent.onGameSearchItemClick -> TODO()
+            is SessionsScreenEvent.onGameSearchItemClick -> handleOnGameSearchItemClick(event.id)
             is SessionsScreenEvent.onGameSearchBackClick -> handleOnGameSearchBackClick()
+            is SessionsScreenEvent.onGameSearchChange -> handleOnGameSearchChange(event.query)
         }
     }
 
-    private fun handleOnGameSearchChange() {
-
+    private fun handleOnGameSearchChange(query: String) {
+        // TODO
     }
 
     private fun handleOnGameSearchBackClick() {

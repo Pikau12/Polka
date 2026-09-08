@@ -1,9 +1,17 @@
 package com.polka.android.presentation.coreScreens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.polka.android.R
@@ -19,7 +27,20 @@ fun SessionsScreen (
     val state by viewModel.state.collectAsState()
 
     if (state.sessions != null && !state.isSearchGameOpen) {
+        Box {
+            Image(
+                painter = painterResource(R.drawable.collection_screen_background),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
 
+            Scaffold(
+                containerColor = Color.Transparent
+            ) { paddingValues ->
+
+            }
+        }
     }
     else if (state.isSearchGameOpen) { // TODO: add collection == null handler
         SessionSearchGameLayout (
