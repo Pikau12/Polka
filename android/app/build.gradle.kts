@@ -117,6 +117,7 @@ dependencies {
     // Image loading
     implementation(libs.coil.kt.coil.compose)
     implementation(libs.coil.kt.coil.network.okhttp)
+    implementation("io.coil-kt.coil3:coil-svg:3.5.0")
 
     // Reorderable for LazyGrid in UI layer
     implementation(libs.reorderable)
