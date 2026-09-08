@@ -87,6 +87,7 @@ val EmptyColor = Color(0x00FFFFFF)
 // Bubble
 val PolkaBubbleName = PolkaSeven
 val PolkaBubbleDate = PolkaTwo
+val PolkaBubbleDuration = PolkaEleven
 val PolkaBubblePlace = PolkaOne
 val PolkaBubbleWinner = PolkaThree
 val PolkaBubblePlayer = PolkaSix

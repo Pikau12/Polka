@@ -4,57 +4,103 @@ import androidx.compose.ui.unit.Dp
 import com.polka.android.presentation.common.tiles.BubbleType
 import com.polka.android.presentation.common.tiles.SessionTileFormat
 
-fun GetSessionTileFormatByElementsWidth (
+fun GetSessionTileFormatByElementsWidth(
     cardWidth: Dp,
-    fieldWidth: Dp,
-    elements: List<Pair<String, BubbleType>>
-) : SessionTileFormat {
-    val cardWidthInInt = cardWidth.value.toInt()
-    val fieldWidthInInt = fieldWidth.value.toInt()
+    fieldWidthWithSmallPicture: Dp,
+    fieldWidthWithMediumPicture: Dp,
+    elements: List<Triple<String, BubbleType, Float>>
+): SessionTileFormat {
+    val cardWidthPx = cardWidth.value
+    val fieldWidthWithSmallPicturePx = fieldWidthWithSmallPicture.value
+    val fieldWidthWithMediumPicturePx = fieldWidthWithMediumPicture.value
 
-    var rowNow: Int = 1
-    val firstRow: MutableList<Pair<String, BubbleType>> = emptyList<Pair<String, BubbleType>>().toMutableList()
-    val secondRow: MutableList<Pair<String, BubbleType>> = emptyList<Pair<String, BubbleType>>().toMutableList()
-    val thirdRow: MutableList<Pair<String, BubbleType>> = emptyList<Pair<String, BubbleType>>().toMutableList()
+    val bubbleHorizontalPadding = 16f
+    val bubbleSpacing = 6f
 
-    var len: Int = 0
+    // Проверяем, помещается ли всё в одну строку с маленькой картинкой
+    var totalWidth = 0f
+    var fitsInOneRow = true
 
-    for(str in elements) {
-        if (rowNow == 1){
-            if (len + str.first.length < fieldWidthInInt) {
-                firstRow.add(str)
-                len += str.first.length
-            }
-            else {
-                len = 0
-                rowNow++
-            }
+    for ((index, element) in elements.withIndex()) {
+        val textWidth = element.third
+        val fullBubbleWidth = textWidth + bubbleHorizontalPadding +
+                if (index > 0) bubbleSpacing else 0f
+
+        if (totalWidth + fullBubbleWidth <= fieldWidthWithSmallPicturePx) {
+            totalWidth += fullBubbleWidth
+        } else {
+            fitsInOneRow = false
+            break
         }
-        else if (rowNow == 2) {
-            if (len + str.first.length < fieldWidthInInt) {
-                secondRow.add(str)
-                len += str.first.length
+    }
+
+    if (fitsInOneRow) {
+        // Всё помещается в одну строку
+        val firstRow = elements.map { Pair(it.first, it.second) }
+        return SessionTileFormat(
+            numOfRows = 1,
+            firstRow = firstRow
+        )
+    }
+
+    // Не помещается в одну строку, пробуем две строки со средней картинкой
+    val firstRow: MutableList<Pair<String, BubbleType>> = mutableListOf()
+    val secondRow: MutableList<Pair<String, BubbleType>> = mutableListOf()
+    val thirdRow: MutableList<Pair<String, BubbleType>> = mutableListOf()
+
+    var currentWidth = 0f
+    var currentRow = 1
+    var index = 0
+
+    while (index < elements.size) {
+        val element = elements[index]
+        val text = element.first
+        val type = element.second
+        val textWidth = element.third
+
+        val fullBubbleWidth = textWidth + bubbleHorizontalPadding +
+                if (currentWidth > 0f) bubbleSpacing else 0f
+
+        when (currentRow) {
+            1 -> {
+                if (currentWidth + fullBubbleWidth <= fieldWidthWithMediumPicturePx) {
+                    firstRow.add(Pair(text, type))
+                    currentWidth += fullBubbleWidth
+                    index++
+                } else {
+                    // Переходим ко второй строке
+                    currentRow = 2
+                    currentWidth = 0f
+                }
             }
-            else {
-                len = 0
-                rowNow++
+            2 -> {
+                if (currentWidth + fullBubbleWidth <= fieldWidthWithMediumPicturePx) {
+                    secondRow.add(Pair(text, type))
+                    currentWidth += fullBubbleWidth
+                    index++
+                } else {
+                    // Переходим к третьей строке
+                    currentRow = 3
+                    currentWidth = 0f
+                }
             }
-        }
-        else {
-            if (len + str.first.length < cardWidthInInt) {
-                thirdRow.add(str)
-                len += str.first.length
-            }
-            else {
-                break
+            3 -> {
+                if (currentWidth + fullBubbleWidth <= cardWidthPx) {
+                    thirdRow.add(Pair(text, type))
+                    currentWidth += fullBubbleWidth
+                    index++
+                } else {
+                    // Не помещается даже в третью строку
+                    break
+                }
             }
         }
     }
 
     return SessionTileFormat(
-        numOfRows = rowNow,
-        firstRow = firstRow.toList(),
-        secondRow = secondRow.toList(),
-        thirdRow = thirdRow.toList()
+        numOfRows = currentRow,
+        firstRow = firstRow,
+        secondRow = secondRow,
+        thirdRow = thirdRow
     )
 }

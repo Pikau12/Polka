@@ -13,30 +13,35 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.svg.SvgDecoder
 import com.polka.android.R
-import com.polka.android.presentation.common.UiConstants
 import com.polka.android.presentation.common.UiConstants.SESSION_TILE_SINGLE_ROW_HEIGHT
 import com.polka.android.presentation.common.UiConstants.SESSION_TILE_THREE_ROWS_HEIGHT
 import com.polka.android.presentation.common.UiConstants.SESSION_TILE_TWO_ROWS_HEIGHT
 import com.polka.android.presentation.model.SessionSummary
 import com.polka.android.presentation.theme.ManropeFontFamily
 import com.polka.android.presentation.theme.PolkaBubbleDate
+import com.polka.android.presentation.theme.PolkaBubbleDuration
 import com.polka.android.presentation.theme.PolkaBubbleName
 import com.polka.android.presentation.theme.PolkaBubblePlace
 import com.polka.android.presentation.theme.PolkaBubblePlayer
@@ -45,7 +50,7 @@ import com.polka.android.presentation.theme.PolkaOnBubble
 import com.polka.android.presentation.theme.PolkaSessionCardColors
 
 enum class BubbleType {
-    NAME, DATE, PLACE, WINNER, PLAYER
+    NAME, DATE, DURATION, PLACE, WINNER, PLAYER
 }
 
 @Composable
@@ -53,38 +58,41 @@ fun TextBubbleTemplate(
     text: String,
     color: Color,
     fontWeight: FontWeight = FontWeight.Medium,
-    icon: androidx.compose.ui.graphics.vector.ImageVector? = null
+    backgroundImage: ImageRequest? = null
 ) {
     Box(
         modifier = Modifier
             .wrapContentWidth()
             .height(38.dp)
-            .padding(8.dp)
             .background(
                 color = color,
                 shape = RoundedCornerShape(16.dp)
-            ),
+            )
+            .padding(horizontal = 8.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            icon?.let { // TOOD: change icon visualization (it need to be under text)
-                Icon(
-                    imageVector = it,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-            Text(
-                text = text,
-                color = PolkaOnBubble,
-                style = TextStyle(
-                    fontFamily = ManropeFontFamily,
-                    fontWeight = fontWeight,
-                    fontSize = 16.sp
-                )
+        backgroundImage?.let {
+            AsyncImage(
+                model = it,
+                contentDescription = null,
+                contentScale = ContentScale.None,
+                modifier = Modifier
+                    .height(38.dp)
+                    .width(38.dp)
             )
         }
+
+        Text(
+            text = text,
+            color = PolkaOnBubble,
+            maxLines = 1,
+            softWrap = false,
+            style = TextStyle(
+                fontFamily = ManropeFontFamily,
+                fontWeight = fontWeight,
+                fontSize = 16.sp
+            )
+        )
     }
 }
 
@@ -96,16 +104,34 @@ fun TextBubble(
     val (color, weight) = when (type) {
         BubbleType.NAME -> PolkaBubbleName to FontWeight.SemiBold
         BubbleType.DATE -> PolkaBubbleDate to FontWeight.Medium
+        BubbleType.DURATION -> PolkaBubbleDuration to FontWeight.Medium
         BubbleType.PLACE -> PolkaBubblePlace to FontWeight.Medium
         BubbleType.WINNER -> PolkaBubbleWinner to FontWeight.Medium
         BubbleType.PLAYER -> PolkaBubblePlayer to FontWeight.Medium
     }
 
-    TextBubbleTemplate(
-        text = text,
-        color = color,
-        fontWeight = weight
-    )
+    if (type != BubbleType.WINNER) {
+        TextBubbleTemplate(
+            text = text,
+            color = color,
+            fontWeight = weight
+        )
+    } else {
+        val context = LocalContext.current
+        val imageRequest = remember {
+            ImageRequest.Builder(context)
+                .data(R.drawable.winner_image)
+                .decoderFactory(SvgDecoder.Factory())
+                .build()
+        }
+
+        TextBubbleTemplate(
+            text = text,
+            color = color,
+            fontWeight = weight,
+            backgroundImage = imageRequest
+        )
+    }
 }
 
 data class SessionTileFormat(
@@ -125,7 +151,6 @@ fun SessionTile(
         modifier = Modifier
             .fillMaxWidth()
             .height(getTileHeight(format.numOfRows))
-            .padding(6.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = PolkaSessionCardColors
@@ -152,10 +177,10 @@ private fun SessionImage(
     modifier: Modifier = Modifier
 ) {
     AsyncImage(
-        model = session.gameImage,
+        model = session.gameImage ?: R.drawable.ic_game_placeholder,
         placeholder = painterResource(R.drawable.ic_game_placeholder),
         contentDescription = session.gameName,
-        modifier = modifier,
+        modifier = modifier.clip(RoundedCornerShape(16.dp)),
         contentScale = ContentScale.Crop
     )
 }
@@ -167,7 +192,7 @@ private fun BubblesRow(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.Start)
     ) {
         for (pair in pairs) {
             TextBubble(
@@ -184,7 +209,9 @@ private fun SingleRowTile(
     firstRow: List<Pair<String, BubbleType>>
 ) {
     Row(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(6.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.Start)
     ) {
         SessionImage(
@@ -203,7 +230,9 @@ private fun TwoRowTile(
     format: SessionTileFormat
 ) {
     Row(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(6.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.Start)
     ) {
         SessionImage(
@@ -213,20 +242,18 @@ private fun TwoRowTile(
                 .aspectRatio(1f)
         )
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterVertically),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             BubblesRow(
                 pairs = format.firstRow,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.5f)
+                modifier = Modifier.fillMaxWidth()
             )
             BubblesRow(
                 pairs = format.secondRow,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.5f)
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
@@ -240,42 +267,37 @@ private fun ThreeRowTile(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(2f / 3f),
+            .padding(6.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.Start)
         ) {
             SessionImage(
                 session = session,
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .aspectRatio(1f)
+                    .size(82.dp)
             )
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically),
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 BubblesRow(
                     pairs = format.firstRow,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.5f)
+                    modifier = Modifier.fillMaxWidth()
                 )
                 BubblesRow(
                     pairs = format.secondRow,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.5f)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
         BubblesRow(
             pairs = format.thirdRow,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(1f / 3f)
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
