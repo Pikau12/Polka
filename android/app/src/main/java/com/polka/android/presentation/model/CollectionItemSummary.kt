@@ -7,7 +7,7 @@ data class CollectionItemSummary (
     var name: String,
     var image: ImageRequest? = null,
     var releaseYear: Int? = null,
-    var communityRating: Int? = null,
+    var communityRating: Double? = null,
     var userRating: Int? = null,
     var designer: String? = null,
 ) {
