@@ -21,22 +21,31 @@ interface CollectionRepository {
      * If only one of the `aboveItem` or `belowItem` is null, the item will be dropped at the beginning
      * or the end of the list respectively, regardless of the other value.
      */
-    suspend fun moveItemInBetween(itemToMove: CollectionItem.Id, aboveItem: CollectionItem.Id?, belowItem: CollectionItem.Id?)
+    suspend fun moveItemInBetween(
+        itemToMove: CollectionItem.Id,
+        aboveItem: CollectionItem.Id?,
+        belowItem: CollectionItem.Id?
+    )
 
     fun getUserCollection(userId: Long): Flow<List<CollectionItem>>
     fun getUserCollectionOrdered(userId: Long): Flow<List<CollectionItem>>
 
     //TODO games methods
 
-    suspend fun addNote(item: CollectionItem.Id,note: String)
-    suspend fun updateNote(item: CollectionItem.Id,note: String)
+    suspend fun addNote(item: CollectionItem.Id, note: String)
+    suspend fun updateNote(item: CollectionItem.Id, note: String)
     suspend fun deleteNote(item: CollectionItem.Id)
     suspend fun removeGameFromCollection(item: CollectionItem.Id)
 }
 
-class DefaultCollectionRepository @Inject constructor(private val collectionDao: CollectionDao) : CollectionRepository {
+class DefaultCollectionRepository @Inject constructor(
+    private val collectionDao: CollectionDao,
+    private val authRepository: AuthRepository
+) : CollectionRepository {
     override fun observeCollection(): Flow<List<CollectionItem>> {
-        return collectionDao.getAll().map { list ->
+        val user = authRepository.getCurrentUser()
+
+        return collectionDao.getAll(user.id).map { list ->
             list.map { CollectionItem(it) }
         }
     }
@@ -45,18 +54,34 @@ class DefaultCollectionRepository @Inject constructor(private val collectionDao:
         collectionDao.updateRating(item.ownerId, item.gameId, rating)
     }
 
-    override suspend fun updateItemStatus(item: CollectionItem.Id, status: Set<CollectionItem.Status>) {
+    override suspend fun updateItemStatus(
+        item: CollectionItem.Id,
+        status: Set<CollectionItem.Status>
+    ) {
         collectionDao.updateStatus(item.ownerId, item.gameId, status)
     }
 
-    override suspend fun moveItemInBetween(itemToMove: CollectionItem.Id, aboveItem: CollectionItem.Id?, belowItem: CollectionItem.Id?) {
+    override suspend fun moveItemInBetween(
+        itemToMove: CollectionItem.Id,
+        aboveItem: CollectionItem.Id?,
+        belowItem: CollectionItem.Id?
+    ) {
         if (aboveItem != null &&
             belowItem != null &&
-            (itemToMove.ownerId != aboveItem.ownerId || aboveItem.ownerId != belowItem.ownerId)) {
-            Log.e("CollectionRepository::moveItemInBetween", "Supplied items with different ownerId: itemToMove: ${itemToMove.ownerId}, aboveItem: ${aboveItem.ownerId}, belowItem: ${belowItem.ownerId}")
+            (itemToMove.ownerId != aboveItem.ownerId || aboveItem.ownerId != belowItem.ownerId)
+        ) {
+            Log.e(
+                "CollectionRepository::moveItemInBetween",
+                "Supplied items with different ownerId: itemToMove: ${itemToMove.ownerId}, aboveItem: ${aboveItem.ownerId}, belowItem: ${belowItem.ownerId}"
+            )
         }
 
-        collectionDao.moveItemInBetween(itemToMove.ownerId, itemToMove.gameId, aboveItem?.gameId, belowItem?.gameId)
+        collectionDao.moveItemInBetween(
+            itemToMove.ownerId,
+            itemToMove.gameId,
+            aboveItem?.gameId,
+            belowItem?.gameId
+        )
     }
 
     override fun getUserCollection(userId: Long): Flow<List<CollectionItem>> {

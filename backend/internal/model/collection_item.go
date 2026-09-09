@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type CollectionItemStatus string
 
@@ -25,10 +27,9 @@ type CollectionItem struct {
 	OwnerID int64 `gorm:"primaryKey;autoIncrement:false"`
 	GameID  int64 `gorm:"primaryKey;autoIncrement:false"`
 
-	DisplayOrder float64
-	Note         *string
-	Rating       *int32
-	Status       CollectionItemStatuses
+	Note   *string
+	Rating *int32
+	Status CollectionItemStatuses `gorm:"serializer:json;type:jsonb"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
