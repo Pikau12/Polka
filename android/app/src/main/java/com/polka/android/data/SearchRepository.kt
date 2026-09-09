@@ -25,7 +25,7 @@ class DefaultSearchRepository @Inject constructor(
 ) : SearchRepository {
     override fun searchUsersByUsername(name: String): Flow<List<User>> {
         return searchDao.searchUsersByUsername(name)
-            .map { entities -> entities.map { entity -> entity.toModel(entity) } }
+            .map { entities -> entities.map { entity -> entity.toModel() } }
     }
 
 
@@ -46,7 +46,7 @@ class DefaultSearchRepository @Inject constructor(
     // TODO FriendDAO
     override fun getUserFriends(userId: Long): Flow<List<User>> {
         return searchDao.getUserFriends(userId)
-            .map { entities -> entities.map { entity -> entity.toModel(entity) } }
+            .map { entities -> entities.map { entity -> entity.toModel() } }
     }
 
     override fun searchGamesInBgg(query: String): Flow<List<Game>> {
