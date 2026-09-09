@@ -75,20 +75,15 @@ fun SessionsScreen (
 
             }
             state.sessions != null && !state.isGameSearchOpen -> {
-                Scaffold(
-                    containerColor = Color.Transparent
-                ) { paddingValues ->
-                    SessionsLayout(
-                        sessions = state.sessions!!,
-                        onAddSessionClick = {
-                            viewModel.handleEvent(SessionsScreenEvent.onAddSessionClick)
-                        },
-                        onSessionClick = { sessionId ->
-                            viewModel.handleEvent(SessionsScreenEvent.onSessionClick(sessionId))
-                        },
-                        paddingValues = paddingValues
-                    )
-                }
+                SessionsLayout(
+                    sessions = state.sessions!!,
+                    onAddSessionClick = {
+                        viewModel.handleEvent(SessionsScreenEvent.onAddSessionClick)
+                    },
+                    onSessionClick = { sessionId ->
+                        viewModel.handleEvent(SessionsScreenEvent.onSessionClick(sessionId))
+                    },
+                )
             }
             state.isGameSearchOpen -> {
                 SessionSearchGameLayout (
