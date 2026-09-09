@@ -16,14 +16,15 @@ fun GetSessionTileFormatByElementsWidth(
 
     val bubbleHorizontalPadding = 16f
     val bubbleSpacing = 6f
+    val minBubbleWidth = 40f
 
-    // Проверяем, помещается ли всё в одну строку с маленькой картинкой
     var totalWidth = 0f
     var fitsInOneRow = true
 
     for ((index, element) in elements.withIndex()) {
         val textWidth = element.third
-        val fullBubbleWidth = textWidth + bubbleHorizontalPadding +
+        val effectiveWidth = maxOf(textWidth, minBubbleWidth)
+        val fullBubbleWidth = effectiveWidth + bubbleHorizontalPadding +
                 if (index > 0) bubbleSpacing else 0f
 
         if (totalWidth + fullBubbleWidth <= fieldWidthWithSmallPicturePx) {
@@ -35,7 +36,6 @@ fun GetSessionTileFormatByElementsWidth(
     }
 
     if (fitsInOneRow) {
-        // Всё помещается в одну строку
         val firstRow = elements.map { Pair(it.first, it.second) }
         return SessionTileFormat(
             numOfRows = 1,
@@ -43,7 +43,6 @@ fun GetSessionTileFormatByElementsWidth(
         )
     }
 
-    // Не помещается в одну строку, пробуем две строки со средней картинкой
     val firstRow: MutableList<Pair<String, BubbleType>> = mutableListOf()
     val secondRow: MutableList<Pair<String, BubbleType>> = mutableListOf()
     val thirdRow: MutableList<Pair<String, BubbleType>> = mutableListOf()
@@ -68,7 +67,6 @@ fun GetSessionTileFormatByElementsWidth(
                     currentWidth += fullBubbleWidth
                     index++
                 } else {
-                    // Переходим ко второй строке
                     currentRow = 2
                     currentWidth = 0f
                 }
@@ -79,7 +77,6 @@ fun GetSessionTileFormatByElementsWidth(
                     currentWidth += fullBubbleWidth
                     index++
                 } else {
-                    // Переходим к третьей строке
                     currentRow = 3
                     currentWidth = 0f
                 }
@@ -90,7 +87,6 @@ fun GetSessionTileFormatByElementsWidth(
                     currentWidth += fullBubbleWidth
                     index++
                 } else {
-                    // Не помещается даже в третью строку
                     break
                 }
             }
