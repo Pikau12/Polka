@@ -10,12 +10,12 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-interface SearchRepository {
+interface SearchRepository { // TODO : reconsider return type for all methods
     fun searchUsersByUsername(name: String): Flow<List<User>>
     fun getUserFriends(userId: Long): Flow<List<User>>
     fun searchGamesInBgg(query: String): Flow<List<Game>>
     fun searchGamesByTagsInBgg(tags: List<String>): Flow<List<Game>>
-    fun searchGamesInCollection(userId: Long, query: String): Flow<List<Game>>
+    fun searchGamesInCollection(userId: Long, query: String): Flow<List<CollectionItem>>
     fun searchGamesInCollectionByTags(userId: Long, tags: List<String>): Flow<List<Game>>
     fun getSortedUserCollection(userId: Long, sortQuery: CollectionSortQuery): Flow<List<CollectionItem>>
 }
@@ -57,7 +57,7 @@ class DefaultSearchRepository @Inject constructor(
         TODO("Not implemented yet")
     }
 
-    override fun searchGamesInCollection(userId: Long, query: String): Flow<List<Game>> {
+    override fun searchGamesInCollection(userId: Long, query: String): Flow<List<CollectionItem>> {
         TODO("Not implemented yet")
     }
 
