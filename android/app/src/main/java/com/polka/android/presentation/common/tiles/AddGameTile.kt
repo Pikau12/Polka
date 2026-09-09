@@ -44,7 +44,7 @@ fun AddGameTile(
             ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface // TODO: change color
+            containerColor = MaterialTheme.colorScheme.surface
         )
     ){
         Column(

@@ -26,7 +26,7 @@ sealed class Destination(val route: String) {
     // ===== Sessions =====
     object SessionsSessions : Destination("sessions_sessions")
     object Session : Destination("session/{sessionId}"){
-        fun pass(sessionId: Int) = "session/$sessionId"
+        fun pass(sessionId: Long) = "session/$sessionId"
     }
     object SessionsSearch : Destination("sessions_search")
     object SessionCard : Destination("session_card/{gameId}") {

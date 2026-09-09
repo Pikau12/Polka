@@ -4,7 +4,10 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.MenuItemColors
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButtonColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import coil3.compose.AsyncImagePainter
 
@@ -32,7 +35,7 @@ val OnBackground = Color(0xFF1C1B1F) // -
 val Surface = Color(0xFF484D6D) // TIP: tiles and input container background
 val OnSurface = Color(0xFFF5EFF7)  // TIP: text on Surface
 val SurfaceVariant = Color(0xFFECE6F0) // TIP: search bar background
-val OnSurfaceVariant = Color(0xFF49454F) // TIP: text on SurfaceVariant
+val OnSurfaceVariant = Color(0xFF49454F) // TIP: elements on SurfaceVariant
 
 // ===== Errors =====
 val Error = Color(0xFFBA1A1A) // -
@@ -77,8 +80,45 @@ val PolkaStar = PolkaFive
 val PolkaLogInButton = PolkaThree
 val PolkaSuccessTextColor = PolkaThree
 val PolkaErrorTextColor = PolkaSix
+val PolkaUserRatingStar = PolkaThree
 
 val EmptyColor = Color(0x00FFFFFF)
+
+// Bubble
+val PolkaBubbleName = PolkaSeven
+val PolkaBubbleDate = PolkaTwo
+val PolkaBubbleDuration = PolkaEleven
+val PolkaBubblePlace = PolkaOne
+val PolkaBubbleWinner = PolkaThree
+val PolkaBubblePlayer = PolkaSix
+
+val PolkaOnBubble = Color(0xFF000000)
+//
+
+@Composable
+fun polkaSearchWithoutBodyColors() = OutlinedTextFieldDefaults.colors(
+    focusedBorderColor = Surface,
+    unfocusedBorderColor = Surface,
+    focusedContainerColor = SurfaceVariant,
+    unfocusedContainerColor = SurfaceVariant,
+    cursorColor = OnSurfaceVariant,
+    focusedTextColor = OnSurfaceVariant,
+    unfocusedTextColor = OnSurfaceVariant
+)
+
+val PolkaSessionCardColors = CardColors(
+    containerColor = Surface,
+    contentColor = OnSurface,
+    disabledContentColor = Surface,
+    disabledContainerColor = OnSurface
+)
+
+val PolkaGameSearchCardColors = CardColors(
+    containerColor = Surface,
+    contentColor = OnSurface,
+    disabledContentColor = Surface,
+    disabledContainerColor = OnSurface
+)
 
 val PolkaLogInButtonColors = ButtonColors (
     containerColor = PolkaLogInButton,
