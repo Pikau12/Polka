@@ -1,24 +1,24 @@
 package com.polka.android.data.usecase.sessions
 
-import coil3.request.ImageRequest
+import com.polka.android.data.AuthRepository
 import com.polka.android.data.CollectionRepository
 import com.polka.android.data.GameRepository
+import com.polka.android.data.SearchRepository
 import com.polka.android.data.image.ImageRepository
 import com.polka.android.data.model.Game
-import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.model.CollectionItemSummary
-import com.polka.android.presentation.model.toUIStatusSet
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class ObserveCollectionSummaryUseCase @Inject constructor(
-    private val collectionRepository: CollectionRepository,
+class SearchCollectionSummaryUseCase @Inject constructor(
+    private val searchRepository: SearchRepository,
     private val gameRepository: GameRepository,
+    private val authRepository: AuthRepository,
     private val mapper: CollectionItemSummaryMapper
 ) {
-    operator fun invoke() : Flow<List<CollectionItemSummary>> {
-        return collectionRepository.observeCollection()
+    operator fun invoke(query: String) : Flow<List<CollectionItemSummary>> {
+        return searchRepository.searchGamesInCollection(authRepository.getCurrentUser().id, query)
             .map { items ->
                 items.map { collectionItem ->
                     val game = gameRepository.getGame(collectionItem.id.gameId)
