@@ -14,6 +14,7 @@ import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.model.SessionSummary
 import com.polka.android.presentation.model.toUIStatusSet
 import com.polka.android.utils.toLocalDate
+import com.polka.android.utils.toUiString
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -44,12 +45,17 @@ class SessionMapper @Inject constructor(
         session: Session,
         game: Game
     ): SessionSummary {
+        val duration = session.finishedAt?.minus(session.startedAt)
+
         return SessionSummary(
             sessionId = session.id,
             gameName = game.name,
             gameImage = game.image?.let { imageRepository.toRequest(it) },
-            date = session.startedAt.toLocalDate(),
-            duration = session.finishedAt?.minus(session.startedAt), // TODO
+            date = session.startedAt.toLocalDate().toUiString(),
+            duration = duration?.let { if (duration % 60 == 0L) (duration / 60f).toInt().toString() + " h"
+            else if (duration % 30 == 0L) (duration / 60f).toString() + " h"
+            else "$duration m"
+            },
             place = "PLACEPLACEHOLDER", // TODO
             players = listOf("PLAYERPLACEHOLDER1", "PLAYERPLACEHOLDER2"), // TODO
             winners = mapOf(Pair("PLAYERPLACEHOLDER1", true), Pair("PLAYERPLACEHOLDER2", false)) // TODO

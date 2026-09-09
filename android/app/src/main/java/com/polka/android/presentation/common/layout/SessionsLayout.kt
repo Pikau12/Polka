@@ -39,7 +39,6 @@ import com.polka.android.presentation.model.SessionSummary
 import com.polka.android.presentation.theme.ManropeFontFamily
 import com.polka.android.presentation.theme.PolkaTheme
 import com.polka.android.utils.GetSessionTileFormatByElementsWidth
-import java.time.LocalDate
 
 @Composable
 fun SessionsLayout(
@@ -99,11 +98,10 @@ fun SessionsLayout(
             val elements: MutableList<Pair<String, BubbleType>> = mutableListOf()
 
             elements.add(Pair(item.gameName, BubbleType.NAME))
-            elements.add(Pair(item.date.toString(), BubbleType.DATE))
+            elements.add(Pair(item.date, BubbleType.DATE))
             if (item.duration != null)
                 elements.add(Pair(
-                    if (item.duration % 60 == 0L) (item.duration / 60f).toString() + " h"
-                    else item.duration.toString() + " m",
+                    item.duration,
                     BubbleType.DURATION)
                 )
             if (item.place != null)
@@ -171,21 +169,28 @@ fun SessionsLayoutPreview() {
         val mockSessions = listOf(
             SessionSummary(
                 sessionId = 1L,
-                gameName = "Terraforming Mars",
+                gameName = "Two rooms and a boom",
                 gameImage = null,
-                date = LocalDate.of(2026, 9, 1),
-                duration = 120,
+                date = "01.09.26",
+                duration = "2 h",
                 place = "Home",
                 players = listOf("Phil", "Joseph", "April", "Harmon", "Billy", "Mr Bones", "Kurash Bambei"),
-                winners = mapOf("Phil" to true, "Joseph" to false, "April" to false,
-                    "Harmon" to false, "Billy" to false, "Mr Bones" to false, "Kurash Bambei" to false)
+                winners = mapOf(
+                    "Phil" to true,
+                    "Joseph" to false,
+                    "April" to false,
+                    "Harmon" to false,
+                    "Billy" to false,
+                    "Mr Bones" to false,
+                    "Kurash Bambei" to false
+                )
             ),
             SessionSummary(
                 sessionId = 2L,
                 gameName = "Catan",
                 gameImage = null,
-                date = LocalDate.of(2026, 9, 2),
-                duration = 90,
+                date = "02.09.26",
+                duration = "1.5 h",
                 place = "Cafe",
                 players = listOf("Player1", "Player2"),
                 winners = mapOf("Player1" to true, "Player2" to false)
@@ -194,7 +199,7 @@ fun SessionsLayoutPreview() {
                 sessionId = 3L,
                 gameName = "Chess",
                 gameImage = null,
-                date = LocalDate.of(2026, 9, 3),
+                date = "03.09.26",
                 duration = null,
                 place = null,
                 players = null,
