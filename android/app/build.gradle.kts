@@ -45,6 +45,12 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 }
 
 ksp {
@@ -111,7 +117,10 @@ dependencies {
     // Image loading
     implementation(libs.coil.kt.coil.compose)
     implementation(libs.coil.kt.coil.network.okhttp)
+    implementation("io.coil-kt.coil3:coil-svg:3.5.0")
 
     // Reorderable for LazyGrid in UI layer
     implementation(libs.reorderable)
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

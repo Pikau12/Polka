@@ -20,27 +20,7 @@ fun NavGraphBuilder.coreAndOtherNavGraph(
         }
 
         composable(Destination.SessionsCore.route){
-            SessionsScreen(
-                onToLeftSwipe = {
-                    navController.navigate(Destination.User.route){
-                        popUpTo(Destination.SessionsCore.route){ inclusive = true}
-                    }
-                },
-                onToRightSwipe = {
-                    navController.navigate(Destination.CollectionCore.route){
-                        popUpTo(Destination.SessionsCore.route){ inclusive = true}
-                    }
-                },
-                onSearchClick = {
-                    navController.navigate(Destination.SessionsSearch.route)
-                },
-                onSessionClick = { sessionId ->
-                    navController.navigate(Destination.Session.pass(sessionId))
-                },
-                onAddSessionClick = {
-                    navController.navigate(Destination.SessionCard.route)
-                } // TODO: change
-            )
+            SessionsScreen(navController = navController)
         }
 
         composable(Destination.User.route){
