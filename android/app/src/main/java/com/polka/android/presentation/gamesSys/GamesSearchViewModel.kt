@@ -1,4 +1,10 @@
 package com.polka.android.presentation.gamesSys
 
-class GamesSearchViewModel {
+import androidx.lifecycle.ViewModel
+import jakarta.inject.Inject
+
+class GamesSearchViewModel @Inject constructor(
+
+): ViewModel(){
+
 }
