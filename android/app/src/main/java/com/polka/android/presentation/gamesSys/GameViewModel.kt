@@ -1,4 +1,10 @@
 package com.polka.android.presentation.gamesSys
 
-class GameViewModel {
+import androidx.lifecycle.ViewModel
+import jakarta.inject.Inject
+
+class GameViewModel @Inject constructor (
+
+) : ViewModel(){
+
 }
