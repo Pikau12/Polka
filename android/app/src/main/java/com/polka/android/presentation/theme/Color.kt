@@ -1,5 +1,6 @@
 package com.polka.android.presentation.theme
 
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CheckboxColors
@@ -79,6 +80,7 @@ val PolkaOnButton = Color(0xFFF5EFF7)
 val PolkaStar = PolkaFive
 val PolkaLogInButton = PolkaThree
 val PolkaAddButton = PolkaThree
+val PolkaAddSessionButton = PolkaNine
 val PolkaSuccessTextColor = PolkaThree
 val PolkaErrorTextColor = PolkaSix
 val PolkaUserRatingStar = PolkaThree
@@ -95,6 +97,13 @@ val PolkaBubblePlayer = PolkaSix
 
 val PolkaOnBubble = Color(0xFF000000)
 //
+
+val PolkaAddSessionButtonColors = ButtonColors(
+    containerColor = PolkaAddSessionButton,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaAddSessionButton,
+    disabledContentColor = PolkaOnButton
+)
 
 val PolkaAddButtonColors = ButtonColors(
     containerColor = PolkaAddButton,
