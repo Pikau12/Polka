@@ -46,7 +46,7 @@ val ManropeTypography = Typography(
     headlineSmall = TextStyle(
         fontFamily = ManropeFontFamily,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 24.sp
+        fontSize = 20.sp
     ),
 
     titleLarge = TextStyle(

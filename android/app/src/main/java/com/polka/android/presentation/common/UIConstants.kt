@@ -13,4 +13,11 @@ object UiConstants {
     val SESSION_TILE_THREE_ROWS_HEIGHT = 138.dp
 
     val STROKE_SIZE = 3.dp
+
+    val TOPBAR_GAP = 16.dp
+    val TOPBAR_HEIGHT = 40.dp
+
+    val BUTTON_SIZE = 40.dp
+    val BUTTON_CORNER_RADIUS = 20.dp
+    val BUTTON_ICON_SIZE = 24.dp
 }

@@ -78,6 +78,7 @@ val PolkaSortButton = PolkaOne
 val PolkaOnButton = Color(0xFFF5EFF7)
 val PolkaStar = PolkaFive
 val PolkaLogInButton = PolkaThree
+val PolkaAddButton = PolkaThree
 val PolkaSuccessTextColor = PolkaThree
 val PolkaErrorTextColor = PolkaSix
 val PolkaUserRatingStar = PolkaThree
@@ -94,6 +95,13 @@ val PolkaBubblePlayer = PolkaSix
 
 val PolkaOnBubble = Color(0xFF000000)
 //
+
+val PolkaAddButtonColors = ButtonColors(
+    containerColor = PolkaAddButton,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaAddButton,
+    disabledContentColor = PolkaOnButton
+)
 
 @Composable
 fun polkaSearchWithoutBodyColors() = OutlinedTextFieldDefaults.colors(
