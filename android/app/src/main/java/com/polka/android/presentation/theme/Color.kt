@@ -11,6 +11,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import coil3.compose.AsyncImagePainter
+import com.polka.android.Polka
 
 // ===== Main colors =====
 val Primary = Color(0xFF9B5860)
@@ -87,6 +88,16 @@ val PolkaUserRatingStar = PolkaThree
 
 val EmptyColor = Color(0x00FFFFFF)
 
+
+// MainGameInfoBlock
+val PolkaReleaseYearBackground = PolkaOne
+val PolkaPlayerCountBackground = PolkaEleven
+val PolkaTimeRangeBackground = PolkaTwo
+val PolkaAgeRestrictionBackground = PolkaTwelve
+val PolkaWeightBackground = PolkaThree
+val PolkaWeightHard = PolkaSix
+//
+
 // Bubble
 val PolkaBubbleName = PolkaSeven
 val PolkaBubbleDate = PolkaTwo
@@ -97,6 +108,13 @@ val PolkaBubblePlayer = PolkaSix
 
 val PolkaOnBubble = Color(0xFF000000)
 //
+
+val PolkaMainGameInfoBlockColors = CardColors(
+    containerColor = Surface,
+    contentColor = OnSurface,
+    disabledContentColor = Surface,
+    disabledContainerColor = OnSurface
+)
 
 val PolkaAddSessionButtonColors = ButtonColors(
     containerColor = PolkaAddSessionButton,
