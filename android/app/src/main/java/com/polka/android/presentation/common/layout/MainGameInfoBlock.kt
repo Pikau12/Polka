@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -35,6 +33,16 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.polka.android.R
+import com.polka.android.presentation.common.UiConstants.AGE_RESTRICTION_ICON_SIZE
+import com.polka.android.presentation.common.UiConstants.MAINGAMEINFOBLOCK_CARD_HEIGHT
+import com.polka.android.presentation.common.UiConstants.MAINGAMEINFOBLOCK_GAME_IMAGE_HEIGHT
+import com.polka.android.presentation.common.UiConstants.MAIN_CORNER_RADIUS
+import com.polka.android.presentation.common.UiConstants.PLAYERS_COUNT_ICON_SIZE
+import com.polka.android.presentation.common.UiConstants.RELEASE_YEAR_ICON_SIZE
+import com.polka.android.presentation.common.UiConstants.SMALL_ICON_BACKGROUND_CORNER_RADIUS
+import com.polka.android.presentation.common.UiConstants.SMALL_ICON_BACKGROUND_SIZE
+import com.polka.android.presentation.common.UiConstants.TIME_RANGE_ICON_SIZE
+import com.polka.android.presentation.common.UiConstants.WEIGHT_ICON_SIZE
 import com.polka.android.presentation.theme.PolkaAgeRestrictionBackground
 import com.polka.android.presentation.theme.PolkaMainGameInfoBlockColors
 import com.polka.android.presentation.theme.PolkaPlayerCountBackground
@@ -60,8 +68,8 @@ fun MainGameInfoBlock (
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp),
-        shape = RoundedCornerShape(16.dp),
+            .height(MAINGAMEINFOBLOCK_CARD_HEIGHT),
+        shape = RoundedCornerShape(MAIN_CORNER_RADIUS),
         colors = PolkaMainGameInfoBlockColors
     ) {
         Row(
@@ -75,8 +83,8 @@ fun MainGameInfoBlock (
                     model = image,
                     contentDescription = "Game image",
                     modifier = Modifier
-                        .size(140.dp)
-                        .clip(RoundedCornerShape(16.dp)),
+                        .size(MAINGAMEINFOBLOCK_GAME_IMAGE_HEIGHT)
+                        .clip(RoundedCornerShape(MAIN_CORNER_RADIUS)),
                     contentScale = ContentScale.Crop
                 )
             } else {
@@ -84,8 +92,8 @@ fun MainGameInfoBlock (
                     painter = painterResource(R.drawable.ic_game_placeholder),
                     contentDescription = "Game image",
                     modifier = Modifier
-                        .size(140.dp)
-                        .clip(RoundedCornerShape(16.dp)),
+                        .size(MAINGAMEINFOBLOCK_GAME_IMAGE_HEIGHT)
+                        .clip(RoundedCornerShape(MAIN_CORNER_RADIUS)),
                     contentScale = ContentScale.Crop
                 )
             }
@@ -96,21 +104,21 @@ fun MainGameInfoBlock (
             ) {
                 ImageInBoxAndTextRow(
                     image = R.drawable.calendar_icon,
-                    imageSize = 20.dp,
+                    imageSize = RELEASE_YEAR_ICON_SIZE,
                     text = "Release: ${releaseYear?: "N/A"}",
                     iconBackgroundColor = PolkaReleaseYearBackground
                 )
 
                 ImageInBoxAndTextRow(
                     image = R.drawable.players_count_icon,
-                    imageSize = 20.dp,
+                    imageSize = PLAYERS_COUNT_ICON_SIZE,
                     text = "${playerCount?: "N/A"}${if (bestPlayerCount != null) " (Best: $bestPlayerCount)" else ""}",
                     iconBackgroundColor = PolkaPlayerCountBackground
                 )
 
                 ImageInBoxAndTextRow(
                     image = R.drawable.time_range_icon,
-                    imageSize = 22.dp,
+                    imageSize = TIME_RANGE_ICON_SIZE,
                     text = "${timeRange?: "N/A"}${if (averageSessionTime != null) " (Average: $averageSessionTime)" else ""}",
                     iconBackgroundColor = PolkaTimeRangeBackground
                 )
@@ -138,8 +146,8 @@ fun ImageInBoxAndTextRow(
     ) {
         Box(
             modifier = Modifier
-                .size(30.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .size(SMALL_ICON_BACKGROUND_SIZE)
+                .clip(RoundedCornerShape(SMALL_ICON_BACKGROUND_CORNER_RADIUS))
                 .background(iconBackgroundColor),
             contentAlignment = Alignment.Center
         ) {
@@ -174,15 +182,15 @@ fun AgeRestrictionAndWeightRow(
         ) {
             Box(
                 modifier = Modifier
-                    .size(30.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .size(SMALL_ICON_BACKGROUND_SIZE)
+                    .clip(RoundedCornerShape(SMALL_ICON_BACKGROUND_CORNER_RADIUS))
                     .background(PolkaAgeRestrictionBackground),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(R.drawable.age_restriction_icon),
                     contentDescription = "", // TODO : ???
-                    modifier = Modifier.size(22.dp),
+                    modifier = Modifier.size(AGE_RESTRICTION_ICON_SIZE),
                     contentScale = ContentScale.Crop
                 )
             }
@@ -200,15 +208,15 @@ fun AgeRestrictionAndWeightRow(
         ) {
             Box(
                 modifier = Modifier
-                    .size(30.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .size(SMALL_ICON_BACKGROUND_SIZE)
+                    .clip(RoundedCornerShape(SMALL_ICON_BACKGROUND_CORNER_RADIUS))
                     .background(PolkaWeightBackground),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(R.drawable.weight_icon),
                     contentDescription = "", // TODO : ???
-                    modifier = Modifier.size(20.dp),
+                    modifier = Modifier.size(WEIGHT_ICON_SIZE),
                     contentScale = ContentScale.Crop
                 )
             }
