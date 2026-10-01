@@ -2,7 +2,6 @@ package com.polka.android.presentation.common.layout
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,10 +38,9 @@ import com.polka.android.presentation.common.UiConstants.MAINGAMEINFOBLOCK_GAME_
 import com.polka.android.presentation.common.UiConstants.MAIN_CORNER_RADIUS
 import com.polka.android.presentation.common.UiConstants.PLAYERS_COUNT_ICON_SIZE
 import com.polka.android.presentation.common.UiConstants.RELEASE_YEAR_ICON_SIZE
-import com.polka.android.presentation.common.UiConstants.SMALL_ICON_BACKGROUND_CORNER_RADIUS
-import com.polka.android.presentation.common.UiConstants.SMALL_ICON_BACKGROUND_SIZE
 import com.polka.android.presentation.common.UiConstants.TIME_RANGE_ICON_SIZE
 import com.polka.android.presentation.common.UiConstants.WEIGHT_ICON_SIZE
+import com.polka.android.presentation.common.icons.SmallIcon
 import com.polka.android.presentation.theme.PolkaAgeRestrictionBackground
 import com.polka.android.presentation.theme.PolkaMainGameInfoBlockColors
 import com.polka.android.presentation.theme.PolkaPlayerCountBackground
@@ -53,9 +51,8 @@ import com.polka.android.presentation.theme.PolkaWeightBackground
 import com.polka.android.presentation.theme.PolkaWeightHard
 import com.polka.android.utils.colorOverlay
 
-
 @Composable
-fun MainGameInfoBlock (
+fun MainGameInfoBlock(
     image: ImageRequest?,
     releaseYear: String?,
     playerCount: String?,
@@ -103,28 +100,28 @@ fun MainGameInfoBlock (
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 ImageInBoxAndTextRow(
-                    image = R.drawable.calendar_icon,
-                    imageSize = RELEASE_YEAR_ICON_SIZE,
-                    text = "Release: ${releaseYear?: "N/A"}",
+                    icon = R.drawable.calendar_icon,
+                    iconSize = RELEASE_YEAR_ICON_SIZE,
+                    text = "Release: ${releaseYear ?: "N/A"}",
                     iconBackgroundColor = PolkaReleaseYearBackground
                 )
 
                 ImageInBoxAndTextRow(
-                    image = R.drawable.players_count_icon,
-                    imageSize = PLAYERS_COUNT_ICON_SIZE,
-                    text = "${playerCount?: "N/A"}${if (bestPlayerCount != null) " (Best: $bestPlayerCount)" else ""}",
+                    icon = R.drawable.players_count_icon,
+                    iconSize = PLAYERS_COUNT_ICON_SIZE,
+                    text = "${playerCount ?: "N/A"}${if (bestPlayerCount != null) " (Best: $bestPlayerCount)" else ""}",
                     iconBackgroundColor = PolkaPlayerCountBackground
                 )
 
                 ImageInBoxAndTextRow(
-                    image = R.drawable.time_range_icon,
-                    imageSize = TIME_RANGE_ICON_SIZE,
-                    text = "${timeRange?: "N/A"}${if (averageSessionTime != null) " (Average: $averageSessionTime)" else ""}",
+                    icon = R.drawable.time_range_icon,
+                    iconSize = TIME_RANGE_ICON_SIZE,
+                    text = "${timeRange ?: "N/A"}${if (averageSessionTime != null) " (Average: $averageSessionTime)" else ""}",
                     iconBackgroundColor = PolkaTimeRangeBackground
                 )
 
                 AgeRestrictionAndWeightRow(
-                    ageRestriction = ageRestriction?: "N/A",
+                    ageRestriction = ageRestriction ?: "N/A",
                     weight = weight
                 )
             }
@@ -134,8 +131,8 @@ fun MainGameInfoBlock (
 
 @Composable
 fun ImageInBoxAndTextRow(
-    @DrawableRes image: Int,
-    imageSize: Dp,
+    @DrawableRes icon: Int,
+    iconSize: Dp,
     text: String,
     iconBackgroundColor: Color
 ) {
@@ -144,20 +141,11 @@ fun ImageInBoxAndTextRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .size(SMALL_ICON_BACKGROUND_SIZE)
-                .clip(RoundedCornerShape(SMALL_ICON_BACKGROUND_CORNER_RADIUS))
-                .background(iconBackgroundColor),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(image),
-                contentDescription = "", // TODO : ???
-                modifier = Modifier.size(imageSize),
-                contentScale = ContentScale.Crop
-            )
-        }
+        SmallIcon(
+            icon = icon,
+            iconSize = iconSize,
+            backgroundColor = iconBackgroundColor
+        )
 
         Text(
             text = text,
@@ -180,20 +168,11 @@ fun AgeRestrictionAndWeightRow(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                modifier = Modifier
-                    .size(SMALL_ICON_BACKGROUND_SIZE)
-                    .clip(RoundedCornerShape(SMALL_ICON_BACKGROUND_CORNER_RADIUS))
-                    .background(PolkaAgeRestrictionBackground),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.age_restriction_icon),
-                    contentDescription = "", // TODO : ???
-                    modifier = Modifier.size(AGE_RESTRICTION_ICON_SIZE),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            SmallIcon(
+                icon = R.drawable.age_restriction_icon,
+                iconSize = AGE_RESTRICTION_ICON_SIZE,
+                backgroundColor = PolkaAgeRestrictionBackground
+            )
 
             Text(
                 text = ageRestriction,
@@ -206,20 +185,11 @@ fun AgeRestrictionAndWeightRow(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                modifier = Modifier
-                    .size(SMALL_ICON_BACKGROUND_SIZE)
-                    .clip(RoundedCornerShape(SMALL_ICON_BACKGROUND_CORNER_RADIUS))
-                    .background(PolkaWeightBackground),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.weight_icon),
-                    contentDescription = "", // TODO : ???
-                    modifier = Modifier.size(WEIGHT_ICON_SIZE),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            SmallIcon(
+                icon = R.drawable.weight_icon,
+                iconSize = WEIGHT_ICON_SIZE,
+                backgroundColor = PolkaWeightBackground
+            )
 
             Text(
                 text = buildAnnotatedString {
@@ -237,8 +207,7 @@ fun AgeRestrictionAndWeightRow(
                         }
 
                         append(" / 5")
-                    }
-                    else
+                    } else
                         append("N/A")
                 },
                 style = MaterialTheme.typography.titleSmall,
