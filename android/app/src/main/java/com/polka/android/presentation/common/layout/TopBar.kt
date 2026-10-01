@@ -4,9 +4,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -15,12 +17,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.polka.android.presentation.common.UiConstants.STROKE_SIZE
 import com.polka.android.presentation.common.UiConstants.TOPBAR_GAP
 import com.polka.android.presentation.common.UiConstants.TOPBAR_HEIGHT
+import com.polka.android.presentation.common.buttons.AddSessionButton
 import com.polka.android.presentation.common.buttons.BackButton
+import com.polka.android.presentation.common.buttons.TipButton
+import com.polka.android.presentation.theme.PolkaTheme
 
 /**
  * Consists from left to right: BackButton, [text] on OnSurface background, [rightButton].
@@ -42,17 +49,18 @@ fun TopBar(
         BackButton(navController)
 
         Card (
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
             shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(
-                STROKE_SIZE,
-                MaterialTheme.colorScheme.surface
-            ),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                containerColor = MaterialTheme.colorScheme.surface
             )
         ){
-            Box(contentAlignment = Alignment.Center){
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
                 Text(
                     text = text,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -62,5 +70,26 @@ fun TopBar(
         }
 
         rightButton()
+    }
+}
+
+@Preview(showBackground = true, widthDp = 400, heightDp = 100)
+@Composable
+fun TopBarPreview() {
+    PolkaTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            TopBar(
+                text = "Root",
+                navController = rememberNavController(),
+                rightButton = {
+                    AddSessionButton(onClick = { })
+                }
+            )
+        }
     }
 }
