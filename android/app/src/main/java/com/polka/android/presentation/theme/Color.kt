@@ -98,6 +98,11 @@ val PolkaWeightBackground = PolkaThree
 val PolkaWeightHard = PolkaSix
 //
 
+// GameRatingBlock
+val PolkaRatingBackground = PolkaEight
+val PolkaRatingLowerBound = PolkaSix
+val PolkaRatingHigherBound = PolkaThree
+
 // Bubble
 val PolkaBubbleName = PolkaSeven
 val PolkaBubbleDate = PolkaTwo

@@ -234,7 +234,7 @@ fun MainGameInfoBlockPreview() {
                 timeRange = "1 - 1.5 h",
                 averageSessionTime = "1.5 h",
                 ageRestriction = "12+",
-                weight = 4f
+                weight = 3f
             )
         }
     }
