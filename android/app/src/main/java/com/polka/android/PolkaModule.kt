@@ -31,7 +31,6 @@ class PolkaModule {
     @Singleton
     fun provideJson(): Json = Json { ignoreUnknownKeys = true }
 
-    // No credentials: /auth/* and third-party hosts (images).
     @Provides
     @Singleton
     @Named("plain")
@@ -50,7 +49,6 @@ class PolkaModule {
         return builder.build()
     }
 
-    // Bearer token + refresh on 401: for the Polka API (games, collections, ...).
     @Provides
     @Singleton
     @Named("authorized")
