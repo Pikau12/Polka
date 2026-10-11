@@ -96,6 +96,7 @@ val PolkaTimeRangeBackground = PolkaTwo
 val PolkaAgeRestrictionBackground = PolkaTwelve
 val PolkaWeightBackground = PolkaThree
 val PolkaWeightHard = PolkaSix
+val PolkaWeightLow = OnSurface
 //
 
 // GameRatingBlock

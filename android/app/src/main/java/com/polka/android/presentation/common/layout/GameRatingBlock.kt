@@ -1,6 +1,5 @@
 package com.polka.android.presentation.common.layout
 
-import androidx.compose.ui.unit.Dp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,9 +26,11 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.polka.android.R
 import com.polka.android.presentation.common.UiConstants.RATING_ICON_SIZE
@@ -40,15 +41,19 @@ import com.polka.android.presentation.theme.PolkaRatingBackground
 import com.polka.android.presentation.theme.PolkaRatingHigherBound
 import com.polka.android.presentation.theme.PolkaRatingLowerBound
 import com.polka.android.presentation.theme.PolkaTheme
+import com.polka.android.presentation.theme.PolkaUserRatingStar
 import com.polka.android.utils.colorOverlay
 
 @Composable
 fun GameRatingBlock(
-    bggAverageRating: Double,
-    polkaAverageRating: Double,
+    bggAverageRating: String,
+    bggAverageRatingColor: Color,
+    polkaAverageRating: String,
+    polkaAverageRatingColor: Color,
     bggNumberOfRatings: String,
     polkaNumberOfRatings: String,
-    userRating: Int?
+    userRating: String?,
+    userRatingColor: Color?
 ) {
     TableCard {
         TableRow {
@@ -87,7 +92,7 @@ fun GameRatingBlock(
 
             TableCell(horizontalSpacedBy = SPACE_BETWEEN_RATING_AND_STAR_ICON){
                 Text(
-                    bggAverageRating.toString(),
+                    bggAverageRating,
                     style = MaterialTheme.typography.titleSmall,
                 )
 
@@ -95,16 +100,12 @@ fun GameRatingBlock(
                     Icons.Filled.Star,
                     contentDescription = "Star",
                     modifier = Modifier.size(20.dp),
-                    tint = colorOverlay(
-                        colorBack = PolkaRatingLowerBound,
-                        colorFront = PolkaRatingHigherBound,
-                        alpha = ((bggAverageRating - 1) / 9).toFloat()
-                    )
+                    tint = bggAverageRatingColor
                 )
             }
 
             TableCell(
-                "201233",
+                bggNumberOfRatings,
                 style = MaterialTheme.typography.titleSmall,
                 isLast = true
             )
@@ -125,7 +126,7 @@ fun GameRatingBlock(
 
             TableCell(horizontalSpacedBy = SPACE_BETWEEN_RATING_AND_STAR_ICON){
                 Text(
-                    polkaAverageRating.toString(),
+                    polkaAverageRating,
                     style = MaterialTheme.typography.titleSmall,
                 )
 
@@ -133,16 +134,12 @@ fun GameRatingBlock(
                     Icons.Filled.Star,
                     contentDescription = "Star",
                     modifier = Modifier.size(20.dp),
-                    tint = colorOverlay(
-                        colorBack = PolkaRatingLowerBound,
-                        colorFront = PolkaRatingHigherBound,
-                        alpha = ((polkaAverageRating - 1) / 9).toFloat()
-                    )
+                    tint = polkaAverageRatingColor
                 )
             }
 
             TableCell(
-                "109",
+                polkaNumberOfRatings,
                 style = MaterialTheme.typography.titleSmall,
                 isLast = true
             )
@@ -152,12 +149,24 @@ fun GameRatingBlock(
                 "Your",
                 style = MaterialTheme.typography.titleMedium
             )
-            TableCell(
-                "9",
-                style = MaterialTheme.typography.titleSmall,
+
+            TableCell (
                 weight = 2f,
-                isLast = true
-            )
+                isLast = true,
+                SPACE_BETWEEN_RATING_AND_STAR_ICON
+            ){
+                Text(
+                    userRating?: "N/A",
+                    style = MaterialTheme.typography.titleSmall,
+                )
+
+                Icon(
+                    Icons.Filled.Star,
+                    contentDescription = "Star",
+                    modifier = Modifier.size(20.dp),
+                    tint = userRatingColor?: PolkaUserRatingStar
+                )
+            }
         }
     }
 }
@@ -258,6 +267,10 @@ fun RowScope.TableCell(
 @Preview(showBackground = true, widthDp = 400, heightDp = 400)
 @Composable
 fun GameInfoCardPreview() {
+    val bggAverageRating = 9.0
+    val polkaAverageRating = 8.3
+    val userRating = 9.0
+
     PolkaTheme {
         Box(
             modifier = Modifier
@@ -266,12 +279,21 @@ fun GameInfoCardPreview() {
             contentAlignment = Alignment.TopCenter
         ) {
             GameRatingBlock(
-                bggAverageRating = 9.0,
-                polkaAverageRating = 8.3,
+                bggAverageRating = bggAverageRating.toString(),
+                bggAverageRatingColor = getRatingStarColor(bggAverageRating),
+                polkaAverageRating = polkaAverageRating.toString(),
+                polkaAverageRatingColor = getRatingStarColor(polkaAverageRating),
                 bggNumberOfRatings = "201233",
                 polkaNumberOfRatings = "109",
-                userRating = 9
+                userRating = userRating.toString(),
+                userRatingColor = getRatingStarColor(userRating)
             )
         }
     }
 }
+
+fun getRatingStarColor(rating: Double) = colorOverlay(
+    colorBack = PolkaRatingLowerBound,
+    colorFront = PolkaRatingHigherBound,
+    alpha = ((rating - 1) / 9).toFloat()
+)

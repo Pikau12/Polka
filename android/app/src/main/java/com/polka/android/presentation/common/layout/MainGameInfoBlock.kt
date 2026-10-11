@@ -60,7 +60,8 @@ fun MainGameInfoBlock(
     timeRange: String?,
     averageSessionTime: String?,
     ageRestriction: String?,
-    weight: Float?
+    weight: String?,
+    weightColor: Color?
 ) {
     Card(
         modifier = Modifier
@@ -122,7 +123,8 @@ fun MainGameInfoBlock(
 
                 AgeRestrictionAndWeightRow(
                     ageRestriction = ageRestriction ?: "N/A",
-                    weight = weight
+                    weight = weight,
+                    weightColor = weightColor
                 )
             }
         }
@@ -157,7 +159,8 @@ fun ImageInBoxAndTextRow(
 @Composable
 fun AgeRestrictionAndWeightRow(
     ageRestriction: String,
-    weight: Float?
+    weight: String?,
+    weightColor: Color?
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -196,14 +199,10 @@ fun AgeRestrictionAndWeightRow(
                     if (weight != null) {
                         withStyle(
                             SpanStyle(
-                                color = colorOverlay(
-                                    colorBack = MaterialTheme.colorScheme.onSurface,
-                                    colorFront = PolkaWeightHard,
-                                    alpha = weight / 5
-                                )
+                                weightColor!!
                             )
                         ) {
-                            append(weight.toString())
+                            append(weight)
                         }
 
                         append(" / 5")
@@ -234,7 +233,12 @@ fun MainGameInfoBlockPreview() {
                 timeRange = "1 - 1.5 h",
                 averageSessionTime = "1.5 h",
                 ageRestriction = "12+",
-                weight = 3f
+                weight = "3.0",
+                weightColor = colorOverlay(
+                    colorBack = MaterialTheme.colorScheme.onSurface,
+                    colorFront = PolkaWeightHard,
+                    alpha = 3f / 5
+                )
             )
         }
     }
