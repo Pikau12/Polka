@@ -1,10 +1,8 @@
 package com.polka.android.data.usecase.sessions
 
 import com.polka.android.data.AuthRepository
-import com.polka.android.data.CollectionRepository
 import com.polka.android.data.GameRepository
 import com.polka.android.data.SearchRepository
-import com.polka.android.data.image.ImageRepository
 import com.polka.android.data.model.Game
 import com.polka.android.presentation.model.CollectionItemSummary
 import jakarta.inject.Inject
@@ -30,9 +28,7 @@ class SearchCollectionSummaryUseCase @Inject constructor(
     }
 }
 
-class CollectionItemSummaryMapper @Inject constructor(
-    private val imageRepository: ImageRepository
-) {
+class CollectionItemSummaryMapper @Inject constructor() {
     fun map(
         collectionItem: com.polka.android.data.model.CollectionItem,
         game: Game
@@ -40,7 +36,7 @@ class CollectionItemSummaryMapper @Inject constructor(
         return CollectionItemSummary(
             id = CollectionItemSummary.Id(collectionItem.id.ownerId, collectionItem.id.gameId),
             name = game.name,
-            image = game.image?.let { imageRepository.toRequest(it) },
+            image = game.gameImage,
             releaseYear = 2026, // TODO: CHANGE!!!!!
             communityRating = game.bggAverageRating,
             userRating = collectionItem.rating,
