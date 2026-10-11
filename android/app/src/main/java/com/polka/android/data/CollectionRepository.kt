@@ -30,7 +30,7 @@ interface CollectionRepository {
     fun getUserCollection(userId: Long): Flow<List<CollectionItem>>
     fun getUserCollectionOrdered(userId: Long): Flow<List<CollectionItem>>
 
-    fun getUserCollectionItem(id: CollectionItem.Id): Flow<CollectionItem>?
+    fun getUserCollectionItem(id: CollectionItem.Id): Flow<CollectionItem?>
 
     //TODO games methods
 
@@ -94,7 +94,7 @@ class DefaultCollectionRepository @Inject constructor(
         TODO("Not implemented yet")
     }
 
-    override fun getUserCollectionItem(id: CollectionItem.Id): Flow<CollectionItem>? {
+    override fun getUserCollectionItem(id: CollectionItem.Id): Flow<CollectionItem?> {
         TODO("Not yet implemented")
     }
 

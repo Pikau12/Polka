@@ -9,7 +9,7 @@ interface GameRepository {
 
     suspend fun getGame(gameId: Long): Game?
 
-    fun getGameFlow(gameId: Long): Flow<Game>
+    fun getGameFlow(gameId: Long): Flow<Game?>
     suspend fun getGameByBggId(bggId: Long): Game?
     suspend fun createGame(name: String): Game
     suspend fun importFromBgg(bggId: Long): Game
