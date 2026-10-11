@@ -1,4 +1,5 @@
 [versions]
+
 androidGradlePlugin = "9.3.1"
 androidxCore = "1.19.0"
 androidxLifecycle = "2.11.0"
@@ -19,6 +20,7 @@ navigationCompose = "2.9.8"
 coil = "3.5.0"
 material3 = "1.4.0"
 reorderable = "3.1.0"
+datastore = "1.2.0"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -54,6 +56,7 @@ coil-kt-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref =
 coil-kt-coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
