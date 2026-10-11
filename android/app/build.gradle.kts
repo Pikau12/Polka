@@ -59,16 +59,11 @@ ksp {
 
 dependencies {
 
-    implementation(libs.androidx.datastore.preferences)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material.icons.extended)
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
-
-    implementation("com.squareup.retrofit2:retrofit:3.0.0")
-    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:3.0.0")
 
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
@@ -128,7 +123,4 @@ dependencies {
     implementation(libs.reorderable)
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
-
-
-
 }
