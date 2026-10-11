@@ -1,4 +1,12 @@
 package com.polka.android.presentation.coreScreens
 
-class UserViewModel {
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
+
+@HiltViewModel
+class UserViewModel @Inject constructor(
+
+): ViewModel(){
+
 }

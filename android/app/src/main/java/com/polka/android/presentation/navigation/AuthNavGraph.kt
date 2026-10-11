@@ -36,12 +36,12 @@ fun NavGraphBuilder.authNavGraph (
         composable(Destination.Overview.route){
             OverviewScreen(
                 onSkipClick = {
-                    navController.navigate(Destination.CollectionCore.route){
+                    navController.navigate(Destination.Core.pass(startPage = 0)) {
                         popUpTo(Destination.Overview.route) { inclusive = true }
                     }
                 },
                 onGoToPolkaClick = {
-                    navController.navigate(Destination.CollectionCore.route){
+                    navController.navigate(Destination.Core.pass(startPage = 0)) {
                         popUpTo(Destination.Overview.route) { inclusive = true }
                     }
                 }

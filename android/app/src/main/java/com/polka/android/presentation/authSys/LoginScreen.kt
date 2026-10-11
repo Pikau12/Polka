@@ -149,7 +149,7 @@ fun LoginScreen(
                     }
                 }
                 is LoginScreenEvent.onToCollectionScreenNav -> {
-                    navController.navigate(Destination.CollectionCore.route) {
+                    navController.navigate(Destination.Core.pass(startPage = 0)) {
                         popUpTo(Destination.Login.route) { inclusive = true }
                     }
                 }

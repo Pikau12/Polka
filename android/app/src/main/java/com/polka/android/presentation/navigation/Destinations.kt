@@ -9,6 +9,9 @@ sealed class Destination(val route: String) {
     object SignUp : Destination("login")
 
     // ===== Core =====
+    object Core : Destination ("core_carousel?startPage={startPage}"){
+        fun pass(startPage: Int) = "core_carousel?startPage=$startPage"
+    }
     object CollectionCore : Destination("collection_core")
     object SessionsCore : Destination("sessions_core")
     object User : Destination("user")

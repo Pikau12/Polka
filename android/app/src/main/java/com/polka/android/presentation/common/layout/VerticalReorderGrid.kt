@@ -1,6 +1,5 @@
 package com.polka.android.presentation.common.layout
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +7,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,7 +23,6 @@ import com.polka.android.presentation.common.tiles.ContextMenuAction
 import com.polka.android.presentation.common.tiles.GameTile
 import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.theme.PolkaTheme
-import okhttp3.Address
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState
 import java.util.EnumSet
@@ -37,6 +34,9 @@ fun VerticalReorderGrid(
     onDoubleClick: (Long) -> Unit,
     onContextMenu: (CollectionItem.Id, ContextMenuAction) -> Unit,
     onAddGameClick: () -> Unit,
+
+    onDragStarted: () -> Unit,
+    onDragStopped: () -> Unit,
 ) {
     var isDragging by remember { mutableStateOf(false) }
 
@@ -65,6 +65,7 @@ fun VerticalReorderGrid(
             ReorderableItem(state, key = it.id.gameId) { dragging ->
                 LaunchedEffect(dragging) {
                     isDragging = dragging
+                    if (dragging) onDragStarted() else onDragStopped()
                 }
 
                 GameTile(
@@ -146,7 +147,9 @@ fun ReorderableGridPreview(){
             collection = testGames,
             onDoubleClick = { },
             onContextMenu = { _, _ -> },
-            onAddGameClick = { }
+            onAddGameClick = { },
+            onDragStarted = {},
+            onDragStopped = {}
         )
     }
 }

@@ -6,6 +6,7 @@ import com.polka.android.data.usecase.sessions.ObserveSessionsUseCase
 import com.polka.android.data.usecase.sessions.SearchCollectionSummaryUseCase
 import com.polka.android.presentation.model.CollectionItemSummary
 import com.polka.android.presentation.model.SessionSummary
+import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,8 +31,6 @@ data class SessionsState(
 )
 
 sealed class SessionsScreenEvent {
-    object onLeftSwipe : SessionsScreenEvent()
-    object onRightSwipe : SessionsScreenEvent()
     data class onSessionClick(val sessionId: Long) : SessionsScreenEvent()
     object onAddSessionClick : SessionsScreenEvent()
     data class onGameSearchItemClick(val id: Long) : SessionsScreenEvent()
@@ -39,6 +38,7 @@ sealed class SessionsScreenEvent {
     data class onGameSearchChange(val query: String) : SessionsScreenEvent()
 }
 
+@HiltViewModel
 class SessionsViewModel @Inject constructor(
     private val searchCollectionSummaryUseCase: SearchCollectionSummaryUseCase,
     private val observeSessionsUseCase: ObserveSessionsUseCase
@@ -103,8 +103,6 @@ class SessionsViewModel @Inject constructor(
 
     fun handleEvent(event: SessionsScreenEvent) {
         when (event) {
-            is SessionsScreenEvent.onLeftSwipe -> handleOnLeftSwipe()
-            is SessionsScreenEvent.onRightSwipe -> handleOnRightSwipe()
             is SessionsScreenEvent.onSessionClick -> handleOnSessionClick(event.sessionId)
 
             is SessionsScreenEvent.onAddSessionClick -> handleOnAddSessionClick()
@@ -166,18 +164,6 @@ class SessionsViewModel @Inject constructor(
 
         if (_state.value.collectionList == null) {
             observeCollectionSummary()
-        }
-    }
-
-    private fun handleOnLeftSwipe() {
-        viewModelScope.launch {
-            _sessionsScreenEvent.emit(SessionsScreenEvent.onLeftSwipe)
-        }
-    }
-
-    private fun handleOnRightSwipe() {
-        viewModelScope.launch {
-            _sessionsScreenEvent.emit(SessionsScreenEvent.onRightSwipe)
         }
     }
 

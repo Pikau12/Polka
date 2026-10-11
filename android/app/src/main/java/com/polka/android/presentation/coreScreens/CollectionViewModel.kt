@@ -45,8 +45,6 @@ data class CollectionState(
 sealed class CollectionScreenEvent {
     object onAddGameClick : CollectionScreenEvent()
     data class onGameTileClick(val gameId: Long) : CollectionScreenEvent()
-    object onLeftSwipe : CollectionScreenEvent()
-    object onRightSwipe : CollectionScreenEvent()
 
     // Sort
     object onSortMenuOpen : CollectionScreenEvent()
@@ -104,9 +102,6 @@ class CollectionViewModel @Inject constructor(
         when (event) {
             is CollectionScreenEvent.onAddGameClick -> handleOnAddGameClick()
             is CollectionScreenEvent.onGameTileClick -> handleOnGameTileClick(event.gameId)
-
-            is CollectionScreenEvent.onLeftSwipe -> handleOnLeftSwipe()
-            is CollectionScreenEvent.onRightSwipe -> handleOnRightSwipe()
 
             is CollectionScreenEvent.onSortMenuOpen -> handleOnSortMenuOpen()
             is CollectionScreenEvent.onDraftSortChanged -> handleOnDraftSortChanged(event.query)
@@ -229,18 +224,6 @@ class CollectionViewModel @Inject constructor(
     private fun handleOnGameTileClick(gameId: Long) {
         viewModelScope.launch {
             _collectionScreenEvent.emit(CollectionScreenEvent.onGameTileClick(gameId))
-        }
-    }
-
-    private fun handleOnLeftSwipe() {
-        viewModelScope.launch {
-            _collectionScreenEvent.emit(CollectionScreenEvent.onLeftSwipe)
-        }
-    }
-
-    private fun handleOnRightSwipe() {
-        viewModelScope.launch {
-            _collectionScreenEvent.emit(CollectionScreenEvent.onRightSwipe)
         }
     }
 

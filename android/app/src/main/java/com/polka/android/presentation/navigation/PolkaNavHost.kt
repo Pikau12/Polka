@@ -11,10 +11,8 @@ fun PolkaNavHost(
 ) {
     NavHost(
         navController = navController,
-        //startDestination = Destination.Login.route
         startDestination = "core"
     ) {
-        //authNavGraph(navController)
         coreAndOtherNavGraph(navController)
     }
 }
