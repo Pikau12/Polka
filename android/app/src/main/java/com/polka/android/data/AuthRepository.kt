@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
 interface AuthRepository {
-    suspend fun login(login: String, password: String): Result<User>
+    suspend fun login(login: String, password: String): Result<Unit>
     suspend fun register(login: String, username: String, email: String, password: String): Result<Unit>
     suspend fun logout()
     fun isBggAccountLinked(userId: Long): Flow<Boolean>
@@ -35,7 +35,7 @@ class DefaultAuthRepository @Inject constructor(
     private val userRepository: UserRepository
 ) : AuthRepository {
 
-    override suspend fun login(login: String, password: String): Result<User> = authCall {
+    override suspend fun login(login: String, password: String): Result<Unit> = authCall {
         val response = authApi.login(LoginRequest(login, password))
 
         val userId = JwtClaims.userId(response.accessToken)
@@ -47,7 +47,6 @@ class DefaultAuthRepository @Inject constructor(
 
         userRepository.saveUser(user)
         authPreferences.saveSession(response.accessToken, response.refreshToken, userId)
-        user
     }
 
     override suspend fun register(

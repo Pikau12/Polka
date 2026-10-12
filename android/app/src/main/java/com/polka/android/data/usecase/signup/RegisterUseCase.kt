@@ -6,7 +6,6 @@ import jakarta.inject.Inject
 class RegisterUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    suspend operator fun invoke(login: String, username: String, email: String, password: String) {
-        authRepository.register(login, username, email, password).getOrThrow()
-    }
+    suspend operator fun invoke(login: String, username: String, email: String, password: String): Result<Unit> =
+        authRepository.register(login, username, email, password)
 }
