@@ -18,6 +18,7 @@ import (
 	"github.com/polka/backend/internal/postgres"
 	"github.com/polka/backend/internal/repository"
 	"github.com/polka/backend/internal/service"
+	"github.com/polka/backend/internal/storage"
 )
 
 func main() {
@@ -26,7 +27,17 @@ func main() {
 
 	log := logger.New()
 
-	postgresConfig := config.NewPostgresConfig()
+	postgresConfig, err := config.NewPostgresConfig()
+	if err != nil {
+		log.ErrorContext(
+			ctx,
+			"could not create postgres config",
+			slog.Any("error", postgresConfig),
+		)
+
+		os.Exit(1)
+	}
+
 	authConfig, err := config.NewAuthConfig()
 	if err != nil {
 		log.ErrorContext(
@@ -49,7 +60,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	db, err := postgres.New(ctx, postgresConfig)
+	garageConfig, err := config.NewGarageConfig()
+	if err != nil {
+		log.ErrorContext(
+			ctx,
+			"could not create garage config",
+			slog.Any("error", err),
+		)
+
+		os.Exit(1)
+	}
+
+	db, err := postgres.New(ctx, *postgresConfig)
 	if err != nil {
 		log.ErrorContext(
 			ctx,
@@ -60,9 +82,21 @@ func main() {
 		os.Exit(1)
 	}
 
+	garage, err := storage.NewGarage(ctx, *garageConfig)
+	if err != nil {
+		log.ErrorContext(
+			ctx,
+			"unable to connect to garage",
+			slog.Any("error", err),
+		)
+
+		os.Exit(1)
+	}
+
 	userRepo := repository.NewUserRepository(db)
 	gameRepo := repository.NewGameRepository(db)
 	collectionRepo := repository.NewCollectionRepository(db)
+	imageRepo := repository.NewImageRepository(db)
 
 	appCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -75,15 +109,18 @@ func main() {
 	authService := service.NewAuthService(userRepo, hasher.NewBcryptHasher(), tokenManager)
 	gameService := service.NewGameService(gameRepo, cachedClient)
 	collectionService := service.NewCollectionService(collectionRepo, userRepo, gameRepo)
+	imageService := service.NewImageService(imageRepo, userRepo, gameRepo, garage)
 
 	authHandler := handler.NewAuthHandler(authService, log)
-	gameHandler := handler.NewGameHandler(gameService, log)
+	gameHandler := handler.NewGameHandler(gameService, imageService, log)
 	collectionHandler := handler.NewCollectionHandler(collectionService, log)
+	userHandler := handler.NewUserHandler(imageService, log)
 
 	r := api.New(api.Dependencies{
 		AuthHandler:       authHandler,
 		GameHandler:       gameHandler,
 		CollectionHandler: collectionHandler,
+		UserHandler:       userHandler,
 		TokenParser:       tokenManager,
 		Log:               log,
 	})
