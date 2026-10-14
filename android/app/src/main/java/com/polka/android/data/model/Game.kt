@@ -1,5 +1,6 @@
 package com.polka.android.data.model
 
+import coil3.request.ImageRequest
 import com.polka.android.data.database.model.GameEntity
 import com.polka.android.data.image.ImageSource
 
@@ -11,8 +12,10 @@ data class Game(
     val id: Long,
     val serverId: Long?,
     var name: String,
+    val description: String?,
     var shortDescription: String?,
-    var image: ImageSource?,
+    val gameImage: ImageRequest?,
+    val userImages: List<ImageSource.Saved>,
     var playerCount: List<Int>?,
     var bestPlayerCount: List<Int>?,
     var timeRange: ClosedRange<Int>?,
@@ -30,13 +33,20 @@ data class Game(
     var polkaAverageRating: Double?,
     var bggNumberOfRatings: Int?,
     var polkaNumberOfRatings: Int?,
-) {
-    constructor(entity: GameEntity) : this(
+    val averageSessionTime: String?,
+    val releaseYear: String?,
+    ) {
+    constructor(
+        entity: GameEntity,
+        toRequest: (ImageSource) -> ImageRequest,
+    ) : this(
         entity.id,
         entity.serverId,
         entity.name,
+        entity.description,
         entity.shortDescription,
-        entity.image,
+        entity.image?.let(toRequest),
+        entity.userImages,
         entity.playerCount,
         entity.bestPlayerCount,
         range(entity.minPlayTimeMinutes, entity.maxPlayTimeMinutes),
@@ -54,6 +64,8 @@ data class Game(
         entity.polkaAverageRating,
         entity.bggNumberOfRatings,
         entity.polkaNumberOfRatings,
+        entity.averageSessionTime,
+        entity.releaseYear,
     )
 
     val bggUrl: String?
