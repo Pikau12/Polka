@@ -75,6 +75,15 @@ fun SignUpScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     StringInputLarge(
+                        label = "Username",
+                        placeholder = "Enter your username*",
+                        onValueChange = { username ->
+                            viewModel.handleEvent(SignUpScreenEvent.onUsernameChange(username))
+                        },
+                        value = state.usernameString
+                    )
+
+                    StringInputLarge(
                         label = "Login",
                         placeholder = "Enter your login*",
                         onValueChange = { login ->
@@ -84,12 +93,12 @@ fun SignUpScreen(
                     )
 
                     StringInputLarge(
-                        label = "Username",
-                        placeholder = "Enter your username*",
-                        onValueChange = { username ->
-                            viewModel.handleEvent(SignUpScreenEvent.onUsernameChange(username))
+                        label = "Email",
+                        placeholder = "Enter your email*",
+                        onValueChange = { email ->
+                            viewModel.handleEvent(SignUpScreenEvent.onEmailChange(email))
                         },
-                        value = state.usernameString
+                        value = state.emailString
                     )
 
                     StringInputLarge(

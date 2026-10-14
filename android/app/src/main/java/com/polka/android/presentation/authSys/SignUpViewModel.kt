@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polka.android.data.usecase.signup.RegisterUseCase
 import com.polka.android.presentation.common.UiConstants
+import com.polka.android.presentation.coreScreens.SessionsScreenEvent
 import com.polka.android.presentation.theme.PolkaErrorTextColor
 import jakarta.inject.Inject
 import kotlinx.coroutines.Job
@@ -17,12 +18,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 data class SignUpState (
     val loginString: String = "",
     val usernameString: String = "",
     val passwordString: String = "",
+    val emailString: String = "",
     val isBannerVisible: Boolean = false,
     val bannerMessage: String? = null,
     val bannerTextColor: Color? = null,
@@ -35,6 +36,7 @@ sealed class SignUpScreenEvent {
     data class onLoginChange(val login: String): SignUpScreenEvent()
     data class onUsernameChange(val username: String): SignUpScreenEvent()
     data class onPasswordChange(val password: String): SignUpScreenEvent()
+    data class onEmailChange(val email: String): SignUpScreenEvent()
 
     data class showErrorBanner(val message: String): SignUpScreenEvent()
 }
@@ -55,12 +57,19 @@ class SignUpViewModel @Inject constructor(
             is SignUpScreenEvent.onLoginChange -> handleOnLoginChange(event.login)
             is SignUpScreenEvent.onUsernameChange -> handleOnUsernameChange(event.username)
             is SignUpScreenEvent.onPasswordChange -> handleOnPasswordChange(event.password)
+            is SignUpScreenEvent.onEmailChange -> handleOnEmailChange(event.email)
             is SignUpScreenEvent.onSignUpClick -> handleOnSignUpClick()
 
             is SignUpScreenEvent.showErrorBanner -> handleShowErrorBanner(event.message)
 
             is SignUpScreenEvent.onToLoginScreen -> handleOnToLoginScreen(event.showSignUpSuccess)
         }
+    }
+
+    private fun handleOnEmailChange(email: String) {
+        _state.update { it.copy(
+            emailString = email
+        ) }
     }
 
     private fun handleOnSignUpClick() {
@@ -75,18 +84,19 @@ class SignUpViewModel @Inject constructor(
         }
         else {
             viewModelScope.launch {
-                try {
-                    registerUseCase(
-                        login = state.value.loginString,
-                        username = state.value.usernameString,
-                        password = state.value.passwordString,
-                    )
-
-                    _signUpScreenEvent.emit(SignUpScreenEvent.onToLoginScreen(true))
-
-                } catch (e: Exception) {
-                    handleShowErrorBanner(e.toString())
-                }
+                registerUseCase(
+                    login = state.value.loginString,
+                    username = state.value.usernameString,
+                    password = state.value.passwordString,
+                    email = state.value.emailString
+                ).fold(
+                    onSuccess = {
+                        _signUpScreenEvent.emit(SignUpScreenEvent.onToLoginScreen(true))
+                    },
+                    onFailure = { e ->
+                        handleShowErrorBanner(e.toString())
+                    }
+                )
             }
         }
     }
