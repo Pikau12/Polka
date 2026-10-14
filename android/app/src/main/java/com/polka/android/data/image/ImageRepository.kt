@@ -5,6 +5,7 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import coil3.request.ImageRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
+import jakarta.inject.Named
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -33,7 +34,8 @@ import javax.inject.Inject
  * exhaustion, or failed file manipulations.
  */
 class ImageRepository @Inject constructor(
-    @ApplicationContext private val appContext: Context, private val okHttpClient: OkHttpClient
+    @ApplicationContext private val appContext: Context,
+    @Named("plain") private val okHttpClient: OkHttpClient
 ) {
     /**
      * Directory in app-internal storage where saved images are permanently stored.

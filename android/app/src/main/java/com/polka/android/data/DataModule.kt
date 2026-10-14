@@ -34,4 +34,7 @@ interface DataModule {
 
     @Binds
     fun bindsSyncRepository(repository: DefaultSyncRepository): SyncRepository
+
+    @Binds
+    fun bindsUserRepository(repository: DefaultUserRepository): UserRepository
 }
