@@ -128,21 +128,21 @@ class LoginViewModel @Inject constructor(
         }
         else {
             viewModelScope.launch {
-                try {
-                    loginUseCase(
-                        login = state.value.loginString,
-                        password = state.value.passwordString
-                    )
-
-                    if (shouldShowOnboarding()) {
-                        _loginScreenEvent.emit(LoginScreenEvent.onToOverviewScreenNav)
-                    } else {
-                        _loginScreenEvent.emit(LoginScreenEvent.onToCollectionScreenNav)
+                loginUseCase(
+                    login = state.value.loginString,
+                    password = state.value.passwordString
+                ).fold(
+                    onSuccess = {
+                        if (shouldShowOnboarding()) {
+                            _loginScreenEvent.emit(LoginScreenEvent.onToOverviewScreenNav)
+                        } else {
+                            _loginScreenEvent.emit(LoginScreenEvent.onToCollectionScreenNav)
+                        }
+                    },
+                    onFailure = { e ->
+                        handleShowErrorBanner(e.message ?: "Unknown error")
                     }
-
-                } catch (e: Exception) {
-                    handleShowErrorBanner(e.toString()) // TODO: check
-                }
+                )
             }
         }
     }
