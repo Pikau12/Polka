@@ -63,6 +63,7 @@ func main() {
 	userRepo := repository.NewUserRepository(db)
 	gameRepo := repository.NewGameRepository(db)
 	collectionRepo := repository.NewCollectionRepository(db)
+	sessionRepo := repository.NewSessionRepository(db)
 
 	appCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -75,15 +76,18 @@ func main() {
 	authService := service.NewAuthService(userRepo, hasher.NewBcryptHasher(), tokenManager)
 	gameService := service.NewGameService(gameRepo, cachedClient)
 	collectionService := service.NewCollectionService(collectionRepo, userRepo, gameRepo)
+	sessionService := service.NewSessionService(sessionRepo)
 
 	authHandler := handler.NewAuthHandler(authService, log)
 	gameHandler := handler.NewGameHandler(gameService, log)
 	collectionHandler := handler.NewCollectionHandler(collectionService, log)
+	sessionHandler := handler.NewSessionHandler(sessionService, log)
 
 	r := api.New(api.Dependencies{
 		AuthHandler:       authHandler,
 		GameHandler:       gameHandler,
 		CollectionHandler: collectionHandler,
+		SessionHandler:    sessionHandler,
 		TokenParser:       tokenManager,
 		Log:               log,
 	})
