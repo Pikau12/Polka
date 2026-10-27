@@ -268,7 +268,7 @@ fun RowScope.TableCell(
 @Composable
 fun GameInfoCardPreview() {
     val bggAverageRating = 9.0
-    val polkaAverageRating = 8.3
+    val polkaAverageRating = 5.0
     val userRating = 9.0
 
     PolkaTheme {
