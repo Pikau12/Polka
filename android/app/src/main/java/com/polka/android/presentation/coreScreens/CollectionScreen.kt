@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.polka.android.R
+import com.polka.android.presentation.common.dialogs.MessageBanner
 import com.polka.android.presentation.common.dialogs.TipPopUp
 import com.polka.android.presentation.common.layout.VerticalReorderGrid
 import com.polka.android.presentation.common.menus.GameRatingMenu
@@ -70,7 +71,12 @@ fun CollectionScreen(
                         viewModel.handleEvent(CollectionScreenEvent.onAddGameClick)
                     },
                     onDragStarted = { onDragStateChanged(true) },
-                    onDragStopped = { onDragStateChanged(false) }
+                    onDragStopped = { onDragStateChanged(false) },
+                    onItemMoved = { item, above, below ->
+                        viewModel.handleEvent(CollectionScreenEvent.onItemMoved(
+                            item, above, below
+                        ))
+                    }
                 )
             }
         }
@@ -121,6 +127,12 @@ fun CollectionScreen(
                 choicedItems = state.draftStatus!!
             )
         }
+
+        MessageBanner( // Error message banner
+            isVisible = state.isBannerVisible,
+            message = state.bannerMessage ?: "",
+            textColor = state.bannerTextColor ?: Color.Red
+        )
     }
 
     LaunchedEffect(Unit) {

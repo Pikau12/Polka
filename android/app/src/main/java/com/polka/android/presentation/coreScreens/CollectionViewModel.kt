@@ -1,16 +1,22 @@
 package com.polka.android.presentation.coreScreens
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polka.android.data.model.CollectionSortQuery
 import com.polka.android.data.model.isSortQueryEmpty
 import com.polka.android.data.usecase.collection.ObserveCollectionUseCase
+import com.polka.android.data.usecase.collection.UpdateDisplayOrderUseCase
 import com.polka.android.data.usecase.collection.UpdateGameRatingUseCase
 import com.polka.android.data.usecase.collection.UpdateGameStatusUseCase
+import com.polka.android.presentation.common.UiConstants
 import com.polka.android.presentation.model.CollectionItem
+import com.polka.android.presentation.theme.PolkaErrorTextColor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -27,6 +33,11 @@ import kotlinx.coroutines.launch
 data class CollectionState(
     val isLoading: Boolean = false,
     val error: String? = null,
+
+    val isBannerVisible: Boolean = false,
+    val bannerMessage: String? = null,
+    val bannerTextColor: Color? = null,
+
     val isSearchOpen: Boolean = false,
     val isSortMenuOpen: Boolean = false,
     val collection: List<CollectionItem>? = null,
@@ -45,6 +56,11 @@ data class CollectionState(
 sealed class CollectionScreenEvent {
     object onAddGameClick : CollectionScreenEvent()
     data class onGameTileClick(val gameId: Long) : CollectionScreenEvent()
+    data class onItemMoved(
+        val itemToMove: CollectionItem.Id,
+        val aboveItem: CollectionItem.Id?,
+        val belowItem: CollectionItem.Id?
+    ) : CollectionScreenEvent()
 
     // Sort
     object onSortMenuOpen : CollectionScreenEvent()
@@ -69,6 +85,7 @@ sealed class CollectionScreenEvent {
 @HiltViewModel
 class CollectionViewModel @Inject constructor(
     private val observeCollectionUseCase: ObserveCollectionUseCase,
+    private val updateDisplayOrderUseCase: UpdateDisplayOrderUseCase,
     private val updateGameRatingUseCase: UpdateGameRatingUseCase,
     private val updateGameStatusUseCase: UpdateGameStatusUseCase,
 ) : ViewModel() {
@@ -102,6 +119,11 @@ class CollectionViewModel @Inject constructor(
         when (event) {
             is CollectionScreenEvent.onAddGameClick -> handleOnAddGameClick()
             is CollectionScreenEvent.onGameTileClick -> handleOnGameTileClick(event.gameId)
+            is CollectionScreenEvent.onItemMoved -> handleOnItemMoved(
+                event.itemToMove,
+                event.aboveItem,
+                event.belowItem
+            )
 
             is CollectionScreenEvent.onSortMenuOpen -> handleOnSortMenuOpen()
             is CollectionScreenEvent.onDraftSortChanged -> handleOnDraftSortChanged(event.query)
@@ -120,6 +142,41 @@ class CollectionViewModel @Inject constructor(
             is CollectionScreenEvent.onRatingMenuClose -> handleOnRatingMenuClose()
             is CollectionScreenEvent.onRatingTipClick -> handleOnRatingTipClick(event.message)
             is CollectionScreenEvent.onRatingTipClose -> handleOnRatingTipClose()
+        }
+    }
+
+    private var bannerJob: Job? = null
+
+    private fun showErrorBanner(message: String) {
+        bannerJob?.cancel()
+
+        _state.update { it.copy(
+            isBannerVisible = true,
+            bannerMessage = message,
+            bannerTextColor = PolkaErrorTextColor // не забудь импорт
+        ) }
+
+        bannerJob = viewModelScope.launch {
+            delay(UiConstants.BANNER_DURATION)
+            _state.update { it.copy(
+                isBannerVisible = false,
+                bannerMessage = null,
+                bannerTextColor = null
+            ) }
+        }
+    }
+
+    private fun handleOnItemMoved(
+        itemToMove: CollectionItem.Id,
+        aboveItem: CollectionItem.Id?,
+        belowItem: CollectionItem.Id?
+    ){
+        viewModelScope.launch {
+            try {
+                updateDisplayOrderUseCase(itemToMove, aboveItem, belowItem)
+            } catch (e: Exception){
+                showErrorBanner(e.message ?: "Failed to move item")
+            }
         }
     }
 

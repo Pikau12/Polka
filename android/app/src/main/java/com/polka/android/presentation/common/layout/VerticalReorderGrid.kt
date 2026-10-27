@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Devices
@@ -23,6 +24,7 @@ import com.polka.android.presentation.common.tiles.ContextMenuAction
 import com.polka.android.presentation.common.tiles.GameTile
 import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.theme.PolkaTheme
+import kotlinx.coroutines.flow.distinctUntilChanged
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState
 import java.util.EnumSet
@@ -37,14 +39,24 @@ fun VerticalReorderGrid(
 
     onDragStarted: () -> Unit,
     onDragStopped: () -> Unit,
+    onItemMoved: (item: CollectionItem.Id, above: CollectionItem.Id?, below: CollectionItem.Id?) -> Unit
 ) {
     var isDragging by remember { mutableStateOf(false) }
 
     val data = remember { mutableStateOf(collection) }
+    LaunchedEffect(collection) {
+        data.value = collection
+    }
+
     val lazyGridState = rememberLazyGridState()
+    var lastMovedFrom by remember { mutableStateOf(-1) }
+    var lastMovedTo by remember { mutableStateOf(-1) }
+
     val state = rememberReorderableLazyGridState(
         lazyGridState = lazyGridState,
         onMove = { from, to ->
+            lastMovedFrom = from.index
+            lastMovedTo = to.index
             data.value = data.value.toMutableList().apply {
                 add(to.index, removeAt(from.index))
             }
@@ -62,10 +74,39 @@ fun VerticalReorderGrid(
         userScrollEnabled = !isDragging,
     ) {
         items(data.value, key = { it.id.gameId }) {
-            ReorderableItem(state, key = it.id.gameId) { dragging ->
-                LaunchedEffect(dragging) {
-                    isDragging = dragging
-                    if (dragging) onDragStarted() else onDragStopped()
+            ReorderableItem(
+                state,
+                key = it.id.gameId
+            ) { dragging ->
+                LaunchedEffect(Unit) {
+                    snapshotFlow { dragging }
+                        .distinctUntilChanged()
+                        .collect { isDraggingNow ->
+                            if (isDraggingNow) {
+                                isDragging = true
+                                onDragStarted()
+                            } else {
+                                isDragging = false
+                                onDragStopped()
+
+                                // ПРОВЕРКА: было ли реальное движение?
+                                if (lastMovedFrom != -1 && lastMovedFrom != lastMovedTo) {
+                                    val movedItem = data.value[lastMovedTo]
+                                    val aboveItem = data.value.getOrNull(lastMovedTo - 1)
+                                    val belowItem = data.value.getOrNull(lastMovedTo + 1)
+
+                                    onItemMoved(
+                                        movedItem.id,
+                                        aboveItem?.id,
+                                        belowItem?.id
+                                    )
+
+                                    // Сбрасываем индексы после сохранения
+                                    lastMovedFrom = -1
+                                    lastMovedTo = -1
+                                }
+                            }
+                        }
                 }
 
                 GameTile(
@@ -149,7 +190,8 @@ fun ReorderableGridPreview(){
             onContextMenu = { _, _ -> },
             onAddGameClick = { },
             onDragStarted = {},
-            onDragStopped = {}
+            onDragStopped = {},
+            onItemMoved = {_, _, _ -> }
         )
     }
 }

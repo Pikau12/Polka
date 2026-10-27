@@ -132,3 +132,10 @@ fun Set<com.polka.android.presentation.model.CollectionItem.Status>.toDataStatus
     this.forEach { result.add(it.toDataStatus()) }
     return result
 }
+
+fun com.polka.android.presentation.model.CollectionItem.Id.toDataId(): CollectionItem.Id {
+    return CollectionItem.Id(
+        ownerId = this.ownerId,
+        gameId = this.gameId
+    )
+}
