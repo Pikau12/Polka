@@ -6,9 +6,9 @@ data class CollectionItemSummary (
     var id: Id,
     var name: String,
     var image: ImageRequest? = null,
-    var releaseYear: Int? = null,
-    var communityRating: Double? = null,
-    var userRating: Int? = null,
+    var releaseYear: String? = null,
+    var communityRating: String? = null,
+    var userRating: String? = null,
     var designer: String? = null,
 ) {
     data class Id(val ownerId: Long, val gameId: Long)
