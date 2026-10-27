@@ -3,6 +3,7 @@ package com.polka.android.data.usecase.sessions
 import com.polka.android.data.AuthRepository
 import com.polka.android.data.GameRepository
 import com.polka.android.data.SessionRepository
+import com.polka.android.data.image.ImageRepository
 import com.polka.android.data.model.Game
 import com.polka.android.data.model.Session
 import com.polka.android.presentation.model.SessionSummary
@@ -30,7 +31,9 @@ class ObserveSessionsUseCase @Inject constructor(
     }
 }
 
-class SessionMapper @Inject constructor() {
+class SessionMapper @Inject constructor(
+    private val imageRepository: ImageRepository
+) {
     fun map(
         session: Session,
         game: Game
@@ -40,7 +43,7 @@ class SessionMapper @Inject constructor() {
         return SessionSummary(
             sessionId = session.id,
             gameName = game.name,
-            gameImage = game.gameImage,
+            gameImage = game.gameImage?.let { imageRepository.toRequest(it) },
             date = session.startedAt.toLocalDate().toUiString(),
             duration = duration?.let { if (duration % 60 == 0L) (duration / 60f).toInt().toString() + " h"
             else if (duration % 30 == 0L) (duration / 60f).toString() + " h"
