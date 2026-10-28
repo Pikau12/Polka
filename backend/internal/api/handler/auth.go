@@ -39,7 +39,6 @@ func (h *AuthHandler) Register(c *gin.Context) {
 			slog.Any("error", err),
 		)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
-
 		return
 	}
 
