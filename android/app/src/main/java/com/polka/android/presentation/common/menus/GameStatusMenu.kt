@@ -122,7 +122,8 @@ fun GameStatusMenu(
                 Text(
                     text = status.toString(),
                     modifier = Modifier.padding(start = 8.dp),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.titleSmall
                 )
             }
         }
@@ -142,7 +143,8 @@ fun GameStatusMenu(
             Text(
                 text = "Wishlist",
                 modifier = Modifier.padding(start = 8.dp),
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleSmall
             )
             Icon(
                 Icons.Default.KeyboardArrowDown,
