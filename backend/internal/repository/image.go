@@ -161,7 +161,7 @@ func (r *ImageRepository) RemoveFromCollectionItem(ctx context.Context, userID, 
 			WithContext(ctx).
 			Table("collection_item_images").
 			Where("owner_id = ? AND image_id = ? AND game_id = ?", userID, imageID, gameID).
-			Delete(&model.UserImage{}).
+			Delete(&model.CollectionItemImage{}).
 			Error; err != nil {
 			return fmt.Errorf("remove user image relation: %w", err)
 		}
@@ -169,7 +169,7 @@ func (r *ImageRepository) RemoveFromCollectionItem(ctx context.Context, userID, 
 		if err := tx.
 			WithContext(ctx).
 			Table("images").
-			Where("image_id = ?", imageID).
+			Where("id = ?", imageID).
 			Delete(&model.Image{}).
 			Error; err != nil {
 			return fmt.Errorf("remove image: %w", err)
@@ -246,7 +246,7 @@ func (r *ImageRepository) GetCollectionItemImage(ctx context.Context, userID, ga
 		WithContext(ctx).
 		Table("images").
 		Joins("JOIN collection_item_images ON collection_item_images.image_id = images.id").
-		Where("collection_item_images.game_id = ? AND collection_item_images.owner_id = ? && collection_item_images.image_id = ?", gameID, userID, imageID).
+		Where("collection_item_images.game_id = ? AND collection_item_images.owner_id = ? AND collection_item_images.image_id = ?", gameID, userID, imageID).
 		First(&image).
 		Error
 
