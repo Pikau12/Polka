@@ -250,11 +250,13 @@ class CollectionViewModel @Inject constructor(
             isStatusMenuOpen = false,
         ) }
 
-        viewModelScope.launch {
-            updateGameStatusUseCase(
-                id!!,
-                currentStatus!!
-            )
+        if (id != null && currentStatus != null) {
+            viewModelScope.launch {
+                updateGameStatusUseCase(
+                    id,
+                    currentStatus
+                )
+            }
         }
     }
 
@@ -356,8 +358,10 @@ class CollectionViewModel @Inject constructor(
             selectedGameId = null
         ) }
 
-        viewModelScope.launch {
-            updateGameRatingUseCase(selectedGameId!!, rating)
+        if (selectedGameId != null) {
+            viewModelScope.launch {
+                updateGameRatingUseCase(selectedGameId, rating)
+            }
         }
     }
 }

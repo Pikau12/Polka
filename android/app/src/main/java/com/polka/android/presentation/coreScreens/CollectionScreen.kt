@@ -101,7 +101,6 @@ fun CollectionScreen(
                 rating = state.collection
                     ?.find { it.id == state.selectedGameId }
                     ?.rating
-                    ?: error("Rating not found for game ${state.selectedGameId}")
             )
 
             if (state.isTipVisible) {
