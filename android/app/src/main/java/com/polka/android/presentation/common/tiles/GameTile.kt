@@ -102,7 +102,7 @@ fun GameTile(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Image(
+                Image( // TODO : change
                     painter = painterResource(R.drawable.ic_game_placeholder),
                     contentDescription = collectionItem.name,
                     modifier = Modifier

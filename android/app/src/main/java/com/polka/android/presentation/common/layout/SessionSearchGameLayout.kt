@@ -127,7 +127,7 @@ fun SessionSearchGameLayout (
                                             )
 
                                             Text(
-                                                text = item.communityRating.toString(),
+                                                text = item.communityRating!!,
                                                 color = MaterialTheme.colorScheme.onSurface,
                                                 style = MaterialTheme.typography.bodyMedium // maybe change
                                             )
@@ -147,7 +147,7 @@ fun SessionSearchGameLayout (
                                             )
 
                                             Text(
-                                                text = item.userRating.toString(),
+                                                text = item.userRating!!,
                                                 color = MaterialTheme.colorScheme.onSurface,
                                                 style = MaterialTheme.typography.bodyMedium // maybe change
                                             )
