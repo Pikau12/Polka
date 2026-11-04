@@ -1,6 +1,5 @@
 package com.polka.android.presentation.common.layout
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -21,12 +20,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.polka.android.presentation.common.UiConstants.STROKE_SIZE
 import com.polka.android.presentation.common.UiConstants.TOPBAR_GAP
 import com.polka.android.presentation.common.UiConstants.TOPBAR_HEIGHT
 import com.polka.android.presentation.common.buttons.AddSessionButton
 import com.polka.android.presentation.common.buttons.BackButton
-import com.polka.android.presentation.common.buttons.TipButton
 import com.polka.android.presentation.theme.PolkaTheme
 
 /**

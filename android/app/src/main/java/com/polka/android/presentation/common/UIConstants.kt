@@ -14,7 +14,7 @@ object UiConstants {
 
     val STROKE_SIZE = 3.dp
 
-    val TOPBAR_GAP = 16.dp
+    val TOPBAR_GAP = 8.dp
     val TOPBAR_HEIGHT = 40.dp
 
     val BUTTON_SIZE = 40.dp
