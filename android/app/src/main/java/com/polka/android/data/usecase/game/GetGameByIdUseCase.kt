@@ -49,15 +49,15 @@ class GameAndCollectionItemMapper @Inject constructor(
     fun map(
         game: com.polka.android.data.model.Game?,
         collectionItem: com.polka.android.data.model.CollectionItem?,
-    ): Game {
-        if (game == null) error("Game is null")
+    ): Game? {
+        if (game == null) return null
 
-        return Game(
+        return Game( // TODO : update
             isUserCreated = game.bggId == null,
             isInUserCollection = collectionItem != null,
 
             status = collectionItem?.status?.toUIStatusSet(),
-            userRating = collectionItem?.rating?.toString(),
+            userRating = collectionItem?.rating,
             userRatingColor = collectionItem?.rating?.let { rating ->
                 colorOverlay(
                     colorBack = PolkaRatingLowerBound,
