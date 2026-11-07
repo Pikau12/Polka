@@ -24,7 +24,7 @@ datastore = "1.1.7"
 retrofit = "3.0.0"
 kotlinx-serialization = "1.11.0"
 desugar-jdk-libs = "2.1.4"
-
+scale = "1.1.0-alpha.4"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -66,6 +66,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3",
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
+scale-image-viewer = { module = "com.jvziyaoyao.scale:image-viewer", version.ref = "scale" }
+scale-sampling-decoder = { module = "com.jvziyaoyao.scale:sampling-decoder", version.ref = "scale" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

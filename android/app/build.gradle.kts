@@ -132,5 +132,9 @@ dependencies {
     // Reorderable for LazyGrid in UI layer
     implementation(libs.reorderable)
 
+    // Image viewer
+    implementation(libs.scale.image.viewer)
+    implementation(libs.scale.sampling.decoder)
+
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
