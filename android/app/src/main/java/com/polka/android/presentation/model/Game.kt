@@ -9,7 +9,7 @@ data class Game (
     val isActiveUserCreation: Boolean = false,
 
     val status: Set<CollectionItem.Status>?, // TODO: make status public and move it to separate file (maybe merge status from UI and data layers)
-    val userRating: String?, //
+    val userRating: Int?, //
     val userRatingColor: Color?, //
 
     val averageSessionTime: String?,
