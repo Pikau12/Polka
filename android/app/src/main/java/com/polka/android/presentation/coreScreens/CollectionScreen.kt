@@ -17,7 +17,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.polka.android.R
 import com.polka.android.presentation.common.dialogs.MessageBanner
-import com.polka.android.presentation.common.dialogs.TipPopUp
+import com.polka.android.presentation.common.dialogs.RatingTipPopUp
 import com.polka.android.presentation.common.layout.VerticalReorderGrid
 import com.polka.android.presentation.common.menus.GameRatingMenu
 import com.polka.android.presentation.common.menus.GameStatusMenu
@@ -88,9 +88,7 @@ fun CollectionScreen(
                     viewModel.handleEvent(CollectionScreenEvent.onRatingMenuCancel)
                 },
                 onTipClick = {
-                    viewModel.handleEvent(CollectionScreenEvent.onRatingTipClick(
-                        message = "Information about rating" // TODO: change!!!!
-                    ))
+                    viewModel.handleEvent(CollectionScreenEvent.onRatingTipClick)
                 },
                 onDismissRequest = {
                     viewModel.handleEvent(CollectionScreenEvent.onRatingMenuClose)
@@ -104,9 +102,7 @@ fun CollectionScreen(
             )
 
             if (state.isTipVisible) {
-                TipPopUp(
-                    message = state.tipMessage
-                        ?: error("Tip message is null"),
+                RatingTipPopUp(
                     onDismiss = {
                         viewModel.handleEvent(CollectionScreenEvent.onRatingTipClose)
                     }

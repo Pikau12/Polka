@@ -48,7 +48,6 @@ data class CollectionState(
     val selectedGameId: CollectionItem.Id? = null,
     val isRatingMenuOpen: Boolean = false,
     val isTipVisible: Boolean = false,
-    val tipMessage: String? = null,
     val draftStatus: Set<CollectionItem.Status>? = null,
     val isStatusMenuOpen: Boolean = false,
 )
@@ -76,9 +75,9 @@ sealed class CollectionScreenEvent {
     data class onRatingChange(val rating: Int) : CollectionScreenEvent()
     object onRatingMenuCancel: CollectionScreenEvent()
     object onRatingMenuClose : CollectionScreenEvent()
-    data class onAddSessionClick(val gameId: Long) : CollectionScreenEvent()
-    data class onRatingTipClick(val message: String) : CollectionScreenEvent()
+    object onRatingTipClick: CollectionScreenEvent() // TODO: delete message
     object onRatingTipClose: CollectionScreenEvent()
+    data class onAddSessionClick(val gameId: Long) : CollectionScreenEvent()
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -140,7 +139,7 @@ class CollectionViewModel @Inject constructor(
             is CollectionScreenEvent.onRatingMenuCancel -> handleOnRatingMenuCancel()
             is CollectionScreenEvent.onRatingMenuOpen -> handleOnRatingMenuOpen(event.id)
             is CollectionScreenEvent.onRatingMenuClose -> handleOnRatingMenuClose()
-            is CollectionScreenEvent.onRatingTipClick -> handleOnRatingTipClick(event.message)
+            is CollectionScreenEvent.onRatingTipClick -> handleOnRatingTipClick()
             is CollectionScreenEvent.onRatingTipClose -> handleOnRatingTipClose()
         }
     }
@@ -260,17 +259,15 @@ class CollectionViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnRatingTipClick(message: String){
+    private fun handleOnRatingTipClick(){
         _state.update { it.copy(
-            isTipVisible = true,
-            tipMessage = message,
+            isTipVisible = true
         ) }
     }
 
     private fun handleOnRatingTipClose(){
         _state.update { it.copy(
-            isTipVisible = false,
-            tipMessage = null,
+            isTipVisible = false
         ) }
     }
 
