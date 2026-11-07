@@ -43,8 +43,8 @@ import com.polka.android.presentation.theme.PolkaTheme
 fun GamePhotoBlock(
     images: List<ImageRequest>,
     onAddPhotoClick: () -> Unit,
+    onPhotoClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    borderColor: Color = MaterialTheme.colorScheme.surface,
     borderWidth: Dp = 5.dp
 ) {
     val displayedImages = images.take(3)
@@ -106,7 +106,8 @@ fun GamePhotoBlock(
                             borderWidth,
                             color = MaterialTheme.colorScheme.surface,
                             shape = RoundedCornerShape(UiConstants.MAIN_CORNER_RADIUS)
-                        ),
+                        )
+                        .clickable(onClick = { onPhotoClick(0) }),
                     contentScale = ContentScale.Crop
                 )
             }
@@ -145,6 +146,7 @@ fun GamePhotoBlock(
                             color = MaterialTheme.colorScheme.surface,
                             shape = RoundedCornerShape(UiConstants.MAIN_CORNER_RADIUS)
                         )
+                        .clickable(onClick = { onPhotoClick(index) })
                 )
             }
 
@@ -216,7 +218,8 @@ fun GamePhotoBlockPreview(){
 
             GamePhotoBlock(
                 fakeImages,
-                onAddPhotoClick = {}
+                onAddPhotoClick = {},
+                onPhotoClick = {},
             )
         }
     }
