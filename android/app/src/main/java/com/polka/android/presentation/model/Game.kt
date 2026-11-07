@@ -6,19 +6,20 @@ import coil3.request.ImageRequest
 data class Game (
     val isUserCreated: Boolean = false,
     val isInUserCollection: Boolean = false,
+    val isActiveUserCreation: Boolean = false,
 
     val status: Set<CollectionItem.Status>?, // TODO: make status public and move it to separate file (maybe merge status from UI and data layers)
     val userRating: String?, //
-    val userRatingColor: Color?,
+    val userRatingColor: Color?, //
 
-    val averageSessionTime: String?, // TODO: add to game in data layer //
+    val averageSessionTime: String?,
 
     val id: Long,
     val name: String, //
 
     val shortDescription: String?, //
-    val description: String?, // TODO: add to game in data layer //
-    val releaseYear: String?, // TODO: add to game in data layer //
+    val description: String?, //
+    val releaseYear: String?, //
 
     val gameImage: ImageRequest?,
     val userImages: List<ImageRequest>?,
@@ -28,7 +29,7 @@ data class Game (
     val timeRange: String?, //
     val ageRestriction: String?, //
     val weight: String?, //
-    val weightColor: Color?,
+    val weightColor: Color?, //
 
     val designers: List<String>,
     val artists: List<String>,
