@@ -22,7 +22,7 @@ data class Game (
     val releaseYear: String?, //
 
     val gameImage: ImageRequest?,
-    val userImages: List<ImageRequest>?,
+    val userImages: List<ImageRequest>,
 
     val playerCount: String?, //
     val bestPlayerCount: String?, //

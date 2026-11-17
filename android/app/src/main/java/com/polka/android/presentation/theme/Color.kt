@@ -82,6 +82,8 @@ val PolkaStar = PolkaFive
 val PolkaLogInButton = PolkaThree
 val PolkaAddButton = PolkaThree
 val PolkaAddSessionButton = PolkaNine
+val PolkaAddToCollectionButton = PolkaThree
+val PolkaEditButton = PolkaEight
 val PolkaSuccessTextColor = PolkaThree
 val PolkaErrorTextColor = PolkaSix
 val PolkaUserRatingStar = PolkaThree
@@ -126,6 +128,18 @@ val PolkaGameDescriptionBlockColors = PolkaCardDefaultColors
 
 val PolkaMainGameInfoBlockColors = PolkaCardDefaultColors
 
+val PolkaAddToCollectionButtonColors = ButtonColors(
+    containerColor = PolkaAddToCollectionButton,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaAddToCollectionButton,
+    disabledContentColor = PolkaOnButton
+)
+val PolkaEditButtonColors = ButtonColors(
+    containerColor = PolkaEditButton,
+    contentColor = PolkaOnButton,
+    disabledContainerColor = PolkaEditButton,
+    disabledContentColor = PolkaOnButton
+)
 val PolkaAddSessionButtonColors = ButtonColors(
     containerColor = PolkaAddSessionButton,
     contentColor = PolkaOnButton,

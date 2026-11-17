@@ -75,7 +75,8 @@ class GameAndCollectionItemMapper @Inject constructor(
             releaseYear = null, // TODO
 
             gameImage = game.gameImage?.let{ imageRepository.toRequest(it) },
-            userImages = collectionItem?.images?.map { imageRepository.toRequest(it) },
+            userImages = collectionItem?.images?.map { imageRepository.toRequest(it) }
+                ?: emptyList(),
 
             playerCount = game.playerCount?.joinToString("-"),
             bestPlayerCount = game.bestPlayerCount?.joinToString("-"),

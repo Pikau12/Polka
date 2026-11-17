@@ -52,7 +52,7 @@ fun GameRatingBlock(
     polkaAverageRatingColor: Color,
     bggNumberOfRatings: String,
     polkaNumberOfRatings: String,
-    userRating: String?,
+    userRating: Int?,
     userRatingColor: Color?
 ) {
     TableCard {
@@ -156,7 +156,7 @@ fun GameRatingBlock(
                 SPACE_BETWEEN_RATING_AND_STAR_ICON
             ){
                 Text(
-                    userRating?: "N/A",
+                    userRating?.toString() ?: "N/A",
                     style = MaterialTheme.typography.titleSmall,
                 )
 
@@ -269,7 +269,7 @@ fun RowScope.TableCell(
 fun GameInfoCardPreview() {
     val bggAverageRating = 9.0
     val polkaAverageRating = 5.0
-    val userRating = 9.0
+    val userRating = 9
 
     PolkaTheme {
         Box(
@@ -285,8 +285,8 @@ fun GameInfoCardPreview() {
                 polkaAverageRatingColor = getRatingStarColor(polkaAverageRating),
                 bggNumberOfRatings = "201233",
                 polkaNumberOfRatings = "109",
-                userRating = userRating.toString(),
-                userRatingColor = getRatingStarColor(userRating)
+                userRating = userRating,
+                userRatingColor = getRatingStarColor(userRating.toDouble())
             )
         }
     }

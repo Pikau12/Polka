@@ -27,6 +27,8 @@ data class GameState(
     val draftRating: Int? = null,
     val isRatingMenuOpen: Boolean = false,
     val isRatingTipVisible: Boolean = false,
+    val isInDetailDescription: Boolean = false,
+
 )
 
 sealed class GameScreenEvent {
@@ -42,6 +44,8 @@ sealed class GameScreenEvent {
 
     data class onPhotoClick(val photoIndex: Int) : GameScreenEvent()
     object onPhotoViewerDismiss : GameScreenEvent()
+
+    object onDescriptionClick: GameScreenEvent()
 }
 
 @HiltViewModel
@@ -79,7 +83,15 @@ class GameViewModel @Inject constructor (
 
             is GameScreenEvent.onPhotoClick -> handleOnPhotoClick(event.photoIndex)
             GameScreenEvent.onPhotoViewerDismiss -> handleOnPhotoViewerDismiss()
+
+            is GameScreenEvent.onDescriptionClick -> handleOnDescriptionClick()
         }
+    }
+
+    private fun handleOnDescriptionClick(){
+        _state.update { it.copy(
+            isInDetailDescription = !state.value.isInDetailDescription
+        ) }
     }
 
     private fun handleOnPhotoClick(photoIndex: Int){
