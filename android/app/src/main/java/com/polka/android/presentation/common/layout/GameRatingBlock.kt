@@ -1,6 +1,7 @@
 package com.polka.android.presentation.common.layout
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +42,6 @@ import com.polka.android.presentation.theme.PolkaRatingBackground
 import com.polka.android.presentation.theme.PolkaRatingHigherBound
 import com.polka.android.presentation.theme.PolkaRatingLowerBound
 import com.polka.android.presentation.theme.PolkaTheme
-import com.polka.android.presentation.theme.PolkaUserRatingStar
 import com.polka.android.utils.colorOverlay
 
 @Composable
@@ -53,9 +53,13 @@ fun GameRatingBlock(
     bggNumberOfRatings: String,
     polkaNumberOfRatings: String,
     userRating: Int?,
-    userRatingColor: Color?
+    userRatingColor: Color?,
+
+    onUserRatingClick: () -> Unit,
+
+    isInCollection: Boolean = true,
 ) {
-    TableCard {
+    TableCard (isInCollection){
         TableRow {
             TableCell {
                 SmallIcon(
@@ -110,7 +114,7 @@ fun GameRatingBlock(
                 isLast = true
             )
         }
-        TableRow {
+        TableRow (showDivider = isInCollection){
             TableCell {
                 Image(
                     painter = painterResource(R.drawable.polka_icon),
@@ -144,28 +148,33 @@ fun GameRatingBlock(
                 isLast = true
             )
         }
-        TableRow(showDivider = false) {
-            TableCell(
-                "Your",
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            TableCell (
-                weight = 2f,
-                isLast = true,
-                SPACE_BETWEEN_RATING_AND_STAR_ICON
-            ){
-                Text(
-                    userRating?.toString() ?: "N/A",
-                    style = MaterialTheme.typography.titleSmall,
+        if (isInCollection) {
+            TableRow(showDivider = false) {
+                TableCell(
+                    "Your",
+                    style = MaterialTheme.typography.titleMedium
                 )
 
-                Icon(
-                    Icons.Filled.Star,
-                    contentDescription = "Star",
-                    modifier = Modifier.size(20.dp),
-                    tint = userRatingColor?: PolkaUserRatingStar
-                )
+                TableCell(
+                    modifier = Modifier.clickable(
+                        onClick = onUserRatingClick
+                    ),
+                    weight = 2f,
+                    isLast = true,
+                    horizontalSpacedBy = SPACE_BETWEEN_RATING_AND_STAR_ICON
+                ) {
+                    Text(
+                        userRating?.toString() ?: "N/A",
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+
+                    Icon(
+                        Icons.Filled.Star,
+                        contentDescription = "Star",
+                        modifier = Modifier.size(20.dp),
+                        tint = userRatingColor ?: MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
     }
@@ -173,12 +182,15 @@ fun GameRatingBlock(
 
 @Composable
 fun TableCard(
-    content: @Composable ColumnScope.() -> Unit
+    isInCollection: Boolean,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp),
+            .height(
+                if (isInCollection) 170.dp else 130.dp
+            ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -220,13 +232,14 @@ fun ColumnScope.TableRow(
 
 @Composable
 fun RowScope.TableCell(
+    modifier: Modifier = Modifier,
     weight: Float = 1f,
     isLast: Boolean = false,
     horizontalSpacedBy: Dp = 10.dp,
     content: @Composable () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .weight(weight)
             .fillMaxHeight(),
         verticalAlignment = Alignment.CenterVertically
@@ -269,7 +282,7 @@ fun RowScope.TableCell(
 fun GameInfoCardPreview() {
     val bggAverageRating = 9.0
     val polkaAverageRating = 5.0
-    val userRating = 9
+    val userRating = 8
 
     PolkaTheme {
         Box(
@@ -286,7 +299,9 @@ fun GameInfoCardPreview() {
                 bggNumberOfRatings = "201233",
                 polkaNumberOfRatings = "109",
                 userRating = userRating,
-                userRatingColor = getRatingStarColor(userRating.toDouble())
+                userRatingColor = getRatingStarColor(userRating.toDouble()),
+                isInCollection = true,
+                onUserRatingClick = {}
             )
         }
     }
