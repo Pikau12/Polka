@@ -3,7 +3,7 @@ package com.polka.android.data.model
 data class Session(
     val id: Long = 0,
     val gameId: Long,
-    val creatorId: Long,
+    val creatorId: Long?,
 
     val note: String = "",
     /*
