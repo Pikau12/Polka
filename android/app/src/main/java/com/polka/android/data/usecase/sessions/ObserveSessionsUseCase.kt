@@ -3,8 +3,11 @@ package com.polka.android.data.usecase.sessions
 import com.polka.android.data.AuthRepository
 import com.polka.android.data.GameRepository
 import com.polka.android.data.SessionRepository
+import com.polka.android.data.UserRepository
+import com.polka.android.data.image.ImageRepository
 import com.polka.android.data.model.Game
 import com.polka.android.data.model.Session
+import com.polka.android.data.model.SessionParticipant
 import com.polka.android.presentation.model.SessionSummary
 import com.polka.android.utils.toLocalDate
 import com.polka.android.utils.toUiString
@@ -16,39 +19,57 @@ class ObserveSessionsUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val sessionRepository: SessionRepository,
     private val gameRepository: GameRepository,
+    private val userRepository: UserRepository,
     private val mapper: SessionMapper,
 ) {
-    operator fun invoke() : Flow<List<SessionSummary>> {
+    operator fun invoke(): Flow<List<SessionSummary>> {
         return sessionRepository.getUserSessions(authRepository.getCurrentUser().id)
-                .map { items ->
-                    items.map { session ->
-                        val game = gameRepository.getGame(session.gameId)
-                            ?: error("Game (id: ${session.gameId} not found in observeSessionsUseCase)")
-                        mapper.map(session, game)
-                    }
+            .map { items ->
+                items.map { session ->
+                    val game = gameRepository.getGame(session.gameId)
+                        ?: error("Game (id: ${session.gameId}) not found in ObserveSessionsUseCase")
+                    val participants = sessionRepository.getParticipants(session.id)
+                    val names = participants.associateWith { displayName(it) }
+                    mapper.map(session, game, names)
                 }
+            }
+    }
+
+    private suspend fun displayName(participant: SessionParticipant): String {
+        val user = participant.userId?.let { userRepository.getUser(it) }
+        return user?.username ?: participant.name ?: "?"
     }
 }
 
-class SessionMapper @Inject constructor() {
+class SessionMapper @Inject constructor(
+    private val imageRepository: ImageRepository,
+) {
     fun map(
         session: Session,
-        game: Game
+        game: Game,
+        participantNames: Map<SessionParticipant, String>,
     ): SessionSummary {
-        val duration = session.finishedAt?.minus(session.startedAt)
-
         return SessionSummary(
             sessionId = session.id,
             gameName = game.name,
-            gameImage = game.gameImage,
+            gameImage = game.gameImage?.let(imageRepository::toRequest),
             date = session.startedAt.toLocalDate().toUiString(),
-            duration = duration?.let { if (duration % 60 == 0L) (duration / 60f).toInt().toString() + " h"
-            else if (duration % 30 == 0L) (duration / 60f).toString() + " h"
-            else "$duration m"
+            duration = session.finishedAt?.let { formatDuration(it - session.startedAt) },
+            place = null, // Session has no place yet
+            players = participantNames.values.toList(),
+            winners = participantNames.entries.associate { (participant, name) ->
+                name to participant.isWinner
             },
-            place = "PLACEPLACEHOLDER", // TODO
-            players = listOf("PLAYERPLACEHOLDER1", "PLAYERPLACEHOLDER2"), // TODO
-            winners = mapOf(Pair("PLAYERPLACEHOLDER1", true), Pair("PLAYERPLACEHOLDER2", false)) // TODO
         )
+    }
+
+    /** [millis] is a difference of two timestamps in milliseconds. */
+    private fun formatDuration(millis: Long): String {
+        val minutes = millis / 60_000
+        return when {
+            minutes < 60 -> "$minutes m"
+            minutes % 60 == 0L -> "${minutes / 60} h"
+            else -> "${minutes / 60} h ${minutes % 60} m"
+        }
     }
 }
