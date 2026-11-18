@@ -89,7 +89,6 @@ fun VerticalReorderGrid(
                                 isDragging = false
                                 onDragStopped()
 
-                                // ПРОВЕРКА: было ли реальное движение?
                                 if (lastMovedFrom != -1 && lastMovedFrom != lastMovedTo) {
                                     val movedItem = data.value[lastMovedTo]
                                     val aboveItem = data.value.getOrNull(lastMovedTo - 1)
@@ -101,7 +100,6 @@ fun VerticalReorderGrid(
                                         belowItem?.id
                                     )
 
-                                    // Сбрасываем индексы после сохранения
                                     lastMovedFrom = -1
                                     lastMovedTo = -1
                                 }
