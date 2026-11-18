@@ -46,7 +46,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
+import coil3.compose.AsyncImage
 import com.polka.android.R
+import com.polka.android.presentation.common.UiConstants
+import com.polka.android.presentation.common.UiConstants.MAINGAMEINFOBLOCK_GAME_IMAGE_HEIGHT
+import com.polka.android.presentation.common.UiConstants.MAIN_CORNER_RADIUS
 import com.polka.android.presentation.theme.PolkaAcceptButtonColors
 import com.polka.android.presentation.theme.PolkaTheme
 import com.polka.android.utils.AdaptiveTextForGameTile
@@ -102,15 +106,28 @@ fun GameTile(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Image( // TODO : change
-                    painter = painterResource(R.drawable.ic_game_placeholder),
-                    contentDescription = collectionItem.name,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                if (collectionItem.image != null){
+                    AsyncImage(
+                        model = collectionItem.image,
+                        contentDescription = "Game image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(MAIN_CORNER_RADIUS)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                else {
+                    Image(
+                        painter = painterResource(R.drawable.ic_game_placeholder),
+                        contentDescription = collectionItem.name,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(MAIN_CORNER_RADIUS)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
                 BoxWithConstraints(
                     modifier = Modifier
