@@ -30,7 +30,8 @@ interface CollectionRepository {
     fun getUserCollection(userId: Long): Flow<List<CollectionItem>>
     fun getUserCollectionOrdered(userId: Long): Flow<List<CollectionItem>>
 
-    //TODO games methods
+    /** Adds the game to the end of the current user's collection. Does nothing if it is already there. */
+    suspend fun addGameToCollection(gameId: Long)
 
     suspend fun addNote(item: CollectionItem.Id, note: String)
     suspend fun updateNote(item: CollectionItem.Id, note: String)
@@ -82,6 +83,11 @@ class DefaultCollectionRepository @Inject constructor(
             aboveItem?.gameId,
             belowItem?.gameId
         )
+    }
+
+    override suspend fun addGameToCollection(gameId: Long) {
+        val user = authRepository.getCurrentUser()
+        collectionDao.addToEnd(user.id, gameId)
     }
 
     override fun getUserCollection(userId: Long): Flow<List<CollectionItem>> {

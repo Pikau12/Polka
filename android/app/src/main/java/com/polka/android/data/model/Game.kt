@@ -35,7 +35,9 @@ data class Game(
     var polkaNumberOfRatings: Int?,
     val averageSessionTime: String?,
     val releaseYear: String?,
-    ) {
+    val createdAt: Long,
+    val updatedAt: Long,
+) {
     constructor(
         entity: GameEntity,
         toRequest: (ImageSource) -> ImageRequest,
@@ -47,8 +49,8 @@ data class Game(
         entity.shortDescription,
         entity.image,
         entity.userImages,
-        entity.playerCount,
-        entity.bestPlayerCount,
+        entity.playerCount.takeIf { it.isNotEmpty() },
+        entity.bestPlayerCount.takeIf { it.isNotEmpty() },
         range(entity.minPlayTimeMinutes, entity.maxPlayTimeMinutes),
         entity.ageRestriction,
         entity.weight,
@@ -66,6 +68,8 @@ data class Game(
         entity.polkaNumberOfRatings,
         entity.averageSessionTime,
         entity.releaseYear,
+        entity.createdAt,
+        entity.updatedAt,
     )
 
     val bggUrl: String?
