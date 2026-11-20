@@ -1,12 +1,12 @@
 package com.polka.android.presentation.gamesSys
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Index
 import com.polka.android.data.usecase.collection.UpdateGameRatingUseCase
+import com.polka.android.data.usecase.game.GetGameByIdUseCase
 import com.polka.android.data.usecase.user.GetCurrentUserIdUseCase
-import com.polka.android.presentation.coreScreens.CollectionScreenEvent
 import com.polka.android.presentation.model.CollectionItem
 import com.polka.android.presentation.model.Game
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,8 +44,10 @@ sealed class GameScreenEvent {
 
     data class onPhotoClick(val photoIndex: Int) : GameScreenEvent()
     object onPhotoViewerDismiss : GameScreenEvent()
+    data class onImagesSelected(val uris: List<Uri>) : GameScreenEvent()
 
     object onDescriptionClick: GameScreenEvent()
+    object onEditClick: GameScreenEvent()
 }
 
 @HiltViewModel
@@ -53,20 +55,25 @@ class GameViewModel @Inject constructor (
     savedStateHandle: SavedStateHandle,
     private val updateGameRatingUseCase: UpdateGameRatingUseCase,
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
+    private val getGameByIdUseCase: GetGameByIdUseCase,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(
-        GameState(
-            //game =
-        )
-    )
+    private val _state = MutableStateFlow(GameState())
     val state: StateFlow<GameState> = _state.asStateFlow()
+
+    private val gameId: Long = savedStateHandle.get<Long>("gameId")
+        ?: throw IllegalArgumentException("gameId is required")
 
     private val _gameScreenEvent = MutableSharedFlow<GameScreenEvent>()
     val gameScreenEvent: SharedFlow<GameScreenEvent> =
         _gameScreenEvent.asSharedFlow()
 
     init {
-
+        viewModelScope.launch {
+            getGameByIdUseCase(gameId)
+                .collect { game ->
+                    _state.update { it.copy(game = game) }
+                }
+        }
     }
 
     fun handleEvent(event: GameScreenEvent) {
@@ -83,8 +90,20 @@ class GameViewModel @Inject constructor (
 
             is GameScreenEvent.onPhotoClick -> handleOnPhotoClick(event.photoIndex)
             GameScreenEvent.onPhotoViewerDismiss -> handleOnPhotoViewerDismiss()
+            is GameScreenEvent.onImagesSelected -> handleOnImagesSelected(event.uris)
 
             is GameScreenEvent.onDescriptionClick -> handleOnDescriptionClick()
+            is GameScreenEvent.onEditClick -> handleOnEditClick()
+        }
+    }
+
+    private fun handleOnImagesSelected(uris: List<Uri>){
+        TODO()
+    }
+
+    private fun handleOnEditClick(){
+        viewModelScope.launch {
+            _gameScreenEvent.emit(GameScreenEvent.onEditClick)
         }
     }
 

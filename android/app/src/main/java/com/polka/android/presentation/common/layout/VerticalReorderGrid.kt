@@ -179,6 +179,12 @@ fun ReorderableGridPreview(){
             status = EnumSet.of(CollectionItem.Status.OWN),
             rating = 10
         ),
+        CollectionItem(
+            name = "Mycelium",
+            id = CollectionItem.Id(1, 7),
+            status = EnumSet.of(CollectionItem.Status.OWN),
+            rating = 7
+        ),
     )
 
     PolkaTheme{

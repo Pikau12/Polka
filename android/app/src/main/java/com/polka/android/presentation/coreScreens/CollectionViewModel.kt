@@ -75,7 +75,7 @@ sealed class CollectionScreenEvent {
     data class onRatingChange(val rating: Int) : CollectionScreenEvent()
     object onRatingMenuCancel: CollectionScreenEvent()
     object onRatingMenuClose : CollectionScreenEvent()
-    object onRatingTipClick: CollectionScreenEvent() // TODO: delete message
+    object onRatingTipClick: CollectionScreenEvent()
     object onRatingTipClose: CollectionScreenEvent()
     data class onAddSessionClick(val gameId: Long) : CollectionScreenEvent()
 }

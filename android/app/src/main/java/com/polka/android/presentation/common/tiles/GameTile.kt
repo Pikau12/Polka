@@ -1,6 +1,5 @@
 package com.polka.android.presentation.common.tiles
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -61,7 +60,6 @@ sealed class ContextMenuAction {
     object onAddSessionClick : ContextMenuAction()
 }
 
-@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun GameTile(
     collectionItem: CollectionItem,

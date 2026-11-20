@@ -1,37 +1,46 @@
 package com.polka.android.presentation.gamesSys
 
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.polka.android.presentation.common.buttons.AddSessionButton
+import com.polka.android.presentation.common.buttons.AddToCollectionButton
+import com.polka.android.presentation.common.buttons.EditButton
 import com.polka.android.presentation.common.dialogs.PhotoViewer
+import com.polka.android.presentation.common.dialogs.RatingTipPopUp
 import com.polka.android.presentation.common.layout.GameDescriptionBlock
 import com.polka.android.presentation.common.layout.GamePhotoBlock
 import com.polka.android.presentation.common.layout.GameRatingBlock
 import com.polka.android.presentation.common.layout.MainGameInfoBlock
 import com.polka.android.presentation.common.layout.TopBar
-import sh.calvin.reorderable.rememberReorderableLazyGridState
+import com.polka.android.presentation.common.menus.GameRatingMenu
 
 @Composable
-fun GameScreen (
+fun GameScreen(
     navController: NavController,
     viewModel: GameViewModel = hiltViewModel()
-){
+) {
     val state by viewModel.state.collectAsState()
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 10)
+    ) { uris: List<Uri> ->
+        if (uris.isNotEmpty()) {
+            viewModel.handleEvent(GameScreenEvent.onImagesSelected(uris))
+        }
+    }
 
     state.game?.let { game ->
         Scaffold(
@@ -41,16 +50,19 @@ fun GameScreen (
                     navController = navController
                 ) {
                     if (!game.isInUserCollection) {
-                        // AddToCollectionButton
-                    }
-                    else {
+                        AddToCollectionButton {
+                            viewModel.handleEvent(GameScreenEvent.onAddGameToCollectionClick)
+                        }
+                    } else {
                         AddSessionButton {
                             viewModel.handleEvent(GameScreenEvent.onAddSessionClick)
                         }
                     }
 
                     if (game.isActiveUserCreation) {
-                        //EditButton
+                        EditButton {
+                            viewModel.handleEvent(GameScreenEvent.onEditClick)
+                        }
                     }
                 }
             }
@@ -91,7 +103,8 @@ fun GameScreen (
                         game.bggAverageRatingColor != null &&
                         game.polkaAverageRatingColor != null &&
                         game.bggNumberOfRatings != null &&
-                        game.polkaNumberOfRatings != null) {
+                        game.polkaNumberOfRatings != null
+                    ) {
                         item {
                             GameRatingBlock(
                                 bggAverageRating = game.bggAverageRating,
@@ -101,11 +114,14 @@ fun GameScreen (
                                 bggNumberOfRatings = game.bggNumberOfRatings,
                                 polkaNumberOfRatings = game.polkaNumberOfRatings,
                                 userRating = game.userRating,
-                                userRatingColor = game.userRatingColor
+                                userRatingColor = game.userRatingColor,
+                                onUserRatingClick = {
+                                    viewModel.handleEvent(GameScreenEvent.onUserRatingClick)
+                                },
+                                isInCollection = game.isInUserCollection
                             )
                         }
-                    }
-                    else {
+                    } else {
                         Log.e("Game screen error", "one of the rating fields of game is null when game is not user created")
                     }
                 }
@@ -115,10 +131,12 @@ fun GameScreen (
                         GamePhotoBlock(
                             images = game.userImages,
                             onAddPhotoClick = {
-
+                                photoPickerLauncher.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
                             },
-                            onPhotoClick = {
-
+                            onPhotoClick = { index ->
+                                viewModel.handleEvent(GameScreenEvent.onPhotoClick(index))
                             }
                         )
                     }
@@ -135,11 +153,37 @@ fun GameScreen (
                 }
             )
         }
+
+        GameRatingMenu(
+            expanded = state.isRatingMenuOpen,
+            onCancelClick = {
+                viewModel.handleEvent(GameScreenEvent.onRatingMenuCancel)
+            },
+            onTipClick = {
+                viewModel.handleEvent(GameScreenEvent.onRatingTipClick)
+            },
+            onDismissRequest = {
+                viewModel.handleEvent(GameScreenEvent.onRatingMenuClose)
+            },
+            onRatingListItemClick = { rating ->
+                viewModel.handleEvent(GameScreenEvent.onRatingChange(rating))
+            },
+            rating = game.userRating,
+        )
+
+        if (state.isRatingTipVisible) {
+            RatingTipPopUp {
+                viewModel.handleEvent(GameScreenEvent.onRatingTipClose)
+            }
+        }
     }
 
     LaunchedEffect(Unit) {
         viewModel.gameScreenEvent.collect {
-            when(it){
+            when (it) {
+                is GameScreenEvent.onEditClick -> {
+                    // TODO : go to GameCardScreen
+                }
                 else -> {} // TODO : add navigation
             }
         }

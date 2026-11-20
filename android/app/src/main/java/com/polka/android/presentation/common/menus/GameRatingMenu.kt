@@ -49,11 +49,9 @@ fun GameRatingMenu(
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp),
-            // Выравниваем элементы по верхнему краю
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Добавляем отступ сверху, чтобы кнопка встала вровень с текстом внутри меню
             CancelButton{ onCancelClick() }
 
             Surface(
@@ -99,7 +97,6 @@ fun GameRatingMenu(
                 }
             }
 
-            // Аналогичный отступ для правой кнопки
             TipButton{ onTipClick() }
         }
     }
