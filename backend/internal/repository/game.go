@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/polka/backend/internal/domain"
@@ -188,6 +189,9 @@ func (r *GameRepository) GetGameByID(ctx context.Context, gameID int64) (*model.
 		Where("id = ?", gameID).
 		First(&game).
 		Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrGameNotFound
+		}
 		return nil, fmt.Errorf("get game: %w", err)
 	}
 

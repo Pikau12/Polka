@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -96,18 +95,4 @@ func (h *CollectionHandler) GetCollection(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
-}
-
-func getUserIDFromContext(c *gin.Context) (*int64, error) {
-	value, exists := c.Get("user_id")
-	if !exists {
-		return nil, fmt.Errorf("unauthorized")
-	}
-
-	id, ok := value.(int64)
-	if !ok {
-		return nil, fmt.Errorf("invalid type user id")
-	}
-
-	return &id, nil
 }

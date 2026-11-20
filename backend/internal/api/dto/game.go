@@ -7,6 +7,9 @@ import (
 type SearchGameRequest struct {
 	Name string `json:"name" binding:"required"`
 
+	Offset int32 `json:"offset" binding:"gte=0"`
+	Limit  int32 `json:"limit" binding:"required,gte=1,lte=100"`
+
 	MinPlayTimeMinutes *int32 `json:"min_play_time_minutes,omitempty"`
 	MaxPlayTimeMinutes *int32 `json:"max_play_time_minutes,omitempty"`
 
@@ -24,9 +27,6 @@ type SearchGameRequest struct {
 	Categories []string `json:"categories,omitempty"`
 	Publishers []string `json:"publishers,omitempty"`
 	Designers  []string `json:"designers,omitempty"`
-
-	Offset int32 `json:"offset"`
-	Limit  int32 `json:"limit"`
 }
 
 type SearchGameResponse struct {
