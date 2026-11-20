@@ -76,7 +76,7 @@ func main() {
 	authService := service.NewAuthService(userRepo, hasher.NewBcryptHasher(), tokenManager)
 	gameService := service.NewGameService(gameRepo, cachedClient)
 	collectionService := service.NewCollectionService(collectionRepo, userRepo, gameRepo)
-	sessionService := service.NewSessionService(sessionRepo)
+	sessionService := service.NewSessionService(sessionRepo, gameRepo)
 
 	authHandler := handler.NewAuthHandler(authService, log)
 	gameHandler := handler.NewGameHandler(gameService, log)
