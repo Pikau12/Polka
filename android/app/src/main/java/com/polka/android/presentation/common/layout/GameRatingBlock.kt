@@ -43,6 +43,7 @@ import com.polka.android.presentation.theme.PolkaRatingHigherBound
 import com.polka.android.presentation.theme.PolkaRatingLowerBound
 import com.polka.android.presentation.theme.PolkaTheme
 import com.polka.android.utils.colorOverlay
+import com.polka.android.utils.getRatingColor
 
 @Composable
 fun GameRatingBlock(
@@ -281,7 +282,7 @@ fun RowScope.TableCell(
 @Composable
 fun GameInfoCardPreview() {
     val bggAverageRating = 9.0
-    val polkaAverageRating = 5.0
+    val polkaAverageRating = 5.5
     val userRating = 8
 
     PolkaTheme {
@@ -293,22 +294,16 @@ fun GameInfoCardPreview() {
         ) {
             GameRatingBlock(
                 bggAverageRating = bggAverageRating.toString(),
-                bggAverageRatingColor = getRatingStarColor(bggAverageRating),
+                bggAverageRatingColor = getRatingColor(bggAverageRating),
                 polkaAverageRating = polkaAverageRating.toString(),
-                polkaAverageRatingColor = getRatingStarColor(polkaAverageRating),
+                polkaAverageRatingColor = getRatingColor(polkaAverageRating),
                 bggNumberOfRatings = "201233",
                 polkaNumberOfRatings = "109",
                 userRating = userRating,
-                userRatingColor = getRatingStarColor(userRating.toDouble()),
+                userRatingColor = getRatingColor(userRating.toDouble()),
                 isInCollection = true,
                 onUserRatingClick = {}
             )
         }
     }
 }
-
-fun getRatingStarColor(rating: Double) = colorOverlay(
-    colorBack = PolkaRatingLowerBound,
-    colorFront = PolkaRatingHigherBound,
-    alpha = ((rating - 1) / 9).toFloat()
-)

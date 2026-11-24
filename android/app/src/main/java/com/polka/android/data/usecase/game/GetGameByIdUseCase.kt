@@ -6,11 +6,10 @@ import com.polka.android.data.GameRepository
 import com.polka.android.data.image.ImageRepository
 import com.polka.android.presentation.model.Game
 import com.polka.android.presentation.model.toUIStatusSet
-import com.polka.android.presentation.theme.PolkaRatingHigherBound
-import com.polka.android.presentation.theme.PolkaRatingLowerBound
 import com.polka.android.presentation.theme.PolkaWeightHard
 import com.polka.android.presentation.theme.PolkaWeightLow
 import com.polka.android.utils.colorOverlay
+import com.polka.android.utils.getRatingColor
 import jakarta.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -59,20 +58,16 @@ class GameAndCollectionItemMapper @Inject constructor(
             status = collectionItem?.status?.toUIStatusSet(),
             userRating = collectionItem?.rating,
             userRatingColor = collectionItem?.rating?.let { rating ->
-                colorOverlay(
-                    colorBack = PolkaRatingLowerBound,
-                    colorFront = PolkaRatingHigherBound,
-                    alpha = ((rating - 1) / 9).toFloat()
-                )
+                getRatingColor(rating.toDouble())
             },
 
-            averageSessionTime = null, // TODO
+            averageSessionTime = game.averageSessionTime,
 
             id = game.id,
             name = game.name,
             shortDescription = game.shortDescription,
-            description = null, // TODO
-            releaseYear = null, // TODO
+            description = game.description,
+            releaseYear = game.releaseYear,
 
             gameImage = game.gameImage?.let{ imageRepository.toRequest(it) },
             userImages = collectionItem?.images?.map { imageRepository.toRequest(it) }
@@ -101,19 +96,11 @@ class GameAndCollectionItemMapper @Inject constructor(
 
             bggAverageRating = game.bggAverageRating?.toString(),
             bggAverageRatingColor = game.bggAverageRating?.let { rating ->
-                colorOverlay(
-                    colorBack = PolkaRatingLowerBound,
-                    colorFront = PolkaRatingHigherBound,
-                    alpha = ((rating - 1) / 9).toFloat()
-                )
+                getRatingColor(rating)
             },
             polkaAverageRating = game.polkaAverageRating?.toString(),
             polkaAverageRatingColor = game.polkaAverageRating?.let { rating ->
-                colorOverlay(
-                    colorBack = PolkaRatingLowerBound,
-                    colorFront = PolkaRatingHigherBound,
-                    alpha = ((rating - 1) / 9).toFloat()
-                )
+                getRatingColor(rating)
             },
             bggNumberOfRatings = game.bggNumberOfRatings?.toString(),
             polkaNumberOfRatings = game.polkaNumberOfRatings?.toString()
