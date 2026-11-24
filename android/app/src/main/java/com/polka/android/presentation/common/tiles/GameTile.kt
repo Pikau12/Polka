@@ -219,7 +219,7 @@ fun GameTile(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    text = "Status: ${collectionItem.status.toString()}",
+                                    text = "Status: ${collectionItem.getMostPopularOfExistStatus()}",
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             },

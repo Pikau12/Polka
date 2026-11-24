@@ -140,8 +140,22 @@ fun GameStatusMenu(
                 onCheckedChange = { wishlistExpanded = true },
                 colors = PolkaCheckBoxColors
             )
+
+            var status: CollectionItem.Status? = null
+
+            for (wishlistStatus in CollectionItem.Status.Wishlist.entries) {
+                status = wishlistStatus.toStatus()
+                val isSelected = status in choicedItems
+
+                if (isSelected) {
+                    break
+                } else{
+                    status = null
+                }
+            }
+
             Text(
-                text = "Wishlist",
+                text = if (status != null) "W-list [${status.toWishlist()}]" else "Wishlist",
                 modifier = Modifier.padding(start = 8.dp),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleSmall
