@@ -10,6 +10,7 @@ data class CollectionItem(
     val rating: Int?,
     val status: Set<Status>,
     val images: List<ImageSource>,
+    val isInCollection: Boolean = true,
 ) {
     data class Id(val ownerId: Long, val gameId: Long)
 
@@ -71,6 +72,7 @@ data class CollectionItem(
     }
 
     constructor(entity: CollectionItemEntity) : this(
-        Id(entity.ownerId, entity.gameId), entity.displayOrder, entity.note, entity.rating, entity.status, entity.images
+        Id(entity.ownerId, entity.gameId), entity.displayOrder, entity.note, entity.rating, entity.status, entity.images,
+        entity.isInCollection,
     )
 }

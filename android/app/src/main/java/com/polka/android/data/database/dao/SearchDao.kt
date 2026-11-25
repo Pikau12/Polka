@@ -38,6 +38,7 @@ interface SearchDao {
     SELECT games.* FROM games
     INNER JOIN collection_items ON games.id = collection_items.gameId
     WHERE collection_items.ownerId = :ownerId
+    AND collection_items.isInCollection = 1
     AND games.name LIKE '%' || :gameName || '%'
     ORDER BY collection_items.displayOrder ASC
     """
@@ -49,7 +50,7 @@ interface SearchDao {
      */
     @Query("""
         SELECT * FROM collection_items
-        WHERE ownerId = :ownerId
+        WHERE ownerId = :ownerId AND isInCollection = 1
         ORDER BY displayOrder ASC
     """)
     fun getSortedUserCollection(ownerId: Long): Flow<List<CollectionItemEntity>>
