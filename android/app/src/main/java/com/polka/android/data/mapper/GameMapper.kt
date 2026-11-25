@@ -45,6 +45,7 @@ fun Game.toEntity(updatedAt: Long = this.updatedAt): GameEntity {
         polkaNumberOfRatings = polkaNumberOfRatings,
         averageSessionTime = averageSessionTime,
         releaseYear = releaseYear,
+        creatorId = creatorId,
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
