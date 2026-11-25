@@ -8,7 +8,9 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 @Singleton
 class AuthPreferences @Inject constructor(
@@ -48,6 +50,9 @@ class AuthPreferences @Inject constructor(
     suspend fun getAccessToken(): String? = dataStore.data.first()[ACCESS_TOKEN]
     suspend fun getRefreshToken(): String? = dataStore.data.first()[REFRESH_TOKEN]
     suspend fun getUserId(): Long? = dataStore.data.first()[USER_ID]
+
+    /** Emits the id of the logged-in user (`null` if nobody is logged in) and every change of it. */
+    val userIdFlow: Flow<Long?> = dataStore.data.map { it[USER_ID] }
 
     suspend fun isOnboardingSeen(): Boolean = dataStore.data.first()[ONBOARDING_SEEN] ?: false
     suspend fun markOnboardingSeen() {
