@@ -3,6 +3,7 @@ package com.polka.android.data.usecase.sessions
 import com.polka.android.data.AuthRepository
 import com.polka.android.data.GameRepository
 import com.polka.android.data.SessionRepository
+import com.polka.android.data.model.Session
 import com.polka.android.data.model.SessionParticipant
 import jakarta.inject.Inject
 
@@ -22,6 +23,8 @@ class UpdateSessionUseCase @Inject constructor(
         finishedAt: Long?,
         note: String,
         participants: List<SessionParticipant>,
+        place: String? = null,
+        status: Session.Status = Session.Status.FINISHED,
     ) {
         val existing = sessionRepository.getSessionById(sessionId)
             ?: error("Session $sessionId does not exist")
@@ -31,10 +34,16 @@ class UpdateSessionUseCase @Inject constructor(
 
         val game = gameRepository.getGame(existing.gameId)
             ?: error("Game ${existing.gameId} does not exist")
-        validator.validate(game, startedAt, finishedAt, participants)
+        validator.validate(game, startedAt, finishedAt, status, participants)
 
         sessionRepository.updateSession(
-            existing.copy(startedAt = startedAt, finishedAt = finishedAt, note = note),
+            existing.copy(
+                startedAt = startedAt,
+                finishedAt = finishedAt,
+                note = note,
+                place = place?.trim()?.takeIf { it.isNotEmpty() },
+                status = status,
+            ),
             participants,
         )
     }

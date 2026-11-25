@@ -7,12 +7,6 @@ import com.polka.android.data.model.Session
 import com.polka.android.data.model.SessionParticipant
 import jakarta.inject.Inject
 
-/**
- * Creates a session after checking the minimal rules from the spec:
- * the game exists, there are players, someone has won,
- * and the number of players fits the limits of the game.
- */
-
 class CreateSessionUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val gameRepository: GameRepository,
@@ -25,9 +19,11 @@ class CreateSessionUseCase @Inject constructor(
         finishedAt: Long?,
         note: String,
         participants: List<SessionParticipant>,
+        place: String? = null,
+        status: Session.Status = Session.Status.FINISHED,
     ): Long {
         val game = gameRepository.getGame(gameId) ?: error("Game $gameId does not exist")
-        validator.validate(game, startedAt, finishedAt, participants)
+        validator.validate(game, startedAt, finishedAt, status, participants)
 
         val session = Session(
             gameId = gameId,
@@ -35,6 +31,8 @@ class CreateSessionUseCase @Inject constructor(
             note = note,
             startedAt = startedAt,
             finishedAt = finishedAt,
+            place = place?.trim()?.takeIf { it.isNotEmpty() },
+            status = status,
         )
         return sessionRepository.createSession(session, participants)
     }

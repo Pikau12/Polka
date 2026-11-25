@@ -1,9 +1,11 @@
 package com.polka.android.data.database.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.polka.android.data.model.SessionParticipant
 
 @Entity(
     tableName = "session_participants",
@@ -44,4 +46,6 @@ data class SessionParticipantEntity(
 
     val isWinner: Boolean = false,
     val score: Double? = null,
+    @ColumnInfo(defaultValue = "'ACCEPTED'")
+    val status: SessionParticipant.Status = SessionParticipant.Status.ACCEPTED,
 )

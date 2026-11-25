@@ -11,6 +11,7 @@ fun SessionParticipantEntity.toModel(): SessionParticipant {
         name = name,
         isWinner = isWinner,
         score = score,
+        status = status,
     )
 }
 
@@ -22,5 +23,6 @@ fun SessionParticipant.toEntity(): SessionParticipantEntity {
         name = name?.trim(),
         isWinner = isWinner,
         score = score,
+        status = status,
     )
 }

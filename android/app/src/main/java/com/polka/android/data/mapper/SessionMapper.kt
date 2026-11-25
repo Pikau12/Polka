@@ -12,6 +12,8 @@ fun SessionEntity.toModel(): Session {
         images = images,
         startedAt = startedAt,
         finishedAt = finishedAt,
+        place = place,
+        status = status,
         createdAt = createdAt,
         updatedAt = updatedAt
     )
@@ -26,6 +28,8 @@ fun Session.toEntity(): SessionEntity {
         images = images,
         startedAt = startedAt,
         finishedAt = finishedAt,
+        place = place,
+        status = status,
         createdAt = createdAt,
         updatedAt = updatedAt
     )
