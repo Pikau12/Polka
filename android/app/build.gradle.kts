@@ -56,8 +56,10 @@ android {
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
-
 dependencies {
+
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material.icons.extended)
@@ -110,17 +112,20 @@ dependencies {
     // Navigation
     implementation(libs.androidx.navigation.compose)
 
-    // OkHttp
+    // Networking
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+    implementation(libs.kotlinx.serialization.json)
 
     // Image loading
     implementation(libs.coil.kt.coil.compose)
     implementation(libs.coil.kt.coil.network.okhttp)
-    implementation("io.coil-kt.coil3:coil-svg:3.5.0")
+    implementation(libs.coil.kt.coil.svg)
 
     // Reorderable for LazyGrid in UI layer
     implementation(libs.reorderable)
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }

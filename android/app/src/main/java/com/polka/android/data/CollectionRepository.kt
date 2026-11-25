@@ -4,7 +4,10 @@ import android.util.Log
 import com.polka.android.data.database.dao.CollectionDao
 import com.polka.android.data.model.CollectionItem
 import jakarta.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
 interface CollectionRepository {
@@ -45,16 +48,17 @@ interface CollectionRepository {
     suspend fun removeGameFromCollection(item: CollectionItem.Id)
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultCollectionRepository @Inject constructor(
     private val collectionDao: CollectionDao,
     private val authRepository: AuthRepository
 ) : CollectionRepository {
     override fun observeCollection(): Flow<List<CollectionItem>> {
-        val user = authRepository.getCurrentUser()
-
-        return collectionDao.getInCollection(user.id).map { list ->
-            list.map { CollectionItem(it) }
-        }
+        // Follows the logged-in account: switching or leaving the account resubscribes.
+        return authRepository.currentUserId
+            .filterNotNull()
+            .flatMapLatest { userId -> collectionDao.getInCollection(userId) }
+            .map { list -> list.map { CollectionItem(it) } }
     }
 
     override suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?) {

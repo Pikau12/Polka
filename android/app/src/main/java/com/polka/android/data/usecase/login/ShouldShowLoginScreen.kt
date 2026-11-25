@@ -6,7 +6,7 @@ import javax.inject.Inject
 class ShouldShowLoginScreen @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    operator fun invoke() : Boolean {
+    suspend operator fun invoke() : Boolean {
         return authRepository.shouldShowLoginScreen()
     }
 }

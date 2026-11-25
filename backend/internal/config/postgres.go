@@ -13,14 +13,14 @@ type PostgresConfig struct {
 	DBName   string
 }
 
-func NewPostgresConfig() PostgresConfig {
+func NewPostgresConfig() (*PostgresConfig, error) {
 	/*
 		Uncomment if u want start project without docker
 		if err := godotenv.Load(".env", "../.env"); err != nil {
 			log.Fatal("Error loading .env file")
 		}
 	*/
-	config := PostgresConfig{
+	config := &PostgresConfig{
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
 		User:     os.Getenv("DB_USER"),
@@ -28,27 +28,11 @@ func NewPostgresConfig() PostgresConfig {
 		DBName:   os.Getenv("DB_NAME"),
 	}
 
-	if config.Host == "" {
-		config.Host = "host"
+	if config.Port == "" || config.User == "" || config.Password == "" || config.DBName == "" || config.Host == "" {
+		return nil, fmt.Errorf("error read postgres config")
 	}
 
-	if config.Port == "" {
-		config.Port = "5432"
-	}
-
-	if config.User == "" {
-		config.User = "postgres"
-	}
-
-	if config.Password == "" {
-		config.Password = "postgres"
-	}
-
-	if config.DBName == "" {
-		config.DBName = "polka_db"
-	}
-
-	return config
+	return config, nil
 }
 
 func (c *PostgresConfig) DSN() string {

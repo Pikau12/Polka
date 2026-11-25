@@ -76,6 +76,8 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
                 images TEXT NOT NULL,
                 startedAt INTEGER NOT NULL,
                 finishedAt INTEGER,
+                place TEXT,
+                status TEXT NOT NULL DEFAULT 'FINISHED',
                 createdAt INTEGER NOT NULL,
                 updatedAt INTEGER NOT NULL,
                 FOREIGN KEY(gameId) REFERENCES games(id) ON UPDATE NO ACTION ON DELETE RESTRICT,
@@ -93,5 +95,8 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
         db.execSQL("ALTER TABLE sessions_new RENAME TO sessions")
         db.execSQL("CREATE INDEX IF NOT EXISTS index_sessions_gameId ON sessions(gameId)")
         db.execSQL("CREATE INDEX IF NOT EXISTS index_sessions_creatorId ON sessions(creatorId)")
+
+        // session_participants.status
+        db.execSQL("ALTER TABLE session_participants ADD COLUMN status TEXT NOT NULL DEFAULT 'ACCEPTED'")
     }
 }
