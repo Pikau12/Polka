@@ -12,6 +12,8 @@ interface UserRepository {
 
     fun observeUser(userId: Long): Flow<User?>
 
+    suspend fun getUser(userId: Long): User?
+
     suspend fun saveUser(user: User)
 
     suspend fun updateUser(user: User)
@@ -41,6 +43,10 @@ class DefaultUserRepository @Inject constructor(
     override fun observeUser(userId: Long): Flow<User?> {
         return userDao.observeUserById(userId)
             .map { it?.toModel() }
+    }
+
+    override suspend fun getUser(userId: Long): User? {
+        return userDao.getUserById(userId)?.toModel()
     }
 
     override suspend fun saveUser(user: User) {
