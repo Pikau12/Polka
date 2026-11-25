@@ -35,7 +35,11 @@ data class Game(
     var polkaNumberOfRatings: Int?,
     val averageSessionTime: String?,
     val releaseYear: String?,
-    ) {
+    val createdAt: Long,
+    val updatedAt: Long,
+    /** Id of the user who created the game card. Null for games imported from BGG. */
+    val creatorId: Long? = null,
+) {
     constructor(
         entity: GameEntity,
         toRequest: (ImageSource) -> ImageRequest,
@@ -47,8 +51,8 @@ data class Game(
         entity.shortDescription,
         entity.image,
         entity.userImages,
-        entity.playerCount,
-        entity.bestPlayerCount,
+        entity.playerCount.takeIf { it.isNotEmpty() },
+        entity.bestPlayerCount.takeIf { it.isNotEmpty() },
         range(entity.minPlayTimeMinutes, entity.maxPlayTimeMinutes),
         entity.ageRestriction,
         entity.weight,
@@ -66,6 +70,9 @@ data class Game(
         entity.polkaNumberOfRatings,
         entity.averageSessionTime,
         entity.releaseYear,
+        entity.createdAt,
+        entity.updatedAt,
+        entity.creatorId,
     )
 
     val bggUrl: String?
