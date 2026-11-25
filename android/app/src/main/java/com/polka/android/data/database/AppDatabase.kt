@@ -49,6 +49,8 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
         // games.creatorId: who created the game card (null for BGG games)
         db.execSQL("ALTER TABLE games ADD COLUMN creatorId INTEGER")
+        // collection_items.isInCollection: existing records are all in the collection
+        db.execSQL("ALTER TABLE collection_items ADD COLUMN isInCollection INTEGER NOT NULL DEFAULT 1")
 
         db.execSQL("ALTER TABLE games ADD COLUMN description TEXT")
         db.execSQL("ALTER TABLE games ADD COLUMN userImages TEXT NOT NULL DEFAULT '[]'")

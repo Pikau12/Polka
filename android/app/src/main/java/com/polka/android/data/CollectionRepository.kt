@@ -9,7 +9,11 @@ import kotlinx.coroutines.flow.map
 
 interface CollectionRepository {
     fun observeCollection(): Flow<List<CollectionItem>>
+    /** Sets the rating (`null` clears it). Rating a game that is not in the collection is allowed. */
     suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?)
+
+    /** Clears the rating. If the game is not in the collection, its record is deleted. */
+    suspend fun clearItemRating(item: CollectionItem.Id)
     suspend fun updateItemStatus(item: CollectionItem.Id, status: Set<CollectionItem.Status>)
 
     /**
@@ -46,19 +50,31 @@ class DefaultCollectionRepository @Inject constructor(
     override fun observeCollection(): Flow<List<CollectionItem>> {
         val user = authRepository.getCurrentUser()
 
-        return collectionDao.getAll(user.id).map { list ->
+        return collectionDao.getInCollection(user.id).map { list ->
             list.map { CollectionItem(it) }
         }
     }
 
     override suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?) {
-        collectionDao.updateRating(item.ownerId, item.gameId, rating)
+        if (rating == null) {
+            clearItemRating(item)
+        } else {
+            collectionDao.setRating(item.ownerId, item.gameId, rating)
+        }
+    }
+
+    override suspend fun clearItemRating(item: CollectionItem.Id) {
+        collectionDao.clearRating(item.ownerId, item.gameId)
     }
 
     override suspend fun updateItemStatus(
         item: CollectionItem.Id,
         status: Set<CollectionItem.Status>
     ) {
+        // Having a status means the game is in the collection.
+        if (status.isNotEmpty()) {
+            collectionDao.addToEnd(item.ownerId, item.gameId)
+        }
         collectionDao.updateStatus(item.ownerId, item.gameId, status)
     }
 
@@ -111,6 +127,6 @@ class DefaultCollectionRepository @Inject constructor(
     }
 
     override suspend fun removeGameFromCollection(item: CollectionItem.Id) {
-        TODO("Not implemented yet")
+        collectionDao.removeFromCollection(item.ownerId, item.gameId)
     }
 }

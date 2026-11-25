@@ -45,6 +45,13 @@ data class CollectionItemEntity(
     val status: Set<CollectionItem.Status>,
     val images: List<ImageSource.Saved>,
 
+    /**
+     * `false` for a record that exists only because the user rated (or noted) a game
+     * that is not in their collection. Such records are hidden from the collection list.
+     */
+    @ColumnInfo(defaultValue = "1")
+    val isInCollection: Boolean = true,
+
     val createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(defaultValue = NOW_MS)
     val updatedAt: Long = System.currentTimeMillis(),
