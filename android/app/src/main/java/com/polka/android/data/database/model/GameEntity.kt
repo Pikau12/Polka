@@ -40,6 +40,7 @@ data class GameEntity(
     val polkaNumberOfRatings: Int?,
     val averageSessionTime: String? = null,
     val releaseYear: String? = null,
+    val creatorId: Long? = null,
 
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
