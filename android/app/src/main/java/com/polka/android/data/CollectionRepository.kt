@@ -12,6 +12,12 @@ import kotlinx.coroutines.flow.map
 
 interface CollectionRepository {
     fun observeCollection(): Flow<List<CollectionItem>>
+
+    /**
+     * One record of the user's data about a game. Unlike [observeCollection] it also emits
+     * records of games outside the collection (see `isInCollection`); `null` if there is no record.
+     */
+    fun getUserCollectionItem(id: CollectionItem.Id): Flow<CollectionItem?>
     /** Sets the rating (`null` clears it). Rating a game that is not in the collection is allowed. */
     suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?)
 
@@ -105,6 +111,11 @@ class DefaultCollectionRepository @Inject constructor(
             aboveItem?.gameId,
             belowItem?.gameId
         )
+    }
+
+    override fun getUserCollectionItem(id: CollectionItem.Id): Flow<CollectionItem?> {
+        return collectionDao.observeItem(id.ownerId, id.gameId)
+            .map { entity -> entity?.let { CollectionItem(it) } }
     }
 
     override suspend fun addGameToCollection(gameId: Long) {

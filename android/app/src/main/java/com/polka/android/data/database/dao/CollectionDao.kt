@@ -24,6 +24,10 @@ interface CollectionDao {
     @Query("SELECT * FROM collection_items WHERE ownerId = :ownerId AND gameId = :gameId")
     suspend fun getItem(ownerId: Long, gameId: Long): CollectionItemEntity?
 
+    /** Emits the record of one game and every change of it, `null` if there is no record. */
+    @Query("SELECT * FROM collection_items WHERE ownerId = :ownerId AND gameId = :gameId")
+    fun observeItem(ownerId: Long, gameId: Long): Flow<CollectionItemEntity?>
+
     @Query("DELETE FROM collection_items WHERE ownerId = :ownerId AND gameId = :gameId")
     suspend fun delete(ownerId: Long, gameId: Long)
 
@@ -37,7 +41,7 @@ interface CollectionDao {
     suspend fun updateOrder(ownerId: Long, gameId: Long, newOrder: Double)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(item: CollectionItemEntity)
+    suspend fun insert(item: CollectionItemEntity): Long
 
     @Query("UPDATE collection_items SET isInCollection = :value, updatedAt = $NOW_MS WHERE ownerId = :ownerId AND gameId = :gameId")
     suspend fun setInCollection(ownerId: Long, gameId: Long, value: Boolean)
