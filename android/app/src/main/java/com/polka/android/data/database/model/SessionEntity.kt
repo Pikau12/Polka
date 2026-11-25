@@ -34,7 +34,8 @@ data class SessionEntity(
     val serverId: Long? = null,
 
     val gameId: Long,
-    val creatorId: Long,
+    /** Null if the creator account was deleted. */
+    val creatorId: Long?,
 
     val note: String = "",
 

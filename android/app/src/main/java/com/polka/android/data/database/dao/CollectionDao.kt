@@ -82,7 +82,7 @@ interface CollectionDao {
                 val orderBelow = getOrderById(ownerId, belowItem) ?: return Log.e(
                     tag, "`belowItem` didn't correspond to a valid id"
                 ).let {}
-                if (orderAbove - orderBelow < epsilon) {
+                if (orderBelow - orderAbove < epsilon) {
                     null
                 } else {
                     (orderAbove + orderBelow) / 2.0
