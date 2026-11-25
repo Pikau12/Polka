@@ -1,9 +1,11 @@
 package com.polka.android.data.database.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.polka.android.data.model.Session
 
 @Entity(
     tableName = "sessions",
@@ -34,7 +36,8 @@ data class SessionEntity(
     val serverId: Long? = null,
 
     val gameId: Long,
-    val creatorId: Long,
+    /** Null if the creator account was deleted. */
+    val creatorId: Long?,
 
     val note: String = "",
 
@@ -46,6 +49,10 @@ data class SessionEntity(
 
     val startedAt: Long = System.currentTimeMillis(),
     val finishedAt: Long? = null,
+
+    val place: String? = null,
+    @ColumnInfo(defaultValue = "'FINISHED'")
+    val status: Session.Status = Session.Status.FINISHED,
 
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()

@@ -3,7 +3,7 @@ package com.polka.android.data.model
 data class Session(
     val id: Long = 0,
     val gameId: Long,
-    val creatorId: Long,
+    val creatorId: Long?,
 
     val note: String = "",
     /*
@@ -15,6 +15,11 @@ data class Session(
     val startedAt: Long = System.currentTimeMillis(),
     val finishedAt: Long? = null,
 
+    val place: String? = null,
+    val status: Status = Status.FINISHED,
+
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
-)
+) {
+    enum class Status { SCHEDULED, STARTED, FINISHED, CANCELLED }
+}

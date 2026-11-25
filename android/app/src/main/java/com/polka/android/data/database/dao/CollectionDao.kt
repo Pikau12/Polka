@@ -2,6 +2,8 @@ package com.polka.android.data.database.dao
 
 import android.util.Log
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.polka.android.data.database.AppDatabase.Companion.NOW_MS
@@ -22,6 +24,29 @@ interface CollectionDao {
 
     @Query("UPDATE collection_items SET displayOrder = :newOrder, updatedAt = $NOW_MS WHERE ownerId = :ownerId AND gameId = :gameId")
     suspend fun updateOrder(ownerId: Long, gameId: Long, newOrder: Double)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(item: CollectionItemEntity): Long
+
+    /**
+     * Adds the game to the end of the owner's collection.
+     * Does nothing if the game is already in the collection.
+     */
+    @Transaction
+    suspend fun addToEnd(ownerId: Long, gameId: Long) {
+        val order = (getMaxOrder(ownerId) ?: 0.0) + 1.0
+        insert(
+            CollectionItemEntity(
+                ownerId = ownerId,
+                gameId = gameId,
+                displayOrder = order,
+                note = "",
+                rating = null,
+                status = emptySet(),
+                images = emptyList(),
+            )
+        )
+    }
 
     @Query("SELECT MIN(displayOrder) FROM collection_items WHERE ownerId = :ownerId")
     suspend fun getMinOrder(ownerId: Long): Double?
@@ -57,7 +82,7 @@ interface CollectionDao {
                 val orderBelow = getOrderById(ownerId, belowItem) ?: return Log.e(
                     tag, "`belowItem` didn't correspond to a valid id"
                 ).let {}
-                if (orderAbove - orderBelow < epsilon) {
+                if (orderBelow - orderAbove < epsilon) {
                     null
                 } else {
                     (orderAbove + orderBelow) / 2.0

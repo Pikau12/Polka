@@ -37,20 +37,22 @@ interface SearchDao {
         """
     SELECT games.* FROM games
     INNER JOIN collection_items ON games.id = collection_items.gameId
-    WHERE games.name LIKE '%' || :gameName || '%'
+    WHERE collection_items.ownerId = :ownerId
+    AND games.name LIKE '%' || :gameName || '%'
     ORDER BY collection_items.displayOrder ASC
     """
     )
-    fun searchGameInCollection(gameName: String): Flow<List<GameEntity>>
+    fun searchGameInCollection(ownerId: Long, gameName: String): Flow<List<GameEntity>>
 
     /*
     TODO: mb move this func to collectionItemDao?
      */
     @Query("""
         SELECT * FROM collection_items
+        WHERE ownerId = :ownerId
         ORDER BY displayOrder ASC
     """)
-    fun getSortedUserCollection(): Flow<List<CollectionItemEntity>>
+    fun getSortedUserCollection(ownerId: Long): Flow<List<CollectionItemEntity>>
 
     /*
     TODO: mb move this func to friendshipDao?

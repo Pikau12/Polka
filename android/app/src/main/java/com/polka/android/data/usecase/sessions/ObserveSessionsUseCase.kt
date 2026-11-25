@@ -8,6 +8,7 @@ import com.polka.android.data.image.ImageRepository
 import com.polka.android.data.model.Game
 import com.polka.android.data.model.Session
 import com.polka.android.data.model.SessionParticipant
+import com.polka.android.presentation.model.PlayerStatus
 import com.polka.android.presentation.model.SessionSummary
 import com.polka.android.utils.toLocalDate
 import com.polka.android.utils.toUiString
@@ -61,10 +62,13 @@ class SessionMapper @Inject constructor(
             gameImage = game.gameImage?.let(imageRepository::toRequest),
             date = session.startedAt.toLocalDate().toUiString(),
             duration = session.finishedAt?.let { formatDuration(it - session.startedAt) },
-            place = null, // Session has no place yet
+            place = session.place,
             players = participantNames.values.toList(),
             winners = participantNames.entries.associate { (participant, name) ->
                 name to participant.isWinner
+            },
+            playersStatus = participantNames.entries.associate { (participant, name) ->
+                name to PlayerStatus.valueOf(participant.status.name)
             },
         )
     }

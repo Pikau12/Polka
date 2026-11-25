@@ -25,8 +25,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         CollectionItemEntity::class,
         FriendshipEntity::class
     ],
-    version = 2,
-    exportSchema = false
+    version = 3,
+    exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -47,9 +47,56 @@ abstract class AppDatabase : RoomDatabase() {
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
+        // games.creatorId: who created the game card (null for BGG games)
+        db.execSQL("ALTER TABLE games ADD COLUMN creatorId INTEGER")
+        // collection_items.isInCollection: existing records are all in the collection
+        db.execSQL("ALTER TABLE collection_items ADD COLUMN isInCollection INTEGER NOT NULL DEFAULT 1")
+
         db.execSQL("ALTER TABLE games ADD COLUMN description TEXT")
         db.execSQL("ALTER TABLE games ADD COLUMN userImages TEXT NOT NULL DEFAULT '[]'")
         db.execSQL("ALTER TABLE games ADD COLUMN averageSessionTime TEXT")
         db.execSQL("ALTER TABLE games ADD COLUMN releaseYear TEXT")
+    }
+}
+
+/**
+ * Adds `games.creatorId` and makes `sessions.creatorId` nullable (it is set to NULL when the creator is deleted).
+ * SQLite cannot change column nullability, so the table is recreated.
+ */
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE sessions_new (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                serverId INTEGER,
+                gameId INTEGER NOT NULL,
+                creatorId INTEGER,
+                note TEXT NOT NULL,
+                images TEXT NOT NULL,
+                startedAt INTEGER NOT NULL,
+                finishedAt INTEGER,
+                place TEXT,
+                status TEXT NOT NULL DEFAULT 'FINISHED',
+                createdAt INTEGER NOT NULL,
+                updatedAt INTEGER NOT NULL,
+                FOREIGN KEY(gameId) REFERENCES games(id) ON UPDATE NO ACTION ON DELETE RESTRICT,
+                FOREIGN KEY(creatorId) REFERENCES users(id) ON UPDATE NO ACTION ON DELETE SET NULL
+            )
+            """.trimIndent()
+        )
+        db.execSQL(
+            """
+            INSERT INTO sessions_new (id, serverId, gameId, creatorId, note, images, startedAt, finishedAt, createdAt, updatedAt)
+            SELECT id, serverId, gameId, creatorId, note, images, startedAt, finishedAt, createdAt, updatedAt FROM sessions
+            """.trimIndent()
+        )
+        db.execSQL("DROP TABLE sessions")
+        db.execSQL("ALTER TABLE sessions_new RENAME TO sessions")
+        db.execSQL("CREATE INDEX IF NOT EXISTS index_sessions_gameId ON sessions(gameId)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS index_sessions_creatorId ON sessions(creatorId)")
+
+        // session_participants.status
+        db.execSQL("ALTER TABLE session_participants ADD COLUMN status TEXT NOT NULL DEFAULT 'ACCEPTED'")
     }
 }
