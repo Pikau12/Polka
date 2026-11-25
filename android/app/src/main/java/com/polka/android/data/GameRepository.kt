@@ -15,7 +15,8 @@ interface GameRepository {
     /** Returns an existing game with the same name (ignoring case and surrounding spaces) or null. */
     suspend fun findGameByName(name: String): Game?
 
-    suspend fun createGame(name: String): Game
+    /** @param creatorId id of the user creating the game card (null for system-created games). */
+    suspend fun createGame(name: String, creatorId: Long?): Game
     suspend fun importFromBgg(bggId: Long): Game
     suspend fun mergeGameData(localGame: Game, bggGame: Game): Game
     suspend fun updateGame(game: Game): Game
@@ -42,7 +43,7 @@ class DefaultGameRepository @Inject constructor(
         return Game(game, imageRepository::toRequest)
     }
 
-    override suspend fun createGame(name: String): Game {
+    override suspend fun createGame(name: String, creatorId: Long?): Game {
         val trimmed = name.trim()
         require(trimmed.isNotEmpty()) { "Game name must not be empty" }
 
@@ -70,6 +71,7 @@ class DefaultGameRepository @Inject constructor(
                 polkaAverageRating = null,
                 bggNumberOfRatings = null,
                 polkaNumberOfRatings = null,
+                creatorId = creatorId,
             )
         )
         return checkNotNull(getGame(id)) { "Game $id was not found right after insert" }

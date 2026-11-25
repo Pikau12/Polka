@@ -47,6 +47,9 @@ abstract class AppDatabase : RoomDatabase() {
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
+        // games.creatorId: who created the game card (null for BGG games)
+        db.execSQL("ALTER TABLE games ADD COLUMN creatorId INTEGER")
+
         db.execSQL("ALTER TABLE games ADD COLUMN description TEXT")
         db.execSQL("ALTER TABLE games ADD COLUMN userImages TEXT NOT NULL DEFAULT '[]'")
         db.execSQL("ALTER TABLE games ADD COLUMN averageSessionTime TEXT")
@@ -55,7 +58,7 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
 }
 
 /**
- * `sessions.creatorId` becomes nullable (it is set to NULL when the creator is deleted).
+ * Adds `games.creatorId` and makes `sessions.creatorId` nullable (it is set to NULL when the creator is deleted).
  * SQLite cannot change column nullability, so the table is recreated.
  */
 val MIGRATION_2_3 = object : Migration(2, 3) {

@@ -37,6 +37,8 @@ data class Game(
     val releaseYear: String?,
     val createdAt: Long,
     val updatedAt: Long,
+    /** Id of the user who created the game card. Null for games imported from BGG. */
+    val creatorId: Long? = null,
 ) {
     constructor(
         entity: GameEntity,
@@ -70,6 +72,7 @@ data class Game(
         entity.releaseYear,
         entity.createdAt,
         entity.updatedAt,
+        entity.creatorId,
     )
 
     val bggUrl: String?
