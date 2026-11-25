@@ -10,7 +10,7 @@ interface GameRepository {
 
     suspend fun getGame(gameId: Long): Game?
 
-    fun getGameFlow(gameId: Long): Flow<Game?>
+    fun observeGame(gameId: Long): Flow<Game?>
     suspend fun getGameByBggId(bggId: Long): Game?
     suspend fun createGame(name: String): Game
     suspend fun importFromBgg(bggId: Long): Game
@@ -27,7 +27,7 @@ class DefaultGameRepository @Inject constructor(
         return Game(game, imageRepository::toRequest)
     }
 
-    override fun getGameFlow(gameId: Long): Flow<Game> {
+    override fun observeGame(gameId: Long): Flow<Game> {
         TODO("Not yet implemented")
     }
 

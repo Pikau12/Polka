@@ -28,7 +28,7 @@ class GetGameByIdUseCase @Inject constructor(
         val userId = authRepository.getCurrentUser().id
         val id = com.polka.android.data.model.CollectionItem.Id(userId, gameId)
 
-        return gameRepository.getGameFlow(gameId)
+        return gameRepository.observeGame(gameId)
             .flatMapLatest { game ->
                 if (game == null) {
                     flowOf(null)
