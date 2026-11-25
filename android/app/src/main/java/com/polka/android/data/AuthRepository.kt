@@ -12,8 +12,8 @@ import com.polka.android.data.preferences.AuthPreferences
 import jakarta.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
 interface AuthRepository {
     suspend fun login(login: String, password: String): Result<Unit>
@@ -21,12 +21,18 @@ interface AuthRepository {
     suspend fun logout()
     fun isBggAccountLinked(userId: Long): Flow<Boolean>
     suspend fun validatePasswordLocally(password: String): String
-    fun shouldShowOnboarding(): Boolean
+    suspend fun shouldShowOnboarding(): Boolean
     suspend fun markOnboardingAsSeen()
-    fun shouldShowLoginScreen(): Boolean
+    suspend fun shouldShowLoginScreen(): Boolean
 
-    /** Blocking. Throws [AuthException.NotAuthenticated] if nobody is logged in. */
-    fun getCurrentUser(): User
+    /**
+     * Id of the logged-in user, `null` if nobody is logged in.
+     * Emits again on login, logout and account switch: use it for data that must follow the account.
+     */
+    val currentUserId: Flow<Long?>
+
+    /** Throws [AuthException.NotAuthenticated] if nobody is logged in. */
+    suspend fun getCurrentUser(): User
 }
 
 class DefaultAuthRepository @Inject constructor(
@@ -81,17 +87,20 @@ class DefaultAuthRepository @Inject constructor(
         return ""
     }
 
-    override fun shouldShowOnboarding(): Boolean = runBlocking { !authPreferences.isOnboardingSeen() }
+    override suspend fun shouldShowOnboarding(): Boolean = !authPreferences.isOnboardingSeen()
 
     override suspend fun markOnboardingAsSeen() {
         authPreferences.markOnboardingSeen()
     }
 
-    override fun shouldShowLoginScreen(): Boolean = runBlocking { authPreferences.getRefreshToken() == null }
+    override suspend fun shouldShowLoginScreen(): Boolean = authPreferences.getRefreshToken() == null
 
-    override fun getCurrentUser(): User = runBlocking {
-        authPreferences.getUserId()?.let { userRepository.observeUser(it).first() }
-    } ?: throw AuthException.NotAuthenticated()
+    override val currentUserId: Flow<Long?> = authPreferences.userIdFlow.distinctUntilChanged()
+
+    override suspend fun getCurrentUser(): User {
+        return authPreferences.getUserId()?.let { userRepository.observeUser(it).first() }
+            ?: throw AuthException.NotAuthenticated()
+    }
 
     private suspend inline fun <T> authCall(block: () -> T): Result<T> = try {
         Result.success(block())

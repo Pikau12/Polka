@@ -4,12 +4,19 @@ import android.util.Log
 import com.polka.android.data.database.dao.CollectionDao
 import com.polka.android.data.model.CollectionItem
 import jakarta.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
 interface CollectionRepository {
     fun observeCollection(): Flow<List<CollectionItem>>
+    /** Sets the rating (`null` clears it). Rating a game that is not in the collection is allowed. */
     suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?)
+
+    /** Clears the rating. If the game is not in the collection, its record is deleted. */
+    suspend fun clearItemRating(item: CollectionItem.Id)
     suspend fun updateItemStatus(item: CollectionItem.Id, status: Set<CollectionItem.Status>)
 
     /**
@@ -33,32 +40,47 @@ interface CollectionRepository {
     /** Adds the game to the end of the current user's collection. Does nothing if it is already there. */
     suspend fun addGameToCollection(gameId: Long)
 
-    suspend fun addNote(item: CollectionItem.Id, note: String)
-    suspend fun updateNote(item: CollectionItem.Id, note: String)
-    suspend fun deleteNote(item: CollectionItem.Id)
+    /** Sets the note (a blank note clears it). Works for games that are not in the collection too. */
+    suspend fun updateItemNote(item: CollectionItem.Id, note: String)
+
+    /** Clears the note. If the game is not in the collection and has no rating, its record is deleted. */
+    suspend fun clearItemNote(item: CollectionItem.Id)
     suspend fun removeGameFromCollection(item: CollectionItem.Id)
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultCollectionRepository @Inject constructor(
     private val collectionDao: CollectionDao,
     private val authRepository: AuthRepository
 ) : CollectionRepository {
     override fun observeCollection(): Flow<List<CollectionItem>> {
-        val user = authRepository.getCurrentUser()
-
-        return collectionDao.getAll(user.id).map { list ->
-            list.map { CollectionItem(it) }
-        }
+        // Follows the logged-in account: switching or leaving the account resubscribes.
+        return authRepository.currentUserId
+            .filterNotNull()
+            .flatMapLatest { userId -> collectionDao.getInCollection(userId) }
+            .map { list -> list.map { CollectionItem(it) } }
     }
 
     override suspend fun updateItemRating(item: CollectionItem.Id, rating: Int?) {
-        collectionDao.updateRating(item.ownerId, item.gameId, rating)
+        if (rating == null) {
+            clearItemRating(item)
+        } else {
+            collectionDao.setRating(item.ownerId, item.gameId, rating)
+        }
+    }
+
+    override suspend fun clearItemRating(item: CollectionItem.Id) {
+        collectionDao.clearRating(item.ownerId, item.gameId)
     }
 
     override suspend fun updateItemStatus(
         item: CollectionItem.Id,
         status: Set<CollectionItem.Status>
     ) {
+        // Having a status means the game is in the collection.
+        if (status.isNotEmpty()) {
+            collectionDao.addToEnd(item.ownerId, item.gameId)
+        }
         collectionDao.updateStatus(item.ownerId, item.gameId, status)
     }
 
@@ -98,19 +120,15 @@ class DefaultCollectionRepository @Inject constructor(
         TODO("Not implemented yet")
     }
 
-    override suspend fun addNote(item: CollectionItem.Id, note: String) {
-        TODO("Not implemented yet")
+    override suspend fun updateItemNote(item: CollectionItem.Id, note: String) {
+        collectionDao.setNote(item.ownerId, item.gameId, note)
     }
 
-    override suspend fun updateNote(item: CollectionItem.Id, note: String) {
-        TODO("Not implemented yet")
-    }
-
-    override suspend fun deleteNote(item: CollectionItem.Id) {
-        TODO("Not implemented yet")
+    override suspend fun clearItemNote(item: CollectionItem.Id) {
+        collectionDao.clearNote(item.ownerId, item.gameId)
     }
 
     override suspend fun removeGameFromCollection(item: CollectionItem.Id) {
-        TODO("Not implemented yet")
+        collectionDao.removeFromCollection(item.ownerId, item.gameId)
     }
 }
