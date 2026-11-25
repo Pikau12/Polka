@@ -54,6 +54,7 @@ class GameAndCollectionItemMapper @Inject constructor(
         return Game( // TODO : update
             isUserCreated = game.bggId == null,
             isInUserCollection = collectionItem != null,
+            isActiveUserCreation = false, // TODO
 
             status = collectionItem?.status?.toUIStatusSet(),
             userRating = collectionItem?.rating,
