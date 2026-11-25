@@ -105,7 +105,7 @@ interface CollectionDao {
     @Transaction
     suspend fun clearRating(ownerId: Long, gameId: Long) {
         val item = getItem(ownerId, gameId) ?: return
-        if (!item.isInCollection && item.hasNothingExceptRating()) {
+        if (!item.isInCollection && item.note.isEmpty() && item.images.isEmpty()) {
             delete(ownerId, gameId)
         } else {
             updateRating(ownerId, gameId, null)
@@ -119,11 +119,55 @@ interface CollectionDao {
     @Transaction
     suspend fun removeFromCollection(ownerId: Long, gameId: Long) {
         val item = getItem(ownerId, gameId) ?: return
-        if (item.rating == null && item.hasNothingExceptRating()) {
+        if (item.rating == null && item.note.isEmpty() && item.images.isEmpty()) {
             delete(ownerId, gameId)
         } else {
             updateStatus(ownerId, gameId, emptySet())
             setInCollection(ownerId, gameId, false)
+        }
+    }
+
+    @Query("UPDATE collection_items SET note = :note, updatedAt = $NOW_MS WHERE ownerId = :ownerId AND gameId = :gameId")
+    suspend fun updateNote(ownerId: Long, gameId: Long, note: String): Int
+
+    /**
+     * Sets the note (a blank note clears it). If the game has no record yet
+     * (it is not in the collection), creates a record that is hidden from the collection list.
+     */
+    @Transaction
+    suspend fun setNote(ownerId: Long, gameId: Long, note: String) {
+        if (note.isBlank()) {
+            clearNote(ownerId, gameId)
+            return
+        }
+        val updated = updateNote(ownerId, gameId, note)
+        if (updated == 0) {
+            insert(
+                CollectionItemEntity(
+                    ownerId = ownerId,
+                    gameId = gameId,
+                    displayOrder = 0.0,
+                    note = note,
+                    rating = null,
+                    status = emptySet(),
+                    images = emptyList(),
+                    isInCollection = false,
+                )
+            )
+        }
+    }
+
+    /**
+     * Clears the note. A record of a game outside the collection that holds nothing else
+     * is deleted.
+     */
+    @Transaction
+    suspend fun clearNote(ownerId: Long, gameId: Long) {
+        val item = getItem(ownerId, gameId) ?: return
+        if (!item.isInCollection && item.rating == null && item.images.isEmpty()) {
+            delete(ownerId, gameId)
+        } else {
+            updateNote(ownerId, gameId, "")
         }
     }
 
@@ -199,9 +243,4 @@ interface CollectionDao {
             updateOrder(ownerId, itemToMove, newOrder)
         }
     }
-}
-
-/** The record holds no user data except (maybe) the rating. */
-private fun CollectionItemEntity.hasNothingExceptRating(): Boolean {
-    return note.isEmpty() && images.isEmpty()
 }

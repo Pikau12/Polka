@@ -37,9 +37,11 @@ interface CollectionRepository {
     /** Adds the game to the end of the current user's collection. Does nothing if it is already there. */
     suspend fun addGameToCollection(gameId: Long)
 
-    suspend fun addNote(item: CollectionItem.Id, note: String)
-    suspend fun updateNote(item: CollectionItem.Id, note: String)
-    suspend fun deleteNote(item: CollectionItem.Id)
+    /** Sets the note (a blank note clears it). Works for games that are not in the collection too. */
+    suspend fun updateItemNote(item: CollectionItem.Id, note: String)
+
+    /** Clears the note. If the game is not in the collection and has no rating, its record is deleted. */
+    suspend fun clearItemNote(item: CollectionItem.Id)
     suspend fun removeGameFromCollection(item: CollectionItem.Id)
 }
 
@@ -114,16 +116,12 @@ class DefaultCollectionRepository @Inject constructor(
         TODO("Not implemented yet")
     }
 
-    override suspend fun addNote(item: CollectionItem.Id, note: String) {
-        TODO("Not implemented yet")
+    override suspend fun updateItemNote(item: CollectionItem.Id, note: String) {
+        collectionDao.setNote(item.ownerId, item.gameId, note)
     }
 
-    override suspend fun updateNote(item: CollectionItem.Id, note: String) {
-        TODO("Not implemented yet")
-    }
-
-    override suspend fun deleteNote(item: CollectionItem.Id) {
-        TODO("Not implemented yet")
+    override suspend fun clearItemNote(item: CollectionItem.Id) {
+        collectionDao.clearNote(item.ownerId, item.gameId)
     }
 
     override suspend fun removeGameFromCollection(item: CollectionItem.Id) {
