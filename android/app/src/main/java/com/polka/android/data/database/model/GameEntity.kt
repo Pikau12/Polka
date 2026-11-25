@@ -16,8 +16,10 @@ data class GameEntity(
     val id: Long = 0,
     val serverId: Long?,
     val name: String,
+    val description: String? = null,
     val shortDescription: String?,
     val image: ImageSource.Saved?,
+    val userImages: List<ImageSource.Saved> = emptyList(),
     val playerCount: List<Int>,
     val bestPlayerCount: List<Int>,
     val minPlayTimeMinutes: Int?,
@@ -36,6 +38,8 @@ data class GameEntity(
     val polkaAverageRating: Double?,
     val bggNumberOfRatings: Int?,
     val polkaNumberOfRatings: Int?,
+    val averageSessionTime: String? = null,
+    val releaseYear: String? = null,
 
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()

@@ -14,7 +14,8 @@ import com.polka.android.data.database.model.GameEntity
 import com.polka.android.data.database.model.SessionEntity
 import com.polka.android.data.database.model.SessionParticipantEntity
 import com.polka.android.data.database.model.UserEntity
-
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 @Database(
     entities = [
         UserEntity::class,
@@ -24,7 +25,7 @@ import com.polka.android.data.database.model.UserEntity
         CollectionItemEntity::class,
         FriendshipEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -41,5 +42,14 @@ abstract class AppDatabase : RoomDatabase() {
      */
     companion object {
         const val NOW_MS = "(strftime('%s', 'now') * 1000)"
+    }
+}
+
+val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE games ADD COLUMN description TEXT")
+        db.execSQL("ALTER TABLE games ADD COLUMN userImages TEXT NOT NULL DEFAULT '[]'")
+        db.execSQL("ALTER TABLE games ADD COLUMN averageSessionTime TEXT")
+        db.execSQL("ALTER TABLE games ADD COLUMN releaseYear TEXT")
     }
 }

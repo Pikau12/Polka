@@ -12,6 +12,7 @@ type Dependencies struct {
 	AuthHandler       *handler.AuthHandler
 	GameHandler       *handler.GameHandler
 	CollectionHandler *handler.CollectionHandler
+	UserHandler       *handler.UserHandler
 	TokenParser       middleware.AccessTokenParser
 	Log               *slog.Logger
 }
@@ -33,5 +34,6 @@ func registerRoutes(r *gin.Engine, deps Dependencies) {
 	{
 		registerGameRoutes(deps.GameHandler, api)
 		registerCollectionRoutes(deps.CollectionHandler, api)
+		registerUserRoutes(deps.UserHandler, api)
 	}
 }
