@@ -41,7 +41,7 @@ interface CollectionDao {
     suspend fun updateOrder(ownerId: Long, gameId: Long, newOrder: Double)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(item: CollectionItemEntity): Long
+    suspend fun insert(item: CollectionItemEntity):
 
     @Query("UPDATE collection_items SET isInCollection = :value, updatedAt = $NOW_MS WHERE ownerId = :ownerId AND gameId = :gameId")
     suspend fun setInCollection(ownerId: Long, gameId: Long, value: Boolean)
