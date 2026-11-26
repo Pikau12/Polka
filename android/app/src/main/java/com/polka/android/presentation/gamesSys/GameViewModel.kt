@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polka.android.data.usecase.collection.UpdateGameRatingUseCase
+import com.polka.android.data.usecase.game.AddGameImagesUseCase
 import com.polka.android.data.usecase.game.GetGameByIdUseCase
 import com.polka.android.data.usecase.user.GetCurrentUserIdUseCase
 import com.polka.android.presentation.model.CollectionItem
@@ -22,22 +23,24 @@ import kotlinx.coroutines.launch
 
 data class GameState(
     val game: Game? = null,
+
     val selectedPhotoIndex: Int? = null,
+    val isSavingImages: Boolean = false,
 
     val draftRating: Int? = null,
     val isRatingMenuOpen: Boolean = false,
     val isRatingTipVisible: Boolean = false,
-    val isInDetailDescription: Boolean = false,
 
+    val isInDetailDescription: Boolean = false,
 )
 
 sealed class GameScreenEvent {
-    object onAddGameToCollectionClick: GameScreenEvent()
-    object onAddSessionClick: GameScreenEvent()
+    object onAddGameToCollectionClick : GameScreenEvent()
+    object onAddSessionClick : GameScreenEvent()
 
-    object onUserRatingClick: GameScreenEvent()
+    object onUserRatingClick : GameScreenEvent()
     data class onRatingChange(val rating: Int) : GameScreenEvent()
-    object onRatingMenuCancel: GameScreenEvent()
+    object onRatingMenuCancel : GameScreenEvent()
     object onRatingMenuClose : GameScreenEvent()
     object onRatingTipClick : GameScreenEvent()
     object onRatingTipClose : GameScreenEvent()
@@ -46,16 +49,17 @@ sealed class GameScreenEvent {
     object onPhotoViewerDismiss : GameScreenEvent()
     data class onImagesSelected(val uris: List<Uri>) : GameScreenEvent()
 
-    object onDescriptionClick: GameScreenEvent()
-    object onEditClick: GameScreenEvent()
+    object onDescriptionClick : GameScreenEvent()
+    object onEditClick : GameScreenEvent()
 }
 
 @HiltViewModel
-class GameViewModel @Inject constructor (
+class GameViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val updateGameRatingUseCase: UpdateGameRatingUseCase,
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
     private val getGameByIdUseCase: GetGameByIdUseCase,
+    private val addGameImagesUseCase: AddGameImagesUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(GameState())
     val state: StateFlow<GameState> = _state.asStateFlow()
@@ -64,8 +68,7 @@ class GameViewModel @Inject constructor (
         ?: throw IllegalArgumentException("gameId is required")
 
     private val _gameScreenEvent = MutableSharedFlow<GameScreenEvent>()
-    val gameScreenEvent: SharedFlow<GameScreenEvent> =
-        _gameScreenEvent.asSharedFlow()
+    val gameScreenEvent: SharedFlow<GameScreenEvent> = _gameScreenEvent.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -77,9 +80,9 @@ class GameViewModel @Inject constructor (
     }
 
     fun handleEvent(event: GameScreenEvent) {
-        when(event) {
-            GameScreenEvent.onAddGameToCollectionClick -> TODO()
-            GameScreenEvent.onAddSessionClick -> TODO()
+        when (event) {
+            GameScreenEvent.onAddGameToCollectionClick -> handleOnAddGameToCollectionClick()
+            GameScreenEvent.onAddSessionClick -> handleOnAddSessionClick()
 
             is GameScreenEvent.onRatingChange -> handleOnRatingChange(event.rating)
             GameScreenEvent.onRatingMenuCancel -> handleOnRatingMenuCancel()
@@ -92,81 +95,96 @@ class GameViewModel @Inject constructor (
             GameScreenEvent.onPhotoViewerDismiss -> handleOnPhotoViewerDismiss()
             is GameScreenEvent.onImagesSelected -> handleOnImagesSelected(event.uris)
 
-            is GameScreenEvent.onDescriptionClick -> handleOnDescriptionClick()
-            is GameScreenEvent.onEditClick -> handleOnEditClick()
+            GameScreenEvent.onDescriptionClick -> handleOnDescriptionClick()
+            GameScreenEvent.onEditClick -> handleOnEditClick()
         }
     }
 
-    private fun handleOnImagesSelected(uris: List<Uri>){
+    private fun handleOnAddGameToCollectionClick() {
         TODO()
     }
 
-    private fun handleOnEditClick(){
+    private fun handleOnAddSessionClick() {
+        // TODO : go to session card screen
+        TODO()
+    }
+
+    private fun handleOnImagesSelected(uris: List<Uri>) {
+        if (uris.isEmpty()) return
+
+        viewModelScope.launch {
+            _state.update { it.copy(isSavingImages = true) }
+            try {
+                addGameImagesUseCase(gameId, uris)
+            } catch (e: Exception) {
+                // TODO
+            } finally {
+                _state.update { it.copy(isSavingImages = false) }
+            }
+        }
+    }
+
+    private fun handleOnEditClick() {
         viewModelScope.launch {
             _gameScreenEvent.emit(GameScreenEvent.onEditClick)
         }
     }
 
-    private fun handleOnDescriptionClick(){
-        _state.update { it.copy(
-            isInDetailDescription = !state.value.isInDetailDescription
-        ) }
+    private fun handleOnDescriptionClick() {
+        _state.update {
+            it.copy(isInDetailDescription = !state.value.isInDetailDescription)
+        }
     }
 
-    private fun handleOnPhotoClick(photoIndex: Int){
-        _state.update { it.copy(
-            selectedPhotoIndex = photoIndex
-        ) }
+    private fun handleOnPhotoClick(photoIndex: Int) {
+        _state.update { it.copy(selectedPhotoIndex = photoIndex) }
     }
 
-    private fun handleOnPhotoViewerDismiss(){
-        _state.update { it.copy(
-            selectedPhotoIndex = null
-        ) }
+    private fun handleOnPhotoViewerDismiss() {
+        _state.update { it.copy(selectedPhotoIndex = null) }
     }
 
-    private fun handleOnRatingTipClick(){
-        _state.update { it.copy(
-            isRatingTipVisible = true
-        ) }
+    private fun handleOnRatingTipClick() {
+        _state.update { it.copy(isRatingTipVisible = true) }
     }
 
-    private fun handleOnRatingTipClose(){
-        _state.update { it.copy(
-            isRatingTipVisible = false
-        ) }
+    private fun handleOnRatingTipClose() {
+        _state.update { it.copy(isRatingTipVisible = false) }
     }
 
-    private fun handleOnUserRatingClick(){
+    private fun handleOnUserRatingClick() {
         val currentRating = _state.value.game?.userRating
-
-        _state.update { it.copy(
-            isRatingMenuOpen = true,
-            draftRating = currentRating
-        ) }
+        _state.update {
+            it.copy(
+                isRatingMenuOpen = true,
+                draftRating = currentRating
+            )
+        }
     }
 
-    private fun handleOnRatingChange(rating: Int){
-        _state.update { it.copy(
-            draftRating = rating
-        ) }
+    private fun handleOnRatingChange(rating: Int) {
+        _state.update { it.copy(draftRating = rating) }
     }
 
-    private fun handleOnRatingMenuCancel(){
-        _state.update { it.copy(
-            isRatingMenuOpen = false,
-            draftRating = null,
-        ) }
+    private fun handleOnRatingMenuCancel() {
+        _state.update {
+            it.copy(
+                isRatingMenuOpen = false,
+                draftRating = null
+            )
+        }
     }
 
     private fun handleOnRatingMenuClose() {
         val rating = _state.value.draftRating
         val gameId = _state.value.game?.id
 
-        _state.update { it.copy(
-            isRatingMenuOpen = false,
-            draftRating = null
-        ) }
+        _state.update {
+            it.copy(
+                isRatingMenuOpen = false,
+                draftRating = null
+            )
+        }
 
         if (gameId != null) {
             viewModelScope.launch {

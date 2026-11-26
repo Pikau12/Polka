@@ -74,8 +74,8 @@ class GameAndCollectionItemMapper @Inject constructor(
             userImages = collectionItem?.images?.map { imageRepository.toRequest(it) }
                 ?: emptyList(),
 
-            playerCount = game.playerCount?.joinToString("-"),
-            bestPlayerCount = game.bestPlayerCount?.joinToString("-"),
+            playerCount = game.playerCount?.joinToString("-"), // TODO actualize format
+            bestPlayerCount = game.bestPlayerCount?.joinToString("-"), // TODO actualize format
             timeRange = game.timeRange?.let { "${it.start}-${it.endInclusive}" },
             ageRestriction = game.ageRestriction?.toString(),
             weight = game.weight?.toString(),
